@@ -1,0 +1,12 @@
+*{
+    transition: 0.3s;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+::selection{
+    color: white;
+    background: rgb(247, 54, 54);
+}
