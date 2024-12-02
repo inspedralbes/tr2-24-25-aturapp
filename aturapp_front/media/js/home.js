@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function checkFormCompletion() {
         let isValid = true;
-        
+
         inputs.forEach(input => {
             if (!input.value) {
                 isValid = false;
