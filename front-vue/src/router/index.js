@@ -1,23 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import LandingPage from '@/components/LandingPage.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      redirect: '/home',
+      // path: '/',
+      // redirect: '/home',
     },
     {
       path: '/home',
       name: 'home',
-      component: LandingPage,
+      component: () => import('../views/LandingPage.vue'),
     },
     {
-      path: '/about',
-      name: 'about',
-      component: () => import('../views/AboutView.vue'),
-    },
+      path: '/',
+      name: 'mobile',
+      component: () => import('../views/Mobile.vue')
+    }
   ],
 });
 
