@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Eje;
+use App\Models\Message;
 use Illuminate\Http\Request;
 
-class EjeController extends Controller
+class MessageController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class EjeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Eje $eje)
+    public function show(Message $message)
     {
         //
     }
@@ -42,7 +42,7 @@ class EjeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Eje $eje)
+    public function edit(Message $message)
     {
         //
     }
@@ -50,7 +50,7 @@ class EjeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Eje $eje)
+    public function update(Request $request, Message $message)
     {
         //
     }
@@ -58,7 +58,7 @@ class EjeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Eje $eje)
+    public function destroy(Message $message)
     {
         //
     }

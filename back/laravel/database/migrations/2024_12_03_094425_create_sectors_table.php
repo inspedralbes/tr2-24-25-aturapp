@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('planos', function (Blueprint $table) {
+        Schema::create('sectors', function (Blueprint $table) {
             $table->id();
+            $table->string('sector');
+            $table->geometry('geometry');
             $table->timestamps();
         });
     }
@@ -22,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('planos');
+        Schema::dropIfExists('sectors');
     }
 };

@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('password');
             $table->unsignedBigInteger('rol')->default(0);
             $table->foreign('rol')->references('id')->on('rols')->onDelete('cascade');
+            $table->unsignedBigInteger('curs')->default(0);
+            $table->foreign('curs')->references('id')->on('curs')->onDelete('cascade');
             $table->unsignedBigInteger('torn')->default(0);
             $table->foreign('torn')->references('id')->on('torns')->onDelete('cascade');
             $table->rememberToken();
