@@ -6,7 +6,7 @@ import Register from "../components/register.vue";
 </script>
 
 <template>
-    <Login />
+    <!-- <Login /> -->
     <Register />
 </template>
 
