@@ -16,7 +16,12 @@ const router = createRouter({
       path: '/',
       name: 'mobile',
       component: () => import('../views/Mobile.vue')
-    }
+    },
+    {
+      path: '/access',
+      name: 'access',
+      component: () => import('../views/Access.vue')
+    },
   ],
 });
 
