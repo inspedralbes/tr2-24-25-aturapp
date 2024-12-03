@@ -1,0 +1,32 @@
+services:
+  db:
+    image: mysql:8.2.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: aturapp
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 9090:8080
+
+  laravel:
+    build: ./laravelAthleto
+    ports:
+      - 8000:8000
+    volumes:
+      - ./laravelAthleto:/var/www/
+    working_dir: /var/www/
+    depends_on:
+      - db
+    command: bash -c "composer install && php artisan migrate:fresh --seed && php artisan key:generate && php artisan serve --host=0.0.0.0"    
