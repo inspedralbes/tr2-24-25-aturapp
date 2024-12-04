@@ -1,12 +1,12 @@
 <template>
-    <br>
-    <h1>Registrate</h1>
+    <h1>Registrat</h1>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <form @submit.prevent="handleSubmit">
         <input type="text" v-model="name" placeholder="Nom" />
         <input type="text" v-model="surname" placeholder="Cognom" />
         <input type="text" v-model="email" placeholder="Correu Electrònic" />
+        <p>Selecciona el teu curs</p>
         <select v-model="grade">
             <option v-for="curso in cursos" :key="curso.id" :value="curso.id">
                 {{ curso.name }}
@@ -20,6 +20,7 @@
 </template>
 
 <script>
+    const BASE_URL = "http://localhost:8000";
     export default {
         name: "Register",
         data() {
@@ -37,7 +38,7 @@
         methods: {
             async fetchCursos() {
                 try {
-                    const response = await fetch("http://localhost:8000/api/cursos");
+                    const response = await fetch(`${BASE_URL}/api/cursos`);
 
                     if (!response.ok) {
                         throw new Error("Error al obtener los cursos");
@@ -73,7 +74,7 @@
                 };
 
                 try {
-                    const response = await fetch("http://localhost:8000/api/register", {
+                    const response = await fetch(`${BASE_URL}/api/register`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -105,8 +106,11 @@
         padding: 0;
         box-sizing: border-box;
     }
-
+    p{
+        font-size: 20px;
+    }
     h1{
+        margin-top: 30px;
         color: #ff4d4d;
         text-align: center;
     }
@@ -127,8 +131,7 @@
         width: 100%;
     }
 
-    input,
-    select {
+    input,select {
         width: 100%;
         padding: 12px;
         font-size: 16px;
@@ -137,15 +140,13 @@
         transition: all 0.3s ease;
     }
 
-    input:focus,
-    select:focus {
+    input:focus,select:focus {
         outline: none;
-        border-color: #ff4d4d;  /* Color rojo */
+        border-color: #ff4d4d;
         background-color: #fff;
     }
 
-    input::placeholder,
-    select::placeholder {
+    input::placeholder,select::placeholder {
         color: #aaa;
     }
 
@@ -154,14 +155,14 @@
         font-size: 16px;
         font-weight: bold;
         color: white;
-        background-color: #ff4d4d;  /* Color rojo */
+        background-color: #ff4d4d;
         border: none;
         cursor: pointer;
         transition: background-color 0.3s ease;
     }
 
     button:hover {
-        background-color: #e60000;  /* Rojo más intenso en hover */
+        background-color: #e60000;
     }
 
     button:focus {
@@ -174,8 +175,7 @@
             margin: 20px auto;
         }
         
-        input,
-        select {
+        input,select {
             padding: 10px;
             font-size: 14px;
         }
