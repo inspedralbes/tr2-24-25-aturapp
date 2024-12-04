@@ -1,4 +1,6 @@
 <template>
+    <br>
+    <h1>Registrate</h1>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     
     <form @submit.prevent="handleSubmit">
@@ -79,6 +81,11 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+    }
+
+    h1{
+        color: #ff4d4d;
+        text-align: center;
     }
 
     body {

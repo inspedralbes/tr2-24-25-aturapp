@@ -95,7 +95,7 @@ export default {
 }
 
 h1 {
-  color: red;
+  color: #ff4d4d;
   text-align: center;
 }
 
