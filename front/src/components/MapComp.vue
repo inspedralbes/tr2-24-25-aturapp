@@ -1,5 +1,5 @@
 <template>
-    <input class="sectorInput" type="text" name="sector" id="sec" v-model="sectorInput" readonly>
+    <input class="sectorInput" type="text" name="sector" id="sec" v-model="sectorInput" placeholder="Seleccioni un sector" readonly>
     <div class="planoContainer">
         <div ref="zoomContainer" class="zoomContainer">
             <svg width="414" height="1864" viewBox="0 0 414 1864" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -10,7 +10,7 @@
                     :d="sector.d"
                     :stroke="'black'"
                     :fill="sector.color"
-                    :stroke-width="10"
+                    :stroke-width="5"
                     @click="toggleSectorColor(index)"
                     class="sector"
                 />
@@ -49,7 +49,7 @@
             </svg>
         </div>
     </div>
-
+    <input class="btn-confirm" type="button" value="Confirmar">
 </template>
 
 <script setup>
@@ -110,21 +110,45 @@ function toggleSectorColor(index) {
 <style scoped>
     .sectorInput{
         position: fixed;
-        top: 30px;
+        top: 10px;
         left: 0;
         right: 0;
         margin: auto;
-        width: 150px;
+        width: 200px;
+        text-align: center;
+        text-transform: uppercase;
+        border: 1px solid grey;
+        border-radius: 10px;
+        padding: 10px 5px;
     }
 
     .planoContainer{
         height: 100%;
         overflow: hidden;
         padding-bottom: 70px;
+        margin: 60px 0;
     }
 
     .zoomContainer{
         display: inline-block;
         cursor: grab;
+    }
+
+    .btn-confirm{
+        position: fixed;
+        bottom: 80px;
+        left: 0;
+        right: 0;
+        margin: auto;
+        width: 180px;
+        height: 45px;
+        background-color: red;
+        outline: none;
+        border: none;
+        padding: 10px 30px;
+        font-size: 20px;
+        font-weight: bold;
+        color: white;
+        border-radius: 10px;
     }
 </style>
