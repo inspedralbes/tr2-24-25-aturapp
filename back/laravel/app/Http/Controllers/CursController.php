@@ -10,10 +10,11 @@ class CursController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
+    public function index() {
+        $cursos = Curs::select('id', 'name')->get();
+        return response()->json($cursos);
     }
+    
 
     /**
      * Show the form for creating a new resource.

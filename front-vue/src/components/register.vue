@@ -2,14 +2,15 @@
     <br>
     <h1>Registrate</h1>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    
+
     <form @submit.prevent="handleSubmit">
         <input type="text" v-model="name" placeholder="Nom" />
         <input type="text" v-model="surname" placeholder="Cognom" />
         <input type="text" v-model="email" placeholder="Correu Electrònic" />
         <select v-model="grade">
-            <option value="1">1r ESO</option>
-            <option value="2">2n ESO</option>
+            <option v-for="curso in cursos" :key="curso.id" :value="curso.id">
+                {{ curso.name }}
+            </option>
         </select>
         <input type="text" v-model="dni" placeholder="DNI" />
         <input type="password" v-model="password" placeholder="Contrasenya" />
@@ -30,9 +31,24 @@
                 dni: "",
                 password: "",
                 confirmPassword: "",
+                cursos: [],
             };
         },
         methods: {
+            async fetchCursos() {
+                try {
+                    const response = await fetch("http://localhost:8000/api/cursos");
+
+                    if (!response.ok) {
+                        throw new Error("Error al obtener los cursos");
+                    }
+
+                    const data = await response.json();
+                    this.cursos = data;
+                } catch (error) {
+                    console.error("Error al obtener los cursos:", error);
+                }
+            },
             async handleSubmit() {
                 const DominisValids = ["@inspedralbes.cat", "@xtec.cat"];
 
@@ -76,6 +92,9 @@
                     alert("Error al registrar l'usuari");
                 }
             },
+        },
+        mounted() {
+            this.fetchCursos();
         },
     };
 </script>

@@ -9,3 +9,7 @@
     //====== CREAR USUARIO ========================
     use App\Http\Controllers\UserController;
     Route::post('/register', [UserController::class, 'register']);    
+
+    //====== OBTENER CURSOS =======================
+    use App\Http\Controllers\CursController;
+    Route::get('/cursos',[CursController::class, 'index']);
