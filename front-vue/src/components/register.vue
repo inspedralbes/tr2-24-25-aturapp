@@ -11,6 +11,7 @@
             <option value="1">1r ESO</option>
             <option value="2">2n ESO</option>
         </select>
+        <input type="text" v-model="dni" placeholder="DNI" />
         <input type="password" v-model="password" placeholder="Contrasenya" />
         <input type="password" v-model="confirmPassword" placeholder="Confirma la Contrasenya" />
         <button type="submit">Registrarse</button>
@@ -26,6 +27,7 @@
                 surname: "",
                 email: "",
                 grade: "",
+                dni: "",
                 password: "",
                 confirmPassword: "",
             };
@@ -49,6 +51,7 @@
                     surname: this.surname,
                     email: this.email,
                     grade: this.grade,
+                    dni: this.dni,
                     password: this.password,
                     password_confirmation: this.confirmPassword,
                 };
