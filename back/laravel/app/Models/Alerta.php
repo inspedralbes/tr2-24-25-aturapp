@@ -20,4 +20,9 @@ class Alerta extends Model
     {
         return $this->belongsTo(Sector::class);
     }
+
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class);
+    }
 }

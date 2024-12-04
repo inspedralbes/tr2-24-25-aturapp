@@ -51,6 +51,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(MessagesTableSeeder::class);
+        $this->call(EstadosTableSeeder::class);
         $this->call(AlertasTableSeeder::class);
     }
 }
