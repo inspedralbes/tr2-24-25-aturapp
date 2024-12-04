@@ -8,8 +8,8 @@
         <input type="text" v-model="surname" placeholder="Cognom" />
         <input type="text" v-model="email" placeholder="Correu Electrònic" />
         <select v-model="grade">
-            <option value="1r ESO">1r ESO</option>
-            <option value="2n ESO">2n ESO</option>
+            <option value="1">1r ESO</option>
+            <option value="2">2n ESO</option>
         </select>
         <input type="password" v-model="password" placeholder="Contrasenya" />
         <input type="password" v-model="confirmPassword" placeholder="Confirma la Contrasenya" />
@@ -50,10 +50,11 @@
                     email: this.email,
                     grade: this.grade,
                     password: this.password,
+                    password_confirmation: this.confirmPassword,
                 };
 
                 try {
-                    const response = await fetch("https://your-api-endpoint.com/register", {
+                    const response = await fetch("http://localhost:8000/api/register", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
