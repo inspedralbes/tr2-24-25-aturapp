@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Models\Blacklist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller {
@@ -41,6 +42,14 @@ class UserController extends Controller {
             'torn' => 1,
             'dni' => $request->dni,
         ]);
+
+        Mail::raw(
+            "Hola {$user->nom} {$user->cognoms},\n\nGmail de proba",
+            function ($message) use ($user) {
+                $message->to($user->email)
+                        ->subject("ATURAPP | Confirma el teu usuari");
+            }
+        );
 
         return response()->json([
             'message' => 'Usuari registrat amb èxit',
