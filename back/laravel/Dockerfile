@@ -10,7 +10,7 @@ RUN apt update && apt install -y \
     unzip \
     libpq-dev
 
-RUN apt clean && rm -rf /var/lib/apt/lists/* && npm i && npm run dev
+RUN apt clean && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 

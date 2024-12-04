@@ -25,11 +25,11 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - ./back/laravel:/var/www/
-    working_dir: /var/www/
+      - ./back/laravel:/var/www/html
+    working_dir: /var/www/html
     depends_on:
       - db
-    command: ["bash", "-c", "/var/www/script.sh"]
+    command: ["bash", "-c", "/var/www/html/script.sh"]
 
   node:
     image: node
@@ -45,3 +45,13 @@ services:
 
   vue:
     build: ./front
+    ports:
+      - 80:5173
+    volumes:
+      - ./front:/app
+    working_dir: /app/
+    depends_on:
+      - laravel
+      - node
+    command: bash -c "npm i && npm run dev"
+    
