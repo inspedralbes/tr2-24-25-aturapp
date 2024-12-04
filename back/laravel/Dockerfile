@@ -8,8 +8,6 @@ RUN apt update && apt install -y \
     libxml2-dev \
     zip \
     unzip \
-    nodejs \
-    npm \
     libpq-dev
 
 RUN apt clean && rm -rf /var/lib/apt/lists/* && npm i && npm run dev

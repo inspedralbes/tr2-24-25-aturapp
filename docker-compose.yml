@@ -10,7 +10,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./mysql_data:/var/lib/mysql
+      - ./back/mysql_data:/var/lib/mysql
 
   adminer:
     image: adminer
@@ -21,12 +21,27 @@ services:
       - 9090:8080
 
   laravel:
-    build: ./laravelAthleto
+    build: ./back/laravel
     ports:
       - 8000:8000
     volumes:
-      - ./laravelAthleto:/var/www/
+      - ./back/laravel:/var/www/
     working_dir: /var/www/
     depends_on:
       - db
-    command: bash -c "composer install && php artisan migrate:fresh --seed && php artisan key:generate && php artisan serve --host=0.0.0.0"    
+    command: ["bash", "-c", "/var/www/script.sh"]
+
+  node:
+    image: node
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 8001:8001
+    volumes:
+      - ./back/node:/home/node/app
+    working_dir: /home/node/app
+    command: bash -c "npm i && cp npm start"
+
+  vue:
+    build: ./front
