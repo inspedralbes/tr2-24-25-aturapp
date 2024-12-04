@@ -6,8 +6,13 @@ import Login from "../components/login.vue";
 </script>
 
 <template>
+<<<<<<< HEAD
     <Login />
     <!-- <Register /> -->
+=======
+    <!-- <Login /> -->
+    <Register />
+>>>>>>> 6ba0afcb03bc72305179281e5a2834453407dd0f
 </template>
 
 <style scoped>
