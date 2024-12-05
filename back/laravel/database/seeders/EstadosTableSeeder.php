@@ -13,8 +13,8 @@ class EstadosTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Estado::create(['name' => "Pendiente"]);
-        Estado::create(['name' => "En progreso"]);
-        Estado::create(['name' => "Resuelto"]);
+        Estado::create(['estado' => "Pendiente"]);
+        Estado::create(['estado' => "En progreso"]);
+        Estado::create(['estado' => "Resuelto"]);
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Alerta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 class AlertaController extends Controller
 {
@@ -28,7 +30,19 @@ class AlertaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'alumno_id' => 'required|integer',
+            'ubicacion' => 'required|integer',
+            'estado' => 'required|integer',
+        ]);
+
+        $alerta = Alerta::create([
+            'alumno_id' => $request->alumno_id,
+            'ubicacion' => $request->ubicacion,
+            'estado' => $request->estado
+        ]);
+
+        return response()->json($alerta);
     }
 
     /**
