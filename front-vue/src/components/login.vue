@@ -1,6 +1,6 @@
 <template>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <br>
+  <br><br><br><br><br><br><br><br>
   <h1>LOGIN</h1>
   <div class="login-container">
     <form @submit.prevent="handleSubmit" class="login-form">
@@ -9,6 +9,7 @@
         placeholder="Escriu el teu email" 
         v-model="email" 
         class="input-field"
+        required
       />
       
       <div class="password-container">
@@ -17,6 +18,7 @@
           placeholder="Escriu la teva contrasenya" 
           v-model="password" 
           class="input-field" 
+          required
         />
         <button 
           type="button" 
@@ -35,56 +37,54 @@
 </template>
 
 <script>
-export default {
-  name: "Login",
-  data() {
-    return {
-      email: "",
-      password: "",
-      loggedIn: false,
-      passwordVisible: false,
-      errorMessage: "", 
-    };
-  },
-  methods: {
-    async handleSubmit() {
-      if (!this.email.trim() || !this.password.trim()) {
-        this.errorMessage = "Por favor, ingresa tu email y contraseña.";
-        return;
-      }
+  export default {
+    data() {
+      return {
+        email: '',
+        password: '',
+        passwordVisible: false,
+        loggedIn: false,
+        errorMessage: ''
+      };
+    },
+    methods: {
+      togglePasswordVisibility() {
+        this.passwordVisible = !this.passwordVisible;
+      },
+      async handleSubmit() {
+        const loginData = {
+          email: this.email,
+          password: this.password
+        };
 
-      try {
-        const response = await fetch("https://api.example.com/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: this.email,
-            password: this.password,
-          }),
-        });
+        try {
+          const response = await fetch('http://localhost:8000/api/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify(loginData)
+          });
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          this.errorMessage = data.message || "Error en el inicio de sesión.";
-          return;
+          if (response.ok) {
+            const data = await response.json();
+            this.loggedIn = true;
+            this.errorMessage = '';
+            console.log('Respuesta del servidor:', data);
+          } else {
+            const data = await response.json();
+            this.errorMessage = data.message || 'Credenciales incorrectas';
+            this.loggedIn = false;
+          }
+        } catch (error) {
+          this.errorMessage = 'Hubo un problema al conectar con el servidor';
+          this.loggedIn = false;
+          console.error('Error al realizar la solicitud:', error);
         }
-
-        localStorage.setItem("token", data.token);
-        this.loggedIn = true;
-        this.errorMessage = "";
-      } catch (error) {
-        this.errorMessage = "Ocurrió un error al intentar iniciar sesión.";
-        console.error("Error en la solicitud:", error);
       }
-    },
-    togglePasswordVisibility() {
-      this.passwordVisible = !this.passwordVisible;
-    },
-  },
-};
+    }
+  };
 </script>
 
 <style scoped>

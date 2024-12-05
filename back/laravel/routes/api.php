@@ -13,3 +13,6 @@
     //====== OBTENER CURSOS =======================
     use App\Http\Controllers\CursController;
     Route::get('/cursos',[CursController::class, 'index']);
+
+    //====== HACER LOGIN ==========================
+    Route::post('/login', [UserController::class, 'login']);

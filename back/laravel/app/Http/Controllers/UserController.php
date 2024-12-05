@@ -4,10 +4,10 @@
     use App\Models\User;
     use App\Models\Blacklist;
     use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\Hash;
     use Illuminate\Support\Facades\Mail;
     use Illuminate\Support\Facades\Validator;
-    use Illuminate\Support\Str;
 
     class UserController extends Controller {
         public function register(Request $request) {
@@ -63,8 +63,7 @@
             ], 201);
         }
 
-        public function verifyEmail($token)
-        {
+        public function verifyEmail($token) {
             $user = User::where('verification_token', $token)->first();
 
             if (!$user) {
@@ -80,5 +79,34 @@
             return response()->json([
                 'message' => 'El correu s\'ha verificat correctament.',
             ], 200);
+        }
+
+        public function login(Request $request)
+        {
+            $credentials = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required|string|min:5',
+            ]);
+        
+            if (!Auth::attempt($credentials)) {
+                return response()->json([
+                    'message' => 'Credenciales incorrectas',
+                ], 401);
+            }
+        
+            $user = Auth::user();
+        
+            $token = $user->createToken('auth_token')->plainTextToken;
+        
+            return response()->json([
+                'message' => 'Inicio de sesión exitoso',
+                'user' => [
+                    'id' => $user->id,
+                    'email' => $user->email,
+                    'name' => $user->nom,
+                    'surname' => $user->cognoms,
+                ],
+                'token' => $token,
+            ]);
         }
     }
