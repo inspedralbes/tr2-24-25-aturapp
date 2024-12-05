@@ -32,17 +32,29 @@ class AlertaController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'alumno_id' => 'required|integer',
-            'ubicacion' => 'required|integer',
-            'estado' => 'required|integer',
+            'sector_id' => 'required|integer',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
         $alerta = Alerta::create([
             'alumno_id' => $request->alumno_id,
-            'ubicacion' => $request->ubicacion,
-            'estado' => $request->estado
+            'sector_id' => $request->sector_id,
+            'estado' => 1
         ]);
 
-        return response()->json($alerta);
+        if (!$alerta) {
+            return response()->json([
+                "message" => "Error al crear la alerta en la base de datos",
+                "status" => 500
+            ]);
+        }
+        
+        return response()->json($alerta, 201);
     }
 
     /**

@@ -127,6 +127,7 @@
 
     const sosActive = ref(false);
     const sectorInput = ref('');
+    const alumno_id = ref(1);
 
     function sosAlert() {
         sosActive.value = true;
@@ -149,12 +150,12 @@
         { id: "dept-ciencies-naturals", d: "M161 139L9.5 143L19 247L170 242L161 139Z", color: "white" },
         { id: "pasillo-bosca", d: "M208 137.5L161 139L222 847.5L267.5 844L208 137.5Z", color: "white" },
         { id: "p3-01", d: "M354.5 133.5L208 137.5L220 277.5L368 268.5L354.5 133.5Z", color: "white" },
-    { id: "p3-02", d: "M368 268.5L220 277.5L232 421L378.5 412.5L368 268.5Z", color: "white" },
-    { id: "p3-03", d: "M378.5 412.5L232 421L244 562L390 554.5L378.5 412.5Z", color: "white" },
-    { id: "p3-05", d: "M390 554.5L244 562L256 703.5L400 695L390 554.5Z", color: "white" },
-    { id: "p3-07", d: "M400 695L256 703.5L267.5 843.5L412.5 832.5L400 695Z", color: "white" },
-    { id: "lab-ciencies-naturals-2", d: "M163.5 1621.5L12 1616L27 1472.5L177.5 1479L163.5 1621.5Z", color: "white" },
-    { id: "p3-inf11", d: "M214 1581.5L201.5 1729L347.5 1733L360 1587.5L214 1581.5Z", color: "white" },
+        { id: "p3-02", d: "M368 268.5L220 277.5L232 421L378.5 412.5L368 268.5Z", color: "white" },
+        { id: "p3-03", d: "M378.5 412.5L232 421L244 562L390 554.5L378.5 412.5Z", color: "white" },
+        { id: "p3-05", d: "M390 554.5L244 562L256 703.5L400 695L390 554.5Z", color: "white" },
+        { id: "p3-07", d: "M400 695L256 703.5L267.5 843.5L412.5 832.5L400 695Z", color: "white" },
+        { id: "lab-ciencies-naturals-2", d: "M163.5 1621.5L12 1616L27 1472.5L177.5 1479L163.5 1621.5Z", color: "white" },
+        { id: "p3-inf11", d: "M214 1581.5L201.5 1729L347.5 1733L360 1587.5L214 1581.5Z", color: "white" },
         { id: "p3-inf10", d: "M360.5 1587.5L374 1454L227 1446.5L214 1581.5L360.5 1587.5Z", color: "white" },
         { id: "dept-ll-estangeres", d: "M374.5 1453.5L387 1313.5L240 1306L227 1446L374.5 1453.5Z", color: "white" },
         { id: "dept-tecnologia", d: "M387.5 1313.5L393 1244L247 1233.5L240 1306L387.5 1313.5Z", color: "white" },
@@ -170,8 +171,21 @@
         sectorInput.value = sectors.value[index].id;
     }
 
-    function enviarAlerta() {
-        alert("Procés per enviar l'alerta");
+    async function enviarAlerta() {
+        try {
+            const response = await fetch('http://localhost:8000/api/alert', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify()
+            })
+            .then((response) => {
+
+            })
+        } catch (error) {
+            
+        }
     }
 </script>
 
