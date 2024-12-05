@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -7,16 +8,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
-class UserController extends Controller {
-    public function register(Request $request) {
+class UserController extends Controller
+{
+    public function register(Request $request)
+    {
+        // Verificar si el correo está en la lista negra
         $blacklisted = Blacklist::where('email', $request->email)->exists();
         if ($blacklisted) {
             return response()->json([
-                'error' => 'El correu electronic esta dintre de la llista negra',
+                'error' => 'El correu electronic està dintre de la llista negra.',
             ], 400);
         }
 
+        // Validación de los datos
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'surname' => 'required|string|max:255',
@@ -32,6 +38,7 @@ class UserController extends Controller {
             ], 400);
         }
 
+        // Crear el usuario
         $user = User::create([
             'nom' => $request->name,
             'cognoms' => $request->surname,
@@ -43,16 +50,48 @@ class UserController extends Controller {
             'dni' => $request->dni,
         ]);
 
+        // Generar un token de verificación único
+        $verificationToken = Str::random(32);
+        $user->verification_token = $verificationToken;
+        $user->save();
+
+        // Generar el enlace de verificación
+        $verificationUrl = route('verify.email', ['token' => $verificationToken]);
+
+        // Enviar correo de verificación
         Mail::raw(
-            "Hola {$user->nom} {$user->cognoms},\n\nGmail de proba",
+            "Hola {$user->nom} {$user->cognoms},\n\nConfirma el teu usuari fent clic al següent enllaç:\n\n{$verificationUrl}",
             function ($message) use ($user) {
                 $message->to($user->email)
-                        ->subject("ATURAPP | Confirma el teu usuari");
+                    ->subject("ATURAPP | Confirma el teu usuari");
             }
         );
 
+        // Responder con un mensaje de éxito
         return response()->json([
-            'message' => 'Usuari registrat amb èxit',
+            'message' => 'Usuari registrat amb èxit. Si us plau, revisa el teu correu per confirmar la teva adreça.',
         ], 201);
+    }
+
+    public function verifyEmail($token)
+    {
+        // Buscar al usuario por el token de verificación
+        $user = User::where('verification_token', $token)->first();
+
+        if (!$user) {
+            return response()->json([
+                'error' => 'El token de verificació és invàlid o ha expirat.',
+            ], 400);
+        }
+
+        // Actualizar el estado del usuario
+        $user->email_verified_at = now();
+        $user->verification_token = null; // Eliminar el token
+        $user->save();
+
+        // Responder con un mensaje de éxito
+        return response()->json([
+            'message' => 'El correu s\'ha verificat correctament.',
+        ], 200);
     }
 }
