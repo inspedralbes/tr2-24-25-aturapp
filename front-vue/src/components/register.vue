@@ -199,8 +199,13 @@
     .password-container input {
         border: 0;
         width: 90%;
+        border: 1px solid white;
         background: #f9f9f9;
         padding: 12px;
+    }
+
+    .password-container input:focus{
+        border: 1px solid red;
     }
 
     .password-container i {

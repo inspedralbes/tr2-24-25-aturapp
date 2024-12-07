@@ -1,31 +1,15 @@
 <template>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <br><br><br><br><br><br><br><br>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <h1>LOGIN</h1>
   <div class="login-container">
     <form @submit.prevent="handleSubmit" class="login-form">
-      <input 
-        type="email" 
-        placeholder="Escriu el teu email" 
-        v-model="email" 
-        class="input-field"
-        required
-      />
+
+      <input type="text" required v-model="email" placeholder="Correu Electrònic" />
       
+
       <div class="password-container">
-        <input 
-          :type="passwordVisible ? 'text' : 'password'" 
-          placeholder="Escriu la teva contrasenya" 
-          v-model="password" 
-          class="input-field" 
-          required
-        />
-        <button 
-          type="button" 
-          @click="togglePasswordVisibility" 
-          class="toggle-password-button">
-          {{ passwordVisible ? '👁️' : '👁️' }}
-        </button>
+        <input :type="passwordType" class="input-field" required v-model="password" placeholder="Contrasenya" />
+        <i :class="passwordIcon" @click="togglePassword"></i>
       </div>
   
       <button type="submit" class="submit-button">Iniciar Sesión</button>
@@ -42,14 +26,17 @@
       return {
         email: '',
         password: '',
+        passwordType: 'password', 
+        passwordIcon: 'fa fa-eye',
         passwordVisible: false,
         loggedIn: false,
         errorMessage: ''
       };
     },
     methods: {
-      togglePasswordVisibility() {
-        this.passwordVisible = !this.passwordVisible;
+      togglePassword() {
+        this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+        this.passwordIcon = this.passwordType === 'password' ? 'fa fa-eye' : 'fa fa-eye-slash';
       },
       async handleSubmit() {
         const loginData = {
@@ -88,115 +75,115 @@
 </script>
 
 <style scoped>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-h1 {
-  color: #ff4d4d;
-  text-align: center;
-}
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f7f7;
+    }
 
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f7f7f7;
-}
+    h1 {
+        margin-top: 30px;
+        color: #ff4d4d;
+        text-align: center;
+    }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  max-width: 400px;
-  margin: 50px auto;
-  padding: 20px;
-  background-color: #fff;
-  width: 100%;
-}
+    p {
+        font-size: 20px;
+    }
 
-.input-field {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  background-color: #f9f9f9;
-  transition: all 0.3s ease;
-}
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        width: 100%;
+    }
 
-.input-field:focus {
-  outline: none;
-  border-color: #ff4d4d;
-  background-color: #fff;
-}
+    input, select {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+        transition: all 0.3s ease;
+    }
 
-.input-field::placeholder {
-  color: #aaa;
-}
+    input:focus, select:focus {
+        outline: none;
+        border-color: #ff4d4d;
+        background-color: #fff;
+    }
 
-.submit-button {
-  padding: 14px;
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
-  background-color: #ff4d4d;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
+    input::placeholder, select::placeholder {
+        color: #aaa;
+    }
 
-.submit-button:hover {
-  background-color: #e60000;
-}
+    button {
+        padding: 14px;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
+        background-color: #ff4d4d;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
 
-.submit-button:focus {
-  outline: none;
-}
+    button:hover {
+        background-color: #e60000;
+    }
 
-.password-container {
-  display: flex;
-  align-items: center;
-}
+    button:focus {
+        outline: none;
+    }
 
-.toggle-password-button {
-  margin-left: 10px;
-  padding: 5px 10px;
-  font-size: 14px;
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
+    .password-container {
+        display: flex;
+        align-items: center;
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+    }
 
-.toggle-password-button:hover {
-  background-color: #e60000;
-}
+    .password-container input {
+        border: 0;
+        width: 90%;
+        border: 1px solid rgba(255, 255, 255, 0);
+        background: #f9f9f9;
+        padding: 12px;
+    }
 
-.error-message {
-  color: red;
-  text-align: center;
-  margin-top: 10px;
-}
+    .password-container input:focus{
+        border: 1px solid red;
+    }
 
-@media (max-width: 600px) {
-  form {
-    width: 90%;
-    margin: 20px auto;
-  }
-  
-  .input-field {
-    padding: 10px;
-    font-size: 14px;
-  }
+    .password-container i {
+        width: 10%;
+        text-align: center;
+        padding: 12px 0;
+        cursor: pointer;
+        background-color: #f9f9f9;
+    }
 
-  .submit-button {
-    font-size: 14px;
-    padding: 12px;
-  }
-
-  .toggle-password-button {
-    font-size: 12px;
-    padding: 5px;
-  }
-}
+    @media (max-width: 600px) {
+        form {
+            width: 90%;
+            margin: 20px auto;
+        }
+        input, select {
+            padding: 10px;
+            font-size: 14px;
+        }
+        button {
+            font-size: 14px;
+            padding: 12px;
+        }
+    }
 </style>
