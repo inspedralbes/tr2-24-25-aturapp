@@ -13,13 +13,13 @@
             </option>
         </select>
         <input type="text" v-model="dni" placeholder="DNI" />
-        <div id="divPassword">
-            <input type="password" v-model="password" placeholder="Contrasenya" />
-            <i class="fa fa-eye"></i>
+        <div class="password-container">
+            <input :type="passwordType" v-model="password" placeholder="Contrasenya" />
+            <i :class="passwordIcon" @click="togglePassword"></i>
         </div>
-        <div id="divPassword">
-            <input type="password" v-model="confirmPassword" placeholder="Confirma la Contrasenya" />
-            <i class="fa fa-eye"></i>
+        <div class="password-container">
+            <input :type="confirmPasswordType" v-model="confirmPassword" placeholder="Confirma la Contrasenya" />
+            <i :class="confirmPasswordIcon" @click="toggleConfirmPassword"></i>
         </div>
         <button type="submit">Registrarse</button>
     </form>
@@ -39,6 +39,10 @@
                 password: "",
                 confirmPassword: "",
                 cursos: [],
+                passwordType: "password",
+                confirmPasswordType: "password",
+                passwordIcon: "fa fa-eye",
+                confirmPasswordIcon: "fa fa-eye",
             };
         },
         methods: {
@@ -99,6 +103,14 @@
                     alert("Error al registrar l'usuari");
                 }
             },
+            togglePassword() {
+                this.passwordType = this.passwordType === "password" ? "text" : "password";
+                this.passwordIcon = this.passwordType === "password" ? "fa fa-eye" : "fa fa-eye-slash";
+            },
+            toggleConfirmPassword() {
+                this.confirmPasswordType = this.confirmPasswordType === "password" ? "text" : "password";
+                this.confirmPasswordIcon = this.confirmPasswordType === "password" ? "fa fa-eye" : "fa fa-eye-slash";
+            }
         },
         mounted() {
             this.fetchCursos();
@@ -107,38 +119,25 @@
 </script>
 
 <style scoped>
-    #divPassword{
-        background: #f9f9f9;
-        border: 1px solid #ddd;
-    }
-    #divPassword input{
-        border: 0;
-        width: 90%;
-        background: #f9f9f9;
-    }
-    #divPassword i{
-        width: 10%;
-        padding: 12px 0;
-        cursor: pointer;
-        background-color: #f9f9f9;
-    }
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
     }
-    p{
-        font-size: 20px;
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f7f7;
     }
-    h1{
+
+    h1 {
         margin-top: 30px;
         color: #ff4d4d;
         text-align: center;
     }
 
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f7f7f7;
+    p {
+        font-size: 20px;
     }
 
     form {
@@ -152,7 +151,7 @@
         width: 100%;
     }
 
-    input,select {
+    input, select {
         width: 100%;
         padding: 12px;
         font-size: 16px;
@@ -161,13 +160,13 @@
         transition: all 0.3s ease;
     }
 
-    input:focus,select:focus {
+    input:focus, select:focus {
         outline: none;
         border-color: #ff4d4d;
         background-color: #fff;
     }
 
-    input::placeholder,select::placeholder {
+    input::placeholder, select::placeholder {
         color: #aaa;
     }
 
@@ -190,17 +189,37 @@
         outline: none;
     }
 
+    .password-container {
+        display: flex;
+        align-items: center;
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+    }
+
+    .password-container input {
+        border: 0;
+        width: 90%;
+        background: #f9f9f9;
+        padding: 12px;
+    }
+
+    .password-container i {
+        width: 10%;
+        text-align: center;
+        padding: 12px 0;
+        cursor: pointer;
+        background-color: #f9f9f9;
+    }
+
     @media (max-width: 600px) {
         form {
             width: 90%;
             margin: 20px auto;
         }
-        
-        input,select {
+        input, select {
             padding: 10px;
             font-size: 14px;
         }
-
         button {
             font-size: 14px;
             padding: 12px;
