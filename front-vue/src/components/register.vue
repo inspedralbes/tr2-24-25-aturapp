@@ -13,8 +13,14 @@
             </option>
         </select>
         <input type="text" v-model="dni" placeholder="DNI" />
-        <input type="password" v-model="password" placeholder="Contrasenya" />
-        <input type="password" v-model="confirmPassword" placeholder="Confirma la Contrasenya" />
+        <div id="divPassword">
+            <input type="password" v-model="password" placeholder="Contrasenya" />
+            <i class="fa fa-eye"></i>
+        </div>
+        <div id="divPassword">
+            <input type="password" v-model="confirmPassword" placeholder="Confirma la Contrasenya" />
+            <i class="fa fa-eye"></i>
+        </div>
         <button type="submit">Registrarse</button>
     </form>
 </template>
@@ -101,6 +107,21 @@
 </script>
 
 <style scoped>
+    #divPassword{
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+    }
+    #divPassword input{
+        border: 0;
+        width: 90%;
+        background: #f9f9f9;
+    }
+    #divPassword i{
+        width: 10%;
+        padding: 12px 0;
+        cursor: pointer;
+        background-color: #f9f9f9;
+    }
     * {
         margin: 0;
         padding: 0;
