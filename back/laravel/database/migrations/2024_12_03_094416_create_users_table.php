@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Crear la tabla 'users'
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
@@ -19,6 +20,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('verification_token')->nullable();
             $table->unsignedBigInteger('rol')->default(0);
             $table->foreign('rol')->references('id')->on('rols')->onDelete('cascade');
             $table->unsignedBigInteger('curs')->default(0);
@@ -28,7 +30,6 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
-
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
@@ -41,6 +42,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Eliminar las tablas
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
     }

@@ -10,6 +10,7 @@ import { RouterLink, RouterView } from 'vue-router';
 body {
   margin: 0;
   box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 /* ------------------------------------------ */
