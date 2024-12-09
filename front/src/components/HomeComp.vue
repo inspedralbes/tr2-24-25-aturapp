@@ -125,7 +125,7 @@
 <script setup>
     import { onMounted, ref } from 'vue';
 
-    const BASE_URL = 'http://localhost:8000';
+    const BASE_URL = 'http://localhost:9000';
     const sosActive = ref(false);
     const sectorInput = ref('');
     const alumno_id = ref(1);
@@ -193,7 +193,7 @@
 
             const result = await response.json();
             console.log('Alerta enviada:', result);
-            alert(`Alerta enviada con éxito. ID: ${result.alerta.id}`);
+            alert(`Alerta enviada con éxito. ID: ${result.id}`);
         } catch (error) {
             console.log("Error: ", error);
         }
