@@ -9,16 +9,18 @@ import UserComp from "../components/UserComp.vue"
 const activeIcon = ref('home');
 
 // Método para manejar el clic
-const handleClick = (nameIcon) => {
+function handleClick(nameIcon){
     activeIcon.value = nameIcon;
 };
 </script>
 
 <template>
+    
     <HomeComp v-if="activeIcon == 'home'" />
-    <ChatComp v-if="activeIcon == 'chat'" />
+    <ChatComp v-else-if="activeIcon == 'chat'" />
     <!-- <MapComp v-if="activeIcon == 'map'" /> -->
-    <UserComp v-if="activeIcon == 'user'" />
+    <UserComp v-else-if="activeIcon == 'user'" />
+    
     <nav class="navbar">
         <ul id="items" class="no-style d-flex align-center h-full no-margin j-around">
             <li v-for="icon in icons" :key="icon.alt" :class="{ active: activeIcon === icon.alt }"
