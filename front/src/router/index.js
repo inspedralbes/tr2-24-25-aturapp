@@ -21,7 +21,7 @@ const router = createRouter({
     {
       path: '/access',
       name: 'access',
-      component: () => import('../views/Access.vue')
+      component: () => import('../views/access.vue')
     },
     {
       path: '/login',
