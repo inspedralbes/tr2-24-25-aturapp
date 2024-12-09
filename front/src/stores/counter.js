@@ -1,12 +1,24 @@
-import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
-export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
+export const useCounterStore = defineStore('counter', {
+  state: () => ({
+    userData: JSON.parse(localStorage.getItem('userData')) || null,
+    Iniciado: JSON.parse(localStorage.getItem('loggedIn')) || false,
+  }),
+  actions: {
+    setUserData(data) {
+      this.userData = data;
+      this.Iniciado = true;
+
+      localStorage.setItem('userData', JSON.stringify(data));
+      localStorage.setItem('loggedIn', JSON.stringify(true));
+    },
+    clearUserData() {
+      this.userData = null;
+      this.Iniciado = false;
+
+      localStorage.removeItem('userData');
+      localStorage.removeItem('loggedIn');
+    }
   }
-
-  return { count, doubleCount, increment }
-})
+});

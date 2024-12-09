@@ -97,6 +97,12 @@
         
             $user = Auth::user();
         
+            if (is_null($user->email_verified_at)) {
+                return response()->json([
+                    'message' => 'No s\'ha verificat el correu electronic',
+                ], 403);
+            }
+        
             $token = $user->createToken('auth_token')->plainTextToken;
         
             return response()->json([

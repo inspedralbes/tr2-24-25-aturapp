@@ -5,7 +5,6 @@
     <form @submit.prevent="handleSubmit" class="login-form">
 
       <input type="text" required v-model="email" placeholder="Correu Electrònic" />
-      
 
       <div class="password-container">
         <input :type="passwordType" class="input-field" required v-model="password" placeholder="Contrasenya" />
@@ -15,64 +14,69 @@
       <button type="submit" class="submit-button">Iniciar Sesión</button>
     </form>
 
-    <p v-if="loggedIn" class="welcome-message">Bienvenido, {{ email }}!</p>
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
   </div>
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        email: '',
-        password: '',
-        passwordType: 'password', 
-        passwordIcon: 'fa fa-eye',
-        passwordVisible: false,
-        loggedIn: false,
-        errorMessage: ''
-      };
+import { useCounterStore } from '@/stores/counter';
+
+export default {
+  data() {
+    return {
+      email: '',
+      password: '',
+      passwordType: 'password', 
+      passwordIcon: 'fa fa-eye',
+      passwordVisible: false,
+      errorMessage: ''
+    };
+  },
+  computed: {
+    Iniciado() {
+      const store = useCounterStore();
+      return store.Iniciado;
+    }
+  },
+  methods: {
+    togglePassword() {
+      this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+      this.passwordIcon = this.passwordType === 'password' ? 'fa fa-eye' : 'fa fa-eye-slash';
     },
-    methods: {
-      togglePassword() {
-        this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
-        this.passwordIcon = this.passwordType === 'password' ? 'fa fa-eye' : 'fa fa-eye-slash';
-      },
-      async handleSubmit() {
-        const loginData = {
-          email: this.email,
-          password: this.password
-        };
+    async handleSubmit() {
+      const loginData = {
+        email: this.email,
+        password: this.password
+      };
+      const counterStore = useCounterStore();
 
-        try {
-          const response = await fetch('http://localhost:8000/api/login', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: JSON.stringify(loginData)
-          });
+      try {
+        const response = await fetch('http://localhost:9000/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(loginData)
+        });
 
-          if (response.ok) {
-            const data = await response.json();
-            this.loggedIn = true;
-            this.errorMessage = '';
-            console.log('Respuesta del servidor:', data);
-          } else {
-            const data = await response.json();
-            this.errorMessage = data.message || 'Credenciales incorrectas';
-            this.loggedIn = false;
-          }
-        } catch (error) {
-          this.errorMessage = 'Hubo un problema al conectar con el servidor';
-          this.loggedIn = false;
-          console.error('Error al realizar la solicitud:', error);
+        if (response.ok) {
+          const data = await response.json();
+          counterStore.setUserData(data);
+        } else {
+          const data = await response.json();
+          this.errorMessage = data.message || 'Credenciales incorrectas';
+          counterStore.clearUserData();
         }
+      } catch (error) {
+        this.errorMessage = 'Hubo un problema al conectar con el servidor';
+        counterStore.clearUserData();
       }
     }
-  };
+  }
+};
 </script>
+
 
 <style scoped>
     * {
