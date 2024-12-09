@@ -38,7 +38,7 @@
       depends_on:
         - db
       ports:
-        - 8001:3000
+        - 9001:3000
       volumes:
         - ./back/node:/home/node/app
       working_dir: /home/node/app

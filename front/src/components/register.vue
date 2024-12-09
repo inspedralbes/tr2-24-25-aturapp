@@ -26,7 +26,7 @@
 </template>
 
 <script>
-    const BASE_URL = "http://localhost:8000";
+    const BASE_URL = "http://localhost:9000";
     export default {
         name: "Register",
         data() {
@@ -99,7 +99,7 @@
                     const result = await response.json();
                     alert("Usuari registrat amb èxit: " + result.message);
                 } catch (error) {
-                    console.error("Error:", error);
+                    console.error(error);
                     alert("Error al registrar l'usuari");
                 }
             },

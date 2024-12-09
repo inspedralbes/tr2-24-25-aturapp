@@ -86,7 +86,7 @@
         {
             $credentials = $request->validate([
                 'email' => 'required|email',
-                'password' => 'required|string|min:5',
+                'password' => 'required|string|min:6',
             ]);
         
             if (!Auth::attempt($credentials)) {
