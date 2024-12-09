@@ -125,9 +125,12 @@
 <script setup>
     import { onMounted, ref } from 'vue';
 
+    const BASE_URL = 'http://localhost:8000';
     const sosActive = ref(false);
     const sectorInput = ref('');
     const alumno_id = ref(1);
+
+    let data;
 
     function sosAlert() {
         sosActive.value = true;
@@ -173,18 +176,26 @@
 
     async function enviarAlerta() {
         try {
-            const response = await fetch('http://localhost:8000/api/alert', {
+            const response = await fetch(`${BASE_URL}/api/alert`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify()
-            })
-            .then((response) => {
-
-            })
-        } catch (error) {
+                body: JSON.stringify({
+                    alumno_id: alumno_id.value || 1,
+                    sectorName: sectorInput.value
+                })
+            });
             
+            if(!response.ok){
+                throw new Error("Error al crear la alerta");   
+            }
+
+            const result = await response.json();
+            console.log('Alerta enviada:', result);
+            alert(`Alerta enviada con éxito. ID: ${result.alerta.id}`);
+        } catch (error) {
+            console.log("Error: ", error);
         }
     }
 </script>

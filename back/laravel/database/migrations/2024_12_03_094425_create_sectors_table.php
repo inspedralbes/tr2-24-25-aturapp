@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('sectors', function (Blueprint $table) {
             $table->id();
             $table->string('sector');
-            $table->geometry('geometry')->nullable();
+            // $table->geometry('geometry')->nullable();
             $table->timestamps();
         });
     }

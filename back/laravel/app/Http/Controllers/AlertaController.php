@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Alerta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\DB;
 
 class AlertaController extends Controller
 {
@@ -32,7 +32,7 @@ class AlertaController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'alumno_id' => 'required|integer',
-            'sector_id' => 'required|integer',
+            'sectorName' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -41,9 +41,15 @@ class AlertaController extends Controller
             ], 422);
         }
 
+        $sector = $request->sectorName;
+
+        $sector_id = DB::table('sectors')
+            ->whereRaw('LOWER(sector) = LOWER(?)',[$sector])
+            ->value('id');
+
         $alerta = Alerta::create([
             'alumno_id' => $request->alumno_id,
-            'sector_id' => $request->sector_id,
+            'sector_id' => $sector_id,
             'estado' => 1
         ]);
 

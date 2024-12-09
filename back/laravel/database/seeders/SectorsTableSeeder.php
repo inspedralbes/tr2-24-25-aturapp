@@ -15,18 +15,34 @@ class SectorsTableSeeder extends Seeder
     public function run(): void
     {
         DB::table('sectors')->insert([
-            [
-                'sector' => 'Comedor',
-                'geometry' => DB::raw("ST_GeomFromText('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))')")
-            ],
-            [
-                'sector' => 'Bany alumnat',
-                'geometry' => DB::raw("ST_GeomFromText('POLYGON((20 20, 20 30, 30 30, 30 20, 20 20))')")
-            ],
-            [
-                'sector' => 'Pati',
-                'geometry' => DB::raw("ST_GeomFromText('POLYGON((40 40, 40 100, 100 100, 100 40, 40 40))')")
-            ]
+            ['sector'=>'lavabo-alumnat'],
+            ['sector'=>'lavabo-dones'],
+            ['sector'=>'ala-ausias'],
+            ['sector'=>'ala-bosca'],
+            ['sector'=>'dept-catala'],
+            ['sector'=>'dept-matematiques'],
+            ['sector'=>'p3-inf9'],
+            ['sector'=>'pasillo-ausias'],
+            ['sector'=>'p3-inf7'],
+            ['sector'=>'p3-08'],
+            ['sector'=>'p3-06'],
+            ['sector'=>'p3-04'],
+            ['sector'=>'lab-ciencies-naturals'],
+            ['sector'=>'dept-ciencies-naturals'],
+            ['sector'=>'pasillo-bosca'],
+            ['sector'=>'p3-01'],
+            ['sector'=>'p3-02'],
+            ['sector'=>'p3-03'],
+            ['sector'=>'p3-05'],
+            ['sector'=>'p3-07'],
+            ['sector'=>'lab-ciencies-naturals-2'],
+            ['sector'=>'p3-inf11'],
+            ['sector'=>'p3-inf10'],
+            ['sector'=>'dept-ll-estangeres'],
+            ['sector'=>'dept-tecnologia'],
+            ['sector'=>'p3-inf3'],
+            ['sector'=>'fin-ala-bosca'],
+            ['sector'=>'fin-ala-ausias'],
         ]);
     }
 }
