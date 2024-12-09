@@ -54,5 +54,6 @@ return new class extends Migration
         // Eliminar las tablas
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('sessions');
     }
 };
