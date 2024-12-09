@@ -1,6 +1,9 @@
 <template>
     <div v-if="!sosActive">
-        <div class="d-flex j-center align-center py-40">
+        <input class="btn-sos" type="button" value="SOS" @click="sosAlert">
+    </div>
+    <div v-if="sosActive">
+        <div class="d-flex j-center align-center plantaSelector">
             <select name="planta" id="planta">
                 <option value="planta0">Planta baja</option>
                 <option value="planta1">Planta 1</option>
@@ -8,9 +11,6 @@
                 <option value="planta3">Planta 3</option>
             </select>
         </div>
-        <input class="btn-sos" type="button" value="SOS" @click="sosAlert">
-    </div>
-    <div v-if="sosActive">
         <input class="sectorInput" type="text" name="sector" id="sec" v-model="sectorInput"
             placeholder="Seleccioni un sector" readonly>
         <div class="planoContainer">
@@ -228,15 +228,15 @@ select:focus {
 }
 
 #planta {
-    border: 1px solid black;
-    border-radius: 20px;
-    padding: 10px 15px;
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding: 10px 5px;
     font-size: 16px;
 }
 
 .sectorInput{
     position: fixed;
-    top: 10px;
+    top: 55px;
     left: 0;
     right: 0;
     margin: auto;
@@ -252,13 +252,21 @@ select:focus {
     height: 100%;
     overflow: hidden;
     padding-bottom: 70px;
-    margin: 60px 0;
+    margin: 100px 0;
 }
 
-.zoomContainer{
+.plantaSelector{
+    position: fixed;
+    top: 8px;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+/* .zoomContainer{
     display: inline-block;
     cursor: grab;
-}
+} */
 
 .btn-confirm{
     position: fixed;
