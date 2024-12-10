@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Alerta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class AlertaController extends Controller
 {
@@ -28,7 +30,37 @@ class AlertaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'alumno_id' => 'required|integer',
+            'sectorName' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $sector = $request->sectorName;
+
+        $sector_id = DB::table('sectors')
+            ->whereRaw('LOWER(sector) = LOWER(?)',[$sector])
+            ->value('id');
+
+        $alerta = Alerta::create([
+            'alumno_id' => $request->alumno_id,
+            'sector_id' => $sector_id,
+            'estado' => 1
+        ]);
+
+        if (!$alerta) {
+            return response()->json([
+                "message" => "Error al crear la alerta en la base de datos",
+                "status" => 500
+            ]);
+        }
+        
+        return response()->json($alerta, 201);
     }
 
     /**

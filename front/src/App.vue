@@ -96,7 +96,8 @@ body {
 
 .navbar {
   height: 70px;
-  position: absolute;
+  position: fixed;
+  background-color: white;
   box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
   bottom: 0;
   right: 0;

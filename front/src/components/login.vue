@@ -5,7 +5,6 @@
     <form @submit.prevent="handleSubmit" class="login-form">
 
       <input type="text" required v-model="email" placeholder="Correu Electrònic" />
-      
 
       <div class="password-container">
         <input :type="passwordType" class="input-field" required v-model="password" placeholder="Contrasenya" />
@@ -15,12 +14,13 @@
       <button type="submit" class="submit-button">Iniciar Sesión</button>
     </form>
 
-    <p v-if="loggedIn" class="welcome-message">Bienvenido, {{ email }}!</p>
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
   </div>
 </template>
 
 <script>
+  import { useCounterStore } from '@/stores/counter';
+
   export default {
     data() {
       return {
@@ -29,9 +29,14 @@
         passwordType: 'password', 
         passwordIcon: 'fa fa-eye',
         passwordVisible: false,
-        loggedIn: false,
         errorMessage: ''
       };
+    },
+    computed: {
+      Iniciado() {
+        const store = useCounterStore();
+        return store.Iniciado;
+      }
     },
     methods: {
       togglePassword() {
@@ -43,9 +48,10 @@
           email: this.email,
           password: this.password
         };
+        const counterStore = useCounterStore();
 
         try {
-          const response = await fetch('http://localhost:8000/api/login', {
+          const response = await fetch('http://localhost:9000/api/login', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -56,23 +62,22 @@
 
           if (response.ok) {
             const data = await response.json();
-            this.loggedIn = true;
-            this.errorMessage = '';
-            console.log('Respuesta del servidor:', data);
+            counterStore.setUserData(data);
+            location.href("/");
           } else {
             const data = await response.json();
             this.errorMessage = data.message || 'Credenciales incorrectas';
-            this.loggedIn = false;
+            counterStore.clearUserData();
           }
         } catch (error) {
           this.errorMessage = 'Hubo un problema al conectar con el servidor';
-          this.loggedIn = false;
-          console.error('Error al realizar la solicitud:', error);
+          counterStore.clearUserData();
         }
       }
     }
   };
 </script>
+
 
 <style scoped>
     * {

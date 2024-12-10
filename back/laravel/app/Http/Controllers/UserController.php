@@ -86,7 +86,7 @@
         {
             $credentials = $request->validate([
                 'email' => 'required|email',
-                'password' => 'required|string|min:5',
+                'password' => 'required|string|min:6',
             ]);
         
             if (!Auth::attempt($credentials)) {
@@ -96,6 +96,12 @@
             }
         
             $user = Auth::user();
+        
+            if (is_null($user->email_verified_at)) {
+                return response()->json([
+                    'message' => 'No s\'ha verificat el correu electronic',
+                ], 403);
+            }
         
             $token = $user->createToken('auth_token')->plainTextToken;
         

@@ -8,7 +8,8 @@ class Alerta extends Model
 {
     protected $fillable = [
         'alumno_id',
-        'ubicacion'
+        'sector_id',
+        'estado'
     ];
 
     public function user()
@@ -19,5 +20,10 @@ class Alerta extends Model
     public function sector()
     {
         return $this->belongsTo(Sector::class);
+    }
+
+    public function estadoRelacion()
+    {
+        return $this->belongsTo(Estado::class);
     }
 }
