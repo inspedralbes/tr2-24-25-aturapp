@@ -3,10 +3,11 @@ set -e
 
 # Ejecutar composer install
 composer install
+# RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Copiar .env si no existe
 
-cp .env.example .env
+# cp .env.example .env
 php artisan key:generate
 
 # Generar APP_KEY si no existe
@@ -16,7 +17,8 @@ php artisan key:generate
 
 # Ejecutar migraciones y seed solo si es la primera vez
 if [ ! -f /var/www/html/.migrated ]; then
-    php artisan migrate:fresh --seed
+    # php artisan migrate:fresh --seed
+    php artisan migrate --seed
     touch /var/www/html/.migrated
 fi
 

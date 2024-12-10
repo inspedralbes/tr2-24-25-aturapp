@@ -18,7 +18,7 @@ io.on('connection', (socket) => {
     console.log('user disconnected');
   });
   socket.on('sendMessage', (msg) => {
-    console.log('message: ' + msg);//añadir usuario: msg
+    console.log('message: ' + msg);
     io.emit('storeMessage', msg);
   });
 });
