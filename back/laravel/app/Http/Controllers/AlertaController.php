@@ -74,7 +74,7 @@ class AlertaController extends Controller
         $alerta = Alerta::create([
             'alumno_id' => $request->alumno_id,
             'sector_id' => $sector_id,
-            'estado' => 1
+            'estado_id' => 1
         ]);
 
         if (!$alerta) {

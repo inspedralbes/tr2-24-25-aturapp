@@ -9,7 +9,7 @@ class Alerta extends Model
     protected $fillable = [
         'alumno_id',
         'sector_id',
-        'estado'
+        'estado_id'
     ];
 
     public function user()
