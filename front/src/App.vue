@@ -1,10 +1,36 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router';
+import { ref } from "vue";
+import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
+
+const router = useRouter();
+const route = useRoute();
+
+function navigateTo(nameIcon) {
+  router.push(`/${nameIcon}`)
+};
+
 </script>
 
 <template>
   <RouterView />
+  <nav class="navbar">
+    <ul id="items" class="no-style d-flex align-center h-full no-margin j-around">
+      <li v-for="icon in icons" :key="icon.alt" :class="{ active: route.path.includes(icon.alt) }"
+        @click="navigateTo(icon.alt)">
+        <img :src="icon.src" :width="icon.width" />
+      </li>
+    </ul>
+  </nav>
 </template>
+
+<script>
+const icons = [
+  { src: "/assets/svg/home.svg", alt: "home", width: "40px" },
+  { src: "/assets/svg/chat.svg", alt: "chat", width: "35px" },
+  { src: "/assets/svg/map.svg", alt: "mapa", width: "40px" },
+  { src: "/assets/svg/user.svg", alt: "perfil", width: "35px" },
+];
+</script>
 
 <style>
 body {
@@ -52,6 +78,10 @@ body {
 .align-center {
   align-items: center;
   align-content: center;
+}
+
+.f-column {
+  flex-direction: column;
 }
 
 .mx-10 {
