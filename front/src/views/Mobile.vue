@@ -8,7 +8,6 @@ import UserComp from "../components/UserComp.vue"
 
 const activeIcon = ref('home');
 
-// Método para manejar el clic
 const handleClick = (nameIcon) => {
     activeIcon.value = nameIcon;
 };

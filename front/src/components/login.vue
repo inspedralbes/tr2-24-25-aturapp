@@ -19,62 +19,62 @@
 </template>
 
 <script>
-import { useCounterStore } from '@/stores/counter';
+  import { useCounterStore } from '@/stores/counter';
 
-export default {
-  data() {
-    return {
-      email: '',
-      password: '',
-      passwordType: 'password', 
-      passwordIcon: 'fa fa-eye',
-      passwordVisible: false,
-      errorMessage: ''
-    };
-  },
-  computed: {
-    Iniciado() {
-      const store = useCounterStore();
-      return store.Iniciado;
-    }
-  },
-  methods: {
-    togglePassword() {
-      this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
-      this.passwordIcon = this.passwordType === 'password' ? 'fa fa-eye' : 'fa fa-eye-slash';
-    },
-    async handleSubmit() {
-      const loginData = {
-        email: this.email,
-        password: this.password
+  export default {
+    data() {
+      return {
+        email: '',
+        password: '',
+        passwordType: 'password', 
+        passwordIcon: 'fa fa-eye',
+        passwordVisible: false,
+        errorMessage: ''
       };
-      const counterStore = useCounterStore();
+    },
+    computed: {
+      Iniciado() {
+        const store = useCounterStore();
+        return store.Iniciado;
+      }
+    },
+    methods: {
+      togglePassword() {
+        this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+        this.passwordIcon = this.passwordType === 'password' ? 'fa fa-eye' : 'fa fa-eye-slash';
+      },
+      async handleSubmit() {
+        const loginData = {
+          email: this.email,
+          password: this.password
+        };
+        const counterStore = useCounterStore();
 
-      try {
-        const response = await fetch('http://localhost:9000/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: JSON.stringify(loginData)
-        });
+        try {
+          const response = await fetch('http://localhost:9000/api/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify(loginData)
+          });
 
-        if (response.ok) {
-          const data = await response.json();
-          counterStore.setUserData(data);
-        } else {
-          const data = await response.json();
-          this.errorMessage = data.message || 'Credenciales incorrectas';
+          if (response.ok) {
+            const data = await response.json();
+            counterStore.setUserData(data);
+          } else {
+            const data = await response.json();
+            this.errorMessage = data.message || 'Credenciales incorrectas';
+            counterStore.clearUserData();
+          }
+        } catch (error) {
+          this.errorMessage = 'Hubo un problema al conectar con el servidor';
           counterStore.clearUserData();
         }
-      } catch (error) {
-        this.errorMessage = 'Hubo un problema al conectar con el servidor';
-        counterStore.clearUserData();
       }
     }
-  }
-};
+  };
 </script>
 
 
