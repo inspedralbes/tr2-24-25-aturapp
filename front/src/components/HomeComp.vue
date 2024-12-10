@@ -125,7 +125,7 @@
 <script setup>
     import { onMounted, ref } from 'vue';
 
-    const BASE_URL = 'http://localhost:9000';
+    const BASE_URL = 'http://localhost:8000';
     const sosActive = ref(false);
     const sectorInput = ref('');
     const alumno_id = ref(1);
