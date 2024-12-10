@@ -20,3 +20,5 @@ use Illuminate\Support\Facades\Route;
     Route::post('/login', [UserController::class, 'login']);
     
     Route::post('/alert', [AlertaController::class, 'store']);
+
+    Route::post('/alertes', [AlertaController::class, 'myAlerts']);

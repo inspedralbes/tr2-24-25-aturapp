@@ -14,7 +14,7 @@ class Alerta extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'alumno_id', 'id');
     }
 
     public function sector()
@@ -22,8 +22,8 @@ class Alerta extends Model
         return $this->belongsTo(Sector::class);
     }
 
-    public function estadoRelacion()
+    public function estado()
     {
-        return $this->belongsTo(Estado::class);
+        return $this->belongsTo(Estado::class, 'estado_id', 'id');
     }
 }
