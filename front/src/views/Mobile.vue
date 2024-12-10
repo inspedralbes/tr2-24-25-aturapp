@@ -1,24 +1,28 @@
 <script setup>
 import { ref } from "vue";
-import HomeComp from "../components/HomeComp.vue"
-import ChatComp from "../components/ChatComp.vue"
-import MapComp from "../components/MapComp.vue"
-import UserComp from "../components/UserComp.vue"
+import { useRouter } from 'vue-router';
+import HomeComp from "../components/HomeComp.vue";
+import ChatComp from "../components/ChatComp.vue";
+import MapComp from "../components/MapComp.vue";
+import UserComp from "../components/UserComp.vue";
 
 
 const activeIcon = ref('home');
+const router = useRouter();
 
 // Método para manejar el clic
 const handleClick = (nameIcon) => {
-    activeIcon.value = nameIcon;
+    // activeIcon.value = nameIcon;
+    router.push(`/${nameIcon}`)
 };
 </script>
 
 <template>
-    <HomeComp v-if="activeIcon == 'home'" />
+    <!-- <HomeComp v-if="activeIcon == 'home'" />
     <ChatComp v-if="activeIcon == 'chat'" />
     <MapComp v-if="activeIcon == 'map'" />
-    <UserComp v-if="activeIcon == 'user'" />
+    <UserComp v-if="activeIcon == 'user'" /> -->
+    <RouterView />
     <nav class="navbar">
         <ul id="items" class="no-style d-flex align-center h-full no-margin j-around">
             <li v-for="icon in icons" :key="icon.alt" :class="{ active: activeIcon === icon.alt }"

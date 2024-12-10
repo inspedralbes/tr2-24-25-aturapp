@@ -4,7 +4,7 @@
     </div>
     <div v-if="sosActive">
         <div class="d-flex j-center align-center plantaSelector">
-            <select name="planta" id="planta">
+            <select v-model="plantaInput" name="planta" id="planta">
                 <option value="planta0">Planta baja</option>
                 <option value="planta1">Planta 1</option>
                 <option value="planta2">Planta 2</option>
@@ -14,9 +14,12 @@
         <input class="sectorInput" type="text" name="sector" id="sec" v-model="sectorInput"
             placeholder="Seleccioni un sector" readonly>
         <div class="planoContainer">
-            <div ref="zoomContainer" class="zoomContainer">
+            <div v-if="plantaInput == 'planta0'"></div>
+            <div v-if="plantaInput == 'planta1'"></div>
+            <div v-if="plantaInput == 'planta2'"></div>
+            <div v-if="plantaInput == 'planta3'">
                 <svg width="414" height="1864" viewBox="0 0 414 1864" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path v-for="(sector, index) in sectors" :key="index" :id="sector.id" :d="sector.d"
+                    <path v-for="(sector, index) in sectors3" :key="index" :id="sector.id" :d="sector.d"
                         :stroke="'black'" :fill="sector.color" :stroke-width="5" @click="toggleSectorColor(index)"
                         class="sector" />
                     <path
@@ -128,15 +131,17 @@
     const BASE_URL = 'http://localhost:9000';
     const sosActive = ref(false);
     const sectorInput = ref('');
+    const plantaInput = ref('planta3');
     const alumno_id = ref(1);
 
     let data;
 
     function sosAlert() {
         sosActive.value = true;
+
     }
 
-    const sectors = ref([
+    const sectors3 = ref([
         { id: "lavabo-alumnat", d: "M201.5 81L195 0.5H322.5L328.5 81H201.5Z", color: "white" },
         { id: "lavabo-dones", d: "M195.5 1783L187 1863L315 1863.5L321 1783H195.5Z", color: "white" },
         { id: "ala-ausias", d: "M267 1021.5L275.5 931.5H60.5L57.5 1003L267 1021.5Z", color: "white" },
@@ -168,10 +173,10 @@
     ]);
 
     function toggleSectorColor(index) {
-        sectors.value.forEach((sector, i) => {
+        sectors3.value.forEach((sector, i) => {
             sector.color = i === index ? "red" : "white";
         });
-        sectorInput.value = sectors.value[index].id;
+        sectorInput.value = sectors3.value[index].id;
     }
 
     async function enviarAlerta() {
@@ -262,11 +267,6 @@ select:focus {
     right: 0;
     margin: auto;
 }
-
-/* .zoomContainer{
-    display: inline-block;
-    cursor: grab;
-} */
 
 .btn-confirm{
     position: fixed;
