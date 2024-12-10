@@ -24,7 +24,7 @@
     laravel:
       build: ./back/laravel
       ports:
-        - 9000:8000
+        - 8000:8000
       volumes:
         - ./back/laravel:/var/www/html
       working_dir: /var/www/html
@@ -38,7 +38,7 @@
       depends_on:
         - db
       ports:
-        - 9001:3000
+        - 8001:3000
       volumes:
         - ./back/node:/home/node/app
       working_dir: /home/node/app
@@ -47,7 +47,7 @@
     vue:
       build: ./front
       ports:
-        - 8000:5173
+        - 80:5173
       volumes:
         - ./front:/app
         - /app/node_modules

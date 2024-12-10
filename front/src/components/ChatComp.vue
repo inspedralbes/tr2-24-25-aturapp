@@ -12,7 +12,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:9001');
+const socket = io('http://localhost:8001');
 
 const messages = ref([]);
 const input = ref('');
