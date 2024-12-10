@@ -93,11 +93,11 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const SessionIniciada = localStorage.getItem('loggedIn') === 'true';
-  const PaginasPublicas = ['/access', '/login', '/register', '/home'];
+  const PaginasPublicas = ['/access', '/login', '/register', '/'];
   const EsPaginaPublica = PaginasPublicas.includes(to.path);
 
   if (!SessionIniciada && !EsPaginaPublica) {
-    next('/home');
+    next('/');
   } else {
     next();
   }
