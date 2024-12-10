@@ -63,6 +63,7 @@ export default {
         if (response.ok) {
           const data = await response.json();
           counterStore.setUserData(data);
+          location.href("/");
         } else {
           const data = await response.json();
           this.errorMessage = data.message || 'Credenciales incorrectas';
