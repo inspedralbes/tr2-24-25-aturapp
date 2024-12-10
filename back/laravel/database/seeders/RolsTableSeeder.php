@@ -16,5 +16,6 @@ class RolsTableSeeder extends Seeder
         Rol::create(['rol' => 'Alumne']);
         Rol::create(['rol' => 'Coordinador']);
         Rol::create(['rol' => 'Professor']);
+        Rol::create(['rol' => 'Alumne_preg-resp']);
     }
 }
