@@ -63,7 +63,8 @@
           if (response.ok) {
             const data = await response.json();
             counterStore.setUserData(data);
-            location.href("/");
+            console.log("Has iniciat sessió correctament");
+            location.href=("/");
           } else {
             const data = await response.json();
             this.errorMessage = data.message || 'Credenciales incorrectas';
@@ -80,115 +81,115 @@
 
 
 <style scoped>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+  * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+  }
 
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f7f7f7;
-    }
+  body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+  }
 
-    h1 {
-        margin-top: 30px;
-        color: #ff4d4d;
-        text-align: center;
-    }
+  h1 {
+      margin-top: 30px;
+      color: #ff4d4d;
+      text-align: center;
+  }
 
-    p {
-        font-size: 20px;
-    }
+  p {
+      font-size: 20px;
+  }
 
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        max-width: 400px;
-        margin: 50px auto;
-        padding: 20px;
-        background-color: #fff;
-        width: 100%;
-    }
+  form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff;
+      width: 100%;
+  }
 
-    input, select {
-        width: 100%;
-        padding: 12px;
-        font-size: 16px;
-        border: 1px solid #ddd;
-        background-color: #f9f9f9;
-        transition: all 0.3s ease;
-    }
+  input, select {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+      transition: all 0.3s ease;
+  }
 
-    input:focus, select:focus {
-        outline: none;
-        border-color: #ff4d4d;
-        background-color: #fff;
-    }
+  input:focus, select:focus {
+      outline: none;
+      border-color: #ff4d4d;
+      background-color: #fff;
+  }
 
-    input::placeholder, select::placeholder {
-        color: #aaa;
-    }
+  input::placeholder, select::placeholder {
+      color: #aaa;
+  }
 
-    button {
-        padding: 14px;
-        font-size: 16px;
-        font-weight: bold;
-        color: white;
-        background-color: #ff4d4d;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
+  button {
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      background-color: #ff4d4d;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  }
 
-    button:hover {
-        background-color: #e60000;
-    }
+  button:hover {
+      background-color: #e60000;
+  }
 
-    button:focus {
-        outline: none;
-    }
+  button:focus {
+      outline: none;
+  }
 
-    .password-container {
-        display: flex;
-        align-items: center;
-        background: #f9f9f9;
-        border: 1px solid #ddd;
-    }
+  .password-container {
+      display: flex;
+      align-items: center;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+  }
 
-    .password-container input {
-        border: 0;
-        width: 90%;
-        border: 1px solid rgba(255, 255, 255, 0);
-        background: #f9f9f9;
-        padding: 12px;
-    }
+  .password-container input {
+      border: 0;
+      width: 90%;
+      border: 1px solid rgba(255, 255, 255, 0);
+      background: #f9f9f9;
+      padding: 12px;
+  }
 
-    .password-container input:focus{
-        border: 1px solid red;
-    }
+  .password-container input:focus{
+      border: 1px solid red;
+  }
 
-    .password-container i {
-        width: 10%;
-        text-align: center;
-        padding: 12px 0;
-        cursor: pointer;
-        background-color: #f9f9f9;
-    }
+  .password-container i {
+      width: 10%;
+      text-align: center;
+      padding: 12px 0;
+      cursor: pointer;
+      background-color: #f9f9f9;
+  }
 
-    @media (max-width: 600px) {
-        form {
-            width: 90%;
-            margin: 20px auto;
-        }
-        input, select {
-            padding: 10px;
-            font-size: 14px;
-        }
-        button {
-            font-size: 14px;
-            padding: 12px;
-        }
-    }
+  @media (max-width: 600px) {
+      form {
+          width: 90%;
+          margin: 20px auto;
+      }
+      input, select {
+          padding: 10px;
+          font-size: 14px;
+      }
+      button {
+          font-size: 14px;
+          padding: 12px;
+      }
+  }
 </style>
