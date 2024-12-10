@@ -234,6 +234,7 @@ select:focus {
 
 #planta {
     border: 1px solid grey;
+    background-color: white;
     border-radius: 10px;
     padding: 10px 5px;
     font-size: 16px;
@@ -257,7 +258,7 @@ select:focus {
     height: 100%;
     overflow: hidden;
     padding-bottom: 70px;
-    margin: 100px 0;
+    margin: 100px 0 60px 0;
 }
 
 .plantaSelector{

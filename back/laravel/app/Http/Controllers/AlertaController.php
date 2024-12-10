@@ -17,6 +17,30 @@ class AlertaController extends Controller
         //
     }
 
+    public function myAlerts(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+        ]);
+
+        $alumne_id = $request->id;
+
+        $alertas = Alerta::with('sector', 'estado')
+            ->where('alumno_id', $alumne_id)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($alerta) {
+                return [
+                    'id' => $alerta->id,
+                    'sector' => $alerta->sector->sector,
+                    'estado' => $alerta->estado->name,
+                    'created_at' => $alerta->created_at
+                ];
+            });
+
+        return response()->json($alertas, 200);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -44,7 +68,7 @@ class AlertaController extends Controller
         $sector = $request->sectorName;
 
         $sector_id = DB::table('sectors')
-            ->whereRaw('LOWER(sector) = LOWER(?)',[$sector])
+            ->whereRaw('LOWER(sector) = LOWER(?)', [$sector])
             ->value('id');
 
         $alerta = Alerta::create([
@@ -59,7 +83,7 @@ class AlertaController extends Controller
                 "status" => 500
             ]);
         }
-        
+
         return response()->json($alerta, 201);
     }
 
