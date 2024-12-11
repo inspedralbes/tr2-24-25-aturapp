@@ -15,12 +15,12 @@ php artisan key:generate
 #     echo "Creant la key del env"
 # fi
 
+php artisan migrate:fresh --seed
 # Ejecutar migraciones y seed solo si es la primera vez
-if [ ! -f /var/www/html/.migrated ]; then
-    # php artisan migrate:fresh --seed
-    php artisan migrate --seed
-    touch /var/www/html/.migrated
-fi
+# if [ ! -f /var/www/html/.migrated ]; then
+#     # php artisan migrate:fresh --seed
+#     touch /var/www/html/.migrated
+# fi
 
 # Iniciar el servidor
 php artisan serve --host=0.0.0.0
