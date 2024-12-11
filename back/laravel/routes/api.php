@@ -1,9 +1,8 @@
 <?php
 
+use App\Http\Controllers\AlertaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AlertaController;
-use App\Http\Controllers\PreguntaController;
 
     Route::get('/user', function (Request $request) {
         return $request->user();
