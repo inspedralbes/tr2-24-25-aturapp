@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlertaController;
+use App\Http\Controllers\PreguntaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

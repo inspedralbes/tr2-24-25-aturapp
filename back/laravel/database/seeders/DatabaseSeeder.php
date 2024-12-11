@@ -50,6 +50,17 @@ class DatabaseSeeder extends Seeder
             'curs' => 3,
             'torn' => 1
         ]);
+        User::updateOrCreate([
+            'nom' => 'Arnau',
+            'cognoms' => 'Barrero',
+            'dni' => '47748680J',
+            'email' => 'a23arnbarsor@inspedralbes.cat',
+            'email_verified_at' => '11/12/2024',
+            'password' => 'Arnau_2004',
+            'rol' => 2,
+            'curs' => 3,
+            'torn' => 1
+        ]);
 
         $this->call(MessagesTableSeeder::class);
         $this->call(EstadosTableSeeder::class);

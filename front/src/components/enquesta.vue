@@ -1,8 +1,12 @@
 <script setup>
-    import { ref, onMounted } from 'vue';
+    import { ref, onMounted, computed } from 'vue';
+    import { useCounterStore } from '../stores/counter';
 
     const BASE_URL = "http://localhost:8000";
     const preguntas = ref([]);
+
+    const counterStore = useCounterStore();
+    const companysClase = computed(() => counterStore.userData?.companys_clase || []);
 
     const fetchPreguntas = async () => {
         try {
@@ -31,12 +35,21 @@
 
 <template>
     <h1>Enquesta</h1>
+    <h2>Companys Clase</h2>
+    <ul v-if="companysClase.length > 0">
+        <li v-for="(company, index) in companysClase" :key="index">
+            {{ company.nom }} {{ company.cognoms }}
+        </li>
+    </ul>
+    <p v-else>No hay companys disponibles.</p>
 
+    <h2>Preguntas</h2>
     <ul v-if="preguntas.length > 0">
-        <li v-for="pregunta in preguntas" :key="pregunta.id">{{ pregunta.pregunta }}</li>
+        <li v-for="pregunta in preguntas" :key="pregunta.id">
+            {{ pregunta.pregunta }}
+        </li>
     </ul>
     <p v-else>No hay preguntas disponibles.</p>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
