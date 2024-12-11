@@ -88,6 +88,11 @@ const router = createRouter({
       name: 'soport',
       component: () => import('../components/SoportComp.vue')
     },
+    {
+      path: '/enquesta',
+      name: 'enquesta',
+      component: () => import('../components/enquesta.vue')
+    },
   ],
 });
 

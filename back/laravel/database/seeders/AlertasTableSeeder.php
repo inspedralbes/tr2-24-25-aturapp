@@ -13,8 +13,8 @@ class AlertasTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Alerta::updateOrCreate(['alumno_id' => 1, 'sector_id' => 1, 'estado' => 1]);
-        Alerta::updateOrCreate(['alumno_id' => 2, 'sector_id' => 2, 'estado' => 2]);
-        Alerta::updateOrCreate(['alumno_id' => 3, 'sector_id' => 3, 'estado' => 3]);
+        Alerta::updateOrCreate(['alumno_id' => 1, 'sector_id' => 1, 'estado_id' => 1]);
+        Alerta::updateOrCreate(['alumno_id' => 2, 'sector_id' => 2, 'estado_id' => 2]);
+        Alerta::updateOrCreate(['alumno_id' => 3, 'sector_id' => 3, 'estado_id' => 3]);
     }
 }

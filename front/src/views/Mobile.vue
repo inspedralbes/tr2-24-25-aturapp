@@ -5,6 +5,8 @@ import HomeComp from "../components/HomeComp.vue";
 import ChatComp from "../components/ChatComp.vue";
 import MapComp from "../components/MapComp.vue";
 import UserComp from "../components/UserComp.vue";
+import enquesta from "../components/enquesta.vue";
+
 
 
 const activeIcon = ref('home');
