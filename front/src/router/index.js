@@ -31,6 +31,7 @@ const router = createRouter({
   ],
 });
 
+/*
 router.beforeEach((to, from, next) => {
   const SessionIniciada = localStorage.getItem('loggedIn') === 'true';
   const PaginasPublicas = ['/access', '/login', '/register', '/home'];
@@ -42,5 +43,6 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
+*/
 
 export default router;
