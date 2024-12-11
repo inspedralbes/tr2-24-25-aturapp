@@ -18,7 +18,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-const BASE_URL = "http://localhost:9000";
+const BASE_URL = "http://localhost:8000";
 const usuari_id = 1
 
 const alertes = ref([]);

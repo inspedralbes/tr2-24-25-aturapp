@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(BlacklistsTableSeeder::class);
         $this->call(SectorsTableSeeder::class);
 
-        User::create([
+        User::updateOrCreate([
             'nom' => 'nom1',
             'cognoms' => 'cognom1',
             'dni' => '12345678Y',
@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             'curs' => 2,
             'torn' => 1
         ]);
-        User::create([
+        User::updateOrCreate([
             'nom' => 'nom2',
             'cognoms' => 'cognom2',
             'dni' => '12345678Z',
@@ -39,7 +39,7 @@ class DatabaseSeeder extends Seeder
             'curs' => 4,
             'torn' => 2
         ]);
-        User::create([
+        User::updateOrCreate([
             'nom' => 'nom3',
             'cognoms' => 'cognom3',
             'dni' => '12345678X',

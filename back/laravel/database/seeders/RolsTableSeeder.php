@@ -13,8 +13,8 @@ class RolsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Rol::create(['rol' => 'Alumne']);
-        Rol::create(['rol' => 'Coordinador']);
-        Rol::create(['rol' => 'Professor']);
+        Rol::updateOrCreate(['rol' => 'Alumne']);
+        Rol::updateOrCreate(['rol' => 'Coordinador']);
+        Rol::updateOrCreate(['rol' => 'Professor']);
     }
 }

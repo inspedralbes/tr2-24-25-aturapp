@@ -14,7 +14,7 @@ class SectorsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('sectors')->insert([
+        DB::table('sectors')->updateOrInsert([
             ['sector'=>'lavabo-alumnat'],
             ['sector'=>'lavabo-dones'],
             ['sector'=>'ala-ausias'],

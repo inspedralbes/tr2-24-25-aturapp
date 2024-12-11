@@ -13,9 +13,9 @@ class MessagesTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Message::create(['sender_id' => 1, 'receiver_id' => 3, 'message' => 'MessageAlumne #1']);
-        Message::create(['sender_id' => 2, 'receiver_id' => 3, 'message' => 'MessageAlumne #2']);
-        Message::create(['sender_id' => 3, 'receiver_id' => 1, 'message' => 'MessageCoordinador #1']);
-        Message::create(['sender_id' => 3, 'receiver_id' => 2, 'message' => 'MessageCoordinador #2']);
+        Message::updateOrCreate(['sender_id' => 1, 'receiver_id' => 3, 'message' => 'MessageAlumne #1']);
+        Message::updateOrCreate(['sender_id' => 2, 'receiver_id' => 3, 'message' => 'MessageAlumne #2']);
+        Message::updateOrCreate(['sender_id' => 3, 'receiver_id' => 1, 'message' => 'MessageCoordinador #1']);
+        Message::updateOrCreate(['sender_id' => 3, 'receiver_id' => 2, 'message' => 'MessageCoordinador #2']);
     }
 }

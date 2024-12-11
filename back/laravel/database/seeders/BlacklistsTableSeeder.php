@@ -13,6 +13,6 @@ class BlacklistsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Blacklist::create(['email' => 'a23agunovnov@inspedralbes.cat']);
+        Blacklist::updateOrCreate(['email' => 'a23agunovnov@inspedralbes.cat']);
     }
 }

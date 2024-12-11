@@ -13,7 +13,7 @@ class TornsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Torn::create(['torn' => 'Mati']);
-        Torn::create(['torn' => 'Tarda']);
+        Torn::updateOrCreate(['torn' => 'Mati']);
+        Torn::updateOrCreate(['torn' => 'Tarda']);
     }
 }

@@ -13,11 +13,11 @@ class CursTableSeeder extends Seeder
      */
     public function run(): void
     {
-        Curs::create(['name' => '1DAW']);
-        Curs::create(['name' => '2DAW']);
-        Curs::create(['name' => '1DAM']);
-        Curs::create(['name' => '2DAM']);
-        Curs::create(['name' => '1ASIX']);
-        Curs::create(['name' => '2ASIX']);
+        Curs::updateOrCreate(['name' => '1DAW']);
+        Curs::updateOrCreate(['name' => '2DAW']);
+        Curs::updateOrCreate(['name' => '1DAM']);
+        Curs::updateOrCreate(['name' => '2DAM']);
+        Curs::updateOrCreate(['name' => '1ASIX']);
+        Curs::updateOrCreate(['name' => '2ASIX']);
     }
 }
