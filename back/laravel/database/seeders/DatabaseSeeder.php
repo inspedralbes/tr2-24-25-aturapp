@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(BlacklistsTableSeeder::class);
         $this->call(PlantaTableSeeder::class);
         $this->call(SectorsTableSeeder::class);
+        $this->call(PreguntaTableSeeder::class);
 
         User::updateOrCreate([
             'nom' => 'nom1',
