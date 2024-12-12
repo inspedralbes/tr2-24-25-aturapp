@@ -1,18 +1,23 @@
 <?php
-    use Illuminate\Http\Request;
-    use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CursController;
+use App\Http\Controllers\MessageController;
 
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    })->middleware('auth:sanctum');
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
 
-    //====== CREAR USUARIO ========================
-    use App\Http\Controllers\UserController;
-    Route::post('/register', [UserController::class, 'register']);    
+//====== HACER LOGIN ==========================
+Route::post('/login', [UserController::class, 'login']);
 
-    //====== OBTENER CURSOS =======================
-    use App\Http\Controllers\CursController;
-    Route::get('/cursos',[CursController::class, 'index']);
+//====== CREAR USUARIO ========================
+Route::post('/register', [UserController::class, 'register']);
 
-    //====== HACER LOGIN ==========================
-    Route::post('/login', [UserController::class, 'login']);
+//====== OBTENER CURSOS =======================
+Route::get('/cursos', [CursController::class, 'index']);
+Route::apiResource('users', UserController::class);
+Route::apiResource('cursos', CursController::class);
+
+Route::apiResource('messages', MessageController::class);

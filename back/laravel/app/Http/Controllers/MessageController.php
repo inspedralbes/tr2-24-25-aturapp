@@ -28,7 +28,13 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nom' => 'required|string|unique:categorias',
+        ]);
+
+        Message::create([
+            'nom'=> $request['nom'],
+        ]);
     }
 
     /**

@@ -10,6 +10,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { guardarMissatgeBBDD } from '@/services/missatges.js';
 import socket from '@/services/socket.js';
 
 const messages = ref([]);
@@ -18,6 +19,7 @@ const input = ref('');
 function sendMessage() {
   if (input.value) {
     socket.emit('sendMessage', input.value);
+    guardarMissatgeBBDD(input.value);
     input.value = '';
   }
 };
