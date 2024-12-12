@@ -103,7 +103,7 @@
             }
         
             $token = $user->createToken('auth_token')->plainTextToken;
-            $companys_clase = User::where('curs', $user->curs) ->select('nom', 'cognoms') ->get();
+            $companys_clase = User::where('curs', $user->curs) ->select('nom', 'cognoms', 'id') ->get();
         
             return response()->json([
                 'message' => 'Inicio de sesión exitoso',
