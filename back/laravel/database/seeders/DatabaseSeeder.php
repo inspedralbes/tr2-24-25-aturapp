@@ -16,7 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call(RolsTableSeeder::class);
         $this->call(CursTableSeeder::class);
         $this->call(TornsTableSeeder::class);
-        $this->call(BlacklistsTableSeeder::class);
+        // $this->call(BlacklistsTableSeeder::class);
+        $this->call(PlantaTableSeeder::class);
         $this->call(SectorsTableSeeder::class);
 
         User::updateOrCreate([
@@ -50,7 +51,7 @@ class DatabaseSeeder extends Seeder
             'torn' => 1
         ]);
 
-        $this->call(MessagesTableSeeder::class);
+        // $this->call(MessagesTableSeeder::class);
         $this->call(EstadosTableSeeder::class);
         $this->call(AlertasTableSeeder::class);
     }

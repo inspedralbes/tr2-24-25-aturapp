@@ -1,10 +1,19 @@
 <script setup>
+import { onMounted } from 'vue';
 import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
 function navigateTo(nameRoute) {
-  router.push(`/${nameRoute}`)
+    router.push(`/${nameRoute}`)
 };
+const data = JSON.parse(localStorage.getItem('userData'));
+
+ const UserInfo = {
+    'nom': data.user.nom,
+    'cognom': data.user.cognom,
+    'email': data.user.email,
+    'dni': data.user.dni,
+}
 </script>
 
 <template>
@@ -15,7 +24,7 @@ function navigateTo(nameRoute) {
             <div id="profileImage">
                 <img src="../../public/assets/svg/noimage.svg" alt="profile">
             </div>
-            <p>Agustín Enzo Noviello</p>
+            <p>{{ UserInfo.nom }} {{ UserInfo.cognom }}</p>
         </div>
     </div>
     <div id="containItems" class="d-flex align-center f-column">

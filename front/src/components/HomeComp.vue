@@ -132,13 +132,11 @@
     const sosActive = ref(false);
     const sectorInput = ref('');
     const plantaInput = ref('planta3');
-    const alumno_id = ref(1);
-
-    let data;
+    const dataUser = JSON.parse(localStorage.getItem('userData'));
+    const alumno_id = dataUser.user.id;
 
     function sosAlert() {
         sosActive.value = true;
-
     }
 
     const sectors3 = ref([
@@ -187,7 +185,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    alumno_id: alumno_id.value || 1,
+                    alumno_id: alumno_id,
                     sectorName: sectorInput.value
                 })
             });
@@ -197,7 +195,6 @@
             }
 
             const result = await response.json();
-            console.log('Alerta enviada:', result);
             alert(`Alerta enviada con éxito. ID: ${result.id}`);
         } catch (error) {
             console.log("Error: ", error);
@@ -210,8 +207,9 @@
     height: 150px;
     width: 150px;
     border-radius: 150px;
-    background: red;
-    border: 5px solid #d10000;
+    background: #a83d3a;
+    border: none;
+    /* border: 5px solid #a03939; */
     position: absolute;
     top: 0;
     bottom: 70px;
@@ -277,7 +275,7 @@ select:focus {
     margin: auto;
     width: 180px;
     height: 45px;
-    background-color: red;
+    background-color: #a03939;
     outline: none;
     border: none;
     padding: 10px 30px;

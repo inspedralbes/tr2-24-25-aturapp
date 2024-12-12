@@ -17,8 +17,8 @@ php artisan key:generate
 
 # Ejecutar migraciones y seed solo si es la primera vez
 if [ ! -f /var/www/html/.migrated ]; then
-    # php artisan migrate:fresh --seed
-    php artisan migrate --seed
+    php artisan migrate:fresh --seed
+    # php artisan migrate --seed
     touch /var/www/html/.migrated
 fi
 

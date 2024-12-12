@@ -6,14 +6,16 @@ const router = useRouter();
 const route = useRoute();
 
 function navigateTo(nameIcon) {
-  router.push(`/${nameIcon}`)
+  router.push(`/${nameIcon}?id=10`)
 };
+
+const isLogged = localStorage.getItem('loggedIn');
 
 </script>
 
 <template>
   <RouterView />
-  <nav class="navbar">
+  <nav class="navbar" v-if="isLogged">
     <ul id="items" class="no-style d-flex align-center h-full no-margin j-around">
       <li v-for="icon in icons" :key="icon.alt" :class="{ active: route.path.includes(icon.alt) }"
         @click="navigateTo(icon.alt)">

@@ -33,6 +33,8 @@ class AlertaController extends Controller
                 return [
                     'id' => $alerta->id,
                     'sector' => $alerta->sector->sector,
+                    'planta' => $alerta->sector->planta->name,
+                    'descripcion' => $alerta->descripcion,
                     'estado' => $alerta->estado->name,
                     'created_at' => $alerta->created_at
                 ];
@@ -74,6 +76,7 @@ class AlertaController extends Controller
         $alerta = Alerta::create([
             'alumno_id' => $request->alumno_id,
             'sector_id' => $sector_id,
+            'descripcion' => $request->descripcion,
             'estado_id' => 1
         ]);
 
@@ -90,9 +93,26 @@ class AlertaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Alerta $alerta)
+    public function show($id)
     {
-        //
+        $alerta = Alerta::with('sector.planta', 'estado')
+            ->where('id', $id)
+            ->first();
+        
+        if (!$alerta){
+            return response()->json(['error' => 'Alerta no encontrada'], 404);
+        }
+
+        $alertaFormat = [
+            'id' => $alerta->id,
+            'sector' => $alerta->sector->sector,
+            'planta' => $alerta->sector->planta->name,
+            'descripcion' => $alerta->descripcion,
+            'estado' => $alerta->estado->name,
+            'created_at' => $alerta->created_at,
+        ];
+
+        return response()->json($alertaFormat,201);
     }
 
     /**

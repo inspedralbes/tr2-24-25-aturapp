@@ -1,26 +1,11 @@
-<template>
-    <div class="d-flex align-center j-center cabezal">
-        <div id="contentHeaderProfile" class="d-flex align-center f-column" style="z-index: 20;">
-            <p class="no-margin">Meves alertes</p>
-        </div>
-    </div>
-    <ul id="containAlertes" class="no-margin d-flex j-center f-column align-center">
-        <li v-for="alert in alertes" :key="alert.id" class="itemAlert" @click="alertita">
-            <div class="contentItem">
-                <p>{{ alert.sector }} (Planta 0)</p>
-                <p>{{ alert.created_at }}</p>
-                <p>{{ alert.estado }}</p>
-                <button class="btn-editar">Editar</button>
-            </div>
-        </li>
-    </ul>
-</template>
-
 <script setup>
 import { ref, onMounted } from 'vue';
-const BASE_URL = "http://localhost:8000";
-const usuari_id = 1
+import { useRouter } from 'vue-router';
 
+const BASE_URL = "http://localhost:8000";
+const data = JSON.parse(localStorage.getItem('userData'));
+const usuari_id = data.user.id;
+const router = useRouter();
 const alertes = ref([]);
 
 async function getAlertas() {
@@ -38,19 +23,58 @@ async function getAlertas() {
         }
 
         const result = await response.json();
+        
         alertes.value = result;
-
-        console.log(alertes.value);
     } catch (error) {
         console.error(error);
     }
 }
 
+function formatFecha(isoDate) {
+    const date = new Date(isoDate);
+    return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
+}
+
+function formatText(text) {
+    if (text.includes("-inf")) {
+        return text.toUpperCase();
+    }
+
+    return text
+        .split('-') // Divide el texto en palabras separadas por "-"
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitaliza la primera letra de cada palabra
+        .join(' '); // Une las palabras con un espacio
+}
+
+function navigateTo(nameIcon) {
+  router.push(`/${nameIcon}`)
+};
+
 onMounted(() => {
-    getAlertas();
+    if(usuari_id != undefined){
+        getAlertas();
+    }
 })
 
 </script>
+
+<template>
+    <div class="d-flex align-center j-center cabezal">
+        <div id="contentHeaderProfile" class="d-flex align-center f-column" style="z-index: 20;">
+            <p class="no-margin">Meves alertes</p>
+        </div>
+    </div>
+    <ul id="containAlertes" class="no-margin d-flex j-center f-column align-center">
+        <li v-for="alert in alertes" :key="alert.id" class="itemAlert">
+            <div class="contentItem">
+                <p>{{ formatText(alert.sector) }} ({{ alert.planta }})</p>
+                <p>{{ formatFecha(alert.created_at) }}</p>
+                <p>Estado: {{ alert.estado }}</p>
+                <button class="btn-editar" @click="navigateTo(`perfil/alertes/editar?id=${alert.id}`)">Editar</button>
+            </div>
+        </li>
+    </ul>
+</template>
 
 <style scoped>
 #containAlertes{

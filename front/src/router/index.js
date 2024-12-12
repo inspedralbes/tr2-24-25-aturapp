@@ -79,6 +79,11 @@ const router = createRouter({
       component: () => import('../components/MevesAlertesComp.vue')
     },
     {
+      path: '/perfil/alertes/editar',
+      name: 'editarAlerta',
+      component: () => import('../components/EditarAlertaComp.vue')
+    },
+    {
       path: '/perfil/dades',
       name: 'dades',
       component: () => import('../components/DadesUserComp.vue')
@@ -97,9 +102,11 @@ router.beforeEach((to, from, next) => {
   const EsPaginaPublica = PaginasPublicas.includes(to.path);
 
   if (!SessionIniciada && !EsPaginaPublica) {
-    next('/');
+    next('/'); // Redirige al landing si no hay sesión y la página no es pública
+  } else if (SessionIniciada && to.path === '/') {
+    next('/home'); // Solo redirige a /home si intentas acceder al landing estando logueado
   } else {
-    next();
+    next(); // Permite la navegación a cualquier otra ruta
   }
 });
 

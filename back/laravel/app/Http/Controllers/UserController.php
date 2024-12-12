@@ -110,8 +110,10 @@
                 'user' => [
                     'id' => $user->id,
                     'email' => $user->email,
-                    'name' => $user->nom,
-                    'surname' => $user->cognoms,
+                    'nom' => $user->nom,
+                    'cognom' => $user->cognoms,
+                    'curs' => $user->curs,
+                    'dni' => $user->dni,
                 ],
                 'token' => $token,
             ]);
