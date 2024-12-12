@@ -7,7 +7,7 @@ export async function guardarMissatgeBBDD(msg) {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ missatge: msg }),
+        body: JSON.stringify({ id_emisor: 'process', missatge: msg }),
     });
     const data = await response.json();
 
