@@ -30,4 +30,8 @@
         public function userResposta3() {
             return $this->belongsTo(User::class, 'resposta3');
         }
+
+        public function alumno_emisor() {
+            return $this->belongsTo(User::class, 'id_alumno_emisor');
+        }
     }
