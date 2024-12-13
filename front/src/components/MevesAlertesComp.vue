@@ -61,7 +61,7 @@ onMounted(() => {
 <template>
     <div class="d-flex align-center j-center cabezal">
         <div id="contentHeaderProfile" class="d-flex align-center f-column" style="z-index: 20;">
-            <p class="no-margin">Meves alertes</p>
+            <p class="no-margin">Les meves alertes</p>
         </div>
     </div>
     <ul id="containAlertes" class="no-margin d-flex j-center f-column align-center">
@@ -96,6 +96,7 @@ onMounted(() => {
 .cabezal p {
     color: white;
     font-weight: bold;
+    font-size: 20px;
 }
 
 .itemAlert {

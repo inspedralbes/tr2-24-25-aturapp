@@ -6,7 +6,7 @@ const router = useRouter();
 const route = useRoute();
 
 function navigateTo(nameIcon) {
-  router.push(`/${nameIcon}?id=10`)
+  router.push(`/${nameIcon}`)
 };
 
 const isLogged = localStorage.getItem('loggedIn');
@@ -42,7 +42,6 @@ body {
 }
 
 /* ------------------------------------------ */
-
 .no-style {
   list-style: none;
   text-decoration: none;
@@ -94,6 +93,10 @@ body {
 .mx-20 {
   margin-left: 20px;
   margin-right: 20px;
+}
+
+.mt-60{
+  margin-top: 60px;
 }
 
 .py-10 {
