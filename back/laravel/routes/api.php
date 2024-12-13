@@ -18,7 +18,7 @@
     //====== HACER LOGIN ==========================
     Route::post('/login', [UserController::class, 'login']);
 
-    //====== HACER ALERTA =========================
+    //====== ALERTAS =========================
     Route::post('/alert', [AlertaController::class, 'store']);
 
     //====== CREAR USUARIO ========================
@@ -34,9 +34,10 @@
     //USAR MIDDLEWARE, SINO PUEDE COMPROMETER ALUMNOS QUE HACEN ALERTAS-----
     Route::post('/alertes', [AlertaController::class, 'myAlerts']);
 
-    Route::get('/show/{id}', [AlertaController::class, 'show']);
-    //----------------------------------------------------------------------
+    Route::post('/update', [AlertaController::class, 'update']);
 
+    Route::get('/show/{id}', [AlertaController::class, 'show']);
+    //========================================
 
     //====== VER PREGUNTAS ========================
     Route::get('/preguntas', [PreguntaController::class, 'index']);

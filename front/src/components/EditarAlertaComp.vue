@@ -7,6 +7,13 @@ const route = useRoute();
 const router = useRouter();
 const alerta = ref('');
 const id = route.query.id;
+const data_user = JSON.parse(localStorage.getItem('userData'));
+const user_id = data_user.user.id
+const alertaDescripcio = ref('');
+
+function navigateTo(nameIcon) {
+    router.push(`/${nameIcon}`)
+};
 
 async function getAlert() {
     try {
@@ -17,6 +24,37 @@ async function getAlert() {
         }
         const result = await response.json();
         alerta.value = result;
+        alertaDescripcio.value = alerta.value.descripcion;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function editarAlerta() {
+    try {
+        const response = await fetch(`${BASE_URL}/api/update`, {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                alerta_id: id,
+                alumne_id: user_id,
+                descripcio: alertaDescripcio.value,
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Error en la solicitud");
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert('Alerta editada amb èxit')
+        } else {
+            alert(`Ha ocorregut un error (${result.message || 'Error desconegut'})`)
+        }
     } catch (error) {
         console.error(error);
     }
@@ -35,7 +73,6 @@ function formatHora(isoDate) {
     const date = new Date(isoDate);
     return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 }
-
 
 function formatText(text) {
     text = text || "";
@@ -61,25 +98,25 @@ onMounted(() => {
             <p class="no-margin">Editar alerta</p>
         </div>
     </div>
-    <div id="containAlerta" class="d-flex align-center f-column mt-60" v-if="alerta != ''">
-        <p> {{ formatText(alerta.sector) }} ({{ alerta.planta }})</p>
-        <p> {{ formatFecha(alerta.created_at) }} - {{ formatHora(alerta.created_at) }}  |  
-            Estat: {{ alerta.estado }}
+    <div id="containAlerta" class="d-flex j-center align-center f-column mt-60" v-if="alerta != ''">
+        <p class="no-margin"> {{ formatText(alerta.sector) }} ({{ alerta.planta }})</p>
+        <p> {{ formatFecha(alerta.created_at) }} - {{ formatHora(alerta.created_at) }}h | Estado: {{ alerta.estado }}
         </p>
         <div id="containDesc">
-            <p>Descripció:</p>
-            <textarea name="descripcion" placeholder="Dona'ns més informació">{{ alerta.descripcion }}</textarea>
+            <p class="no-margin">Descripció:</p>
+            <textarea v-model="alertaDescripcio" id="textDesc" name="descripcion"
+                placeholder="Dona'ns més informació"></textarea>
         </div>
-        <div class="containButtons d-flex align-center j-around">
+        <div id="containButtons" class="d-flex align-center j-around">
             <input class="btn-cancel" type="button" value="Cancelar" @click="navigateTo('perfil/alertes')">
-            <input class="btn-confirm" type="button" value="Guardar" @click="enviarAlerta">
+            <input class="btn-confirm" type="button" value="Guardar" @click="editarAlerta">
         </div>
 
     </div>
 </template>
 
 <style scoped>
-.containButtons{
+#containButtons {
     position: fixed;
     bottom: 80px;
     left: 0;
@@ -103,8 +140,8 @@ onMounted(() => {
 .btn-cancel {
     width: 180px;
     height: 45px;
+    background-color: #a83d3a;
     border: 1px solid grey;
-    outline: none;
     background-color: white;
     padding: 10px 30px;
     font-size: 20px;
@@ -113,23 +150,23 @@ onMounted(() => {
     border-radius: 10px;
 }
 
-#containDesc p{
-    margin: 20px 0px 5px 0px;
-    font-size: 18px;
-}
-
-#containDesc textarea{
+#textDesc {
     width: 300px;
     height: 200px;
     border: 1px solid #a83d3a;
     font-family: sans-serif;
     font-size: 18px;
-    padding: 5px;
     box-sizing: border-box;
+    padding: 10px;
 }
 
-.containDesc:focus {
+textarea:focus {
     outline: none;
+}
+
+#containDesc p:first-child {
+    font-size: 18px;
+    margin: 10px 0 5px 0;
 }
 
 .cabezal {
@@ -146,14 +183,11 @@ onMounted(() => {
 .cabezal p {
     color: white;
     font-weight: bold;
+    font-size: 20px;
 }
 
 #containAlerta>p:first-child {
-    margin: 20px 0px 5px 0px;
-    font-size: 25px;
-}
-
-#containAlerta p:nth-child(2) {
-    margin: 5px 0px 5px 0px;
+    font-size: 19px;
+    margin-top: 15px;
 }
 </style>

@@ -42,7 +42,6 @@ body {
 }
 
 /* ------------------------------------------ */
-
 .no-style {
   list-style: none;
   text-decoration: none;
@@ -98,6 +97,10 @@ body {
 .mx-20 {
   margin-left: 20px;
   margin-right: 20px;
+}
+
+.mt-60{
+  margin-top: 60px;
 }
 
 .py-10 {

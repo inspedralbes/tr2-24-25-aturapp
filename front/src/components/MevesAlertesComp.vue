@@ -97,6 +97,7 @@ onMounted(() => {
 .cabezal p {
     color: white;
     font-weight: bold;
+    font-size: 20px;
 }
 
 .itemAlert {
