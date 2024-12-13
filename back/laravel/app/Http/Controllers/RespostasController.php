@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Pregunta;
 use App\Models\Respostas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -50,7 +52,31 @@ class RespostasController extends Controller
         }
 
         return response()->json(['message' => 'Respuestas guardadas exitosamente.'], 200);
-    }  
+    }
+    
+    public function get(Request $request)
+    {
+        // Cargar las relaciones necesarias: pregunta y usuarios relacionados
+        $respostas = Respostas::with(['pregunta', 'userResposta1', 'userResposta2', 'userResposta3'])->get();
+    
+        // Transformar los datos para mostrar nombres y apellidos
+        $respostasTransformadas = $respostas->map(function ($resposta) {
+            return [
+                'id_pregunta' => $resposta->id_pregunta,
+                'pregunta_texto' => $resposta->pregunta->pregunta,
+                'resposta1' => $resposta->userResposta1 ? $resposta->userResposta1->nom . ' ' . $resposta->userResposta1->cognoms : null,
+                'resposta2' => $resposta->userResposta2 ? $resposta->userResposta2->nom . ' ' . $resposta->userResposta2->cognoms : null,
+                'resposta3' => $resposta->userResposta3 ? $resposta->userResposta3->nom . ' ' . $resposta->userResposta3->cognoms : null,
+                'id_alumno_emisor' => $resposta->id_alumno_emisor,
+            ];
+        });
+    
+        return response()->json($respostasTransformadas);
+    }
+    
+    
+    
+    
     
 
     /**

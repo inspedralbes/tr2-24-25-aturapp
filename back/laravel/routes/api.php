@@ -40,3 +40,5 @@
 
     //====== VER PREGUNTAS ========================
     Route::get('/preguntas', [PreguntaController::class, 'index']);
+
+    Route::get('/analisis', [RespostasController::class, 'get']);

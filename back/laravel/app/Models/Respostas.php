@@ -18,4 +18,16 @@
         public function pregunta() {
             return $this->belongsTo(Pregunta::class, 'id_pregunta');
         }
+
+        public function userResposta1() {
+            return $this->belongsTo(User::class, 'resposta1');
+        }
+
+        public function userResposta2() {
+            return $this->belongsTo(User::class, 'resposta2');
+        }
+
+        public function userResposta3() {
+            return $this->belongsTo(User::class, 'resposta3');
+        }
     }

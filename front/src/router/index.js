@@ -19,6 +19,11 @@ const router = createRouter({
       component: () => import('../views/access.vue'),
     },
     {
+      path: '/analisis',
+      name: 'analisis',
+      component: () => import('../views/analisis.vue'),
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('../components/login.vue'),
@@ -101,20 +106,21 @@ const router = createRouter({
   ],
 });
 
-
+/*
 router.beforeEach((to, from, next) => {
-  const SessionIniciada = localStorage.getItem('loggedIn') === 'true';
+  const sessionData = JSON.parse(localStorage.getItem('loggedIn'));
+  const SessionIniciada = sessionData?.Iniciado === true;
   const PaginasPublicas = ['/access', '/login', '/register', '/'];
   const EsPaginaPublica = PaginasPublicas.includes(to.path);
 
   if (!SessionIniciada && !EsPaginaPublica) {
-    next('/'); // Redirige al landing si no hay sesión y la página no es pública
+    next('/');
   } else if (SessionIniciada && to.path === '/') {
-    next('/home'); // Solo redirige a /home si intentas acceder al landing estando logueado
+    next('/home');
   } else {
-    next(); // Permite la navegación a cualquier otra ruta
+    next();
   }
 });
-
+*/
 
 export default router;

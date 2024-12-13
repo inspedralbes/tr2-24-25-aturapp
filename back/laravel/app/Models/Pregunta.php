@@ -1,15 +1,13 @@
 <?php
+    namespace App\Models;
 
-namespace App\Models;
+    use Illuminate\Database\Eloquent\Model;
 
-use Illuminate\Database\Eloquent\Model;
+    class Pregunta extends Model {
+        protected $table = 'preguntas';
 
-class Pregunta extends Model
-{
-    protected $table = 'preguntas';
+        protected $primaryKey = 'id';
+        protected $fillable = ['pregunta'];
 
-    protected $primaryKey = 'id';
-    protected $fillable = ['pregunta'];
-
-    public $timestamps = true;
-}
+        public $timestamps = true;
+    }

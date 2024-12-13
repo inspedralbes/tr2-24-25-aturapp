@@ -34,7 +34,7 @@ const icons = [
 ];
 </script>
 
-<style>
+<style scoped>
 body {
   margin: 0;
   box-sizing: border-box;
