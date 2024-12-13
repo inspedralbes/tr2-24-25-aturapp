@@ -30,7 +30,7 @@ class RespostasController extends Controller
     public function store(Request $request) {
         $validated = $request->validate([
             'respuestas' => 'required|array',
-            'respuestas.*.id_pregunta' => 'required|integer',
+            'respuestas.*.id_pregunta' => 'required|integer|exists:preguntas,id',
             'respuestas.*.resposta1' => 'required|integer|exists:users,id',
             'respuestas.*.resposta2' => 'required|integer|exists:users,id',
             'respuestas.*.resposta3' => 'required|integer|exists:users,id',
@@ -39,6 +39,7 @@ class RespostasController extends Controller
 
         foreach ($validated['respuestas'] as $respuesta) {
             Respostas::create([
+                'id_pregunta' => $respuesta['id_pregunta'],
                 'resposta1' => $respuesta['resposta1'],
                 'resposta2' => $respuesta['resposta2'],
                 'resposta3' => $respuesta['resposta3'],
@@ -49,7 +50,7 @@ class RespostasController extends Controller
         }
 
         return response()->json(['message' => 'Respuestas guardadas exitosamente.'], 200);
-    }    
+    }  
     
 
     /**

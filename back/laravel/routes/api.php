@@ -27,4 +27,4 @@
     Route::get('/preguntas',[PreguntaController::class, 'index']);
 
     //====== PUBLICAR RESPOSTAS ===================
-    Route::post('publicar-respostas', [RespostasController::class, 'store']);
+    Route::post('/publicar-respostas', [RespostasController::class, 'store']);
