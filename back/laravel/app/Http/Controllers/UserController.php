@@ -82,8 +82,7 @@
             ], 200);
         }
 
-        public function login(Request $request)
-        {
+        public function login(Request $request) {
             $credentials = $request->validate([
                 'email' => 'required|email',
                 'password' => 'required|string|min:6',
@@ -104,6 +103,7 @@
             }
         
             $token = $user->createToken('auth_token')->plainTextToken;
+            $companys_clase = User::where('curs', $user->curs) ->select('nom', 'cognoms', 'id') ->get();
         
             return response()->json([
                 'message' => 'Inicio de sesión exitoso',
@@ -115,7 +115,12 @@
                     'curs' => $user->curs,
                     'dni' => $user->dni,
                 ],
+                'course' => [
+                    'id' => $user->curs,
+                ],
+                'companys_clase' => $companys_clase,
                 'token' => $token,
             ]);
         }
+        
     }

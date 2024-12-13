@@ -1,25 +1,18 @@
 <?php
-    use App\Http\Controllers\AlertaController;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Route;
     use App\Http\Controllers\UserController;
     use App\Http\Controllers\CursController;
-    use App\Http\Controllers\MessageController;
+    use App\Http\Controllers\AlertaController;
+    use App\Http\Controllers\PreguntaController;
+    use App\Http\Controllers\RespostasController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    })->middleware('auth:sanctum');
 
-//====== HACER LOGIN ==========================
-Route::post('/login', [UserController::class, 'login']);
-
-//====== CREAR USUARIO ========================
-Route::post('/register', [UserController::class, 'register']);
-
-//====== OBTENER CURSOS =======================
-Route::get('/cursos', [CursController::class, 'index']);
-Route::apiResource('users', UserController::class);
-Route::apiResource('cursos', CursController::class);
+    //====== OBTENER CURSOS =======================
+    Route::get('/cursos',[CursController::class, 'index']);
 
     //====== HACER LOGIN ==========================
     Route::post('/login', [UserController::class, 'login']);
@@ -27,8 +20,11 @@ Route::apiResource('cursos', CursController::class);
     //====== HACER ALERTA =========================
     Route::post('/alert', [AlertaController::class, 'store']);
 
-    Route::post('/alertes', [AlertaController::class, 'myAlerts']);
+    //====== CREAR USUARIO ========================
+    Route::post('/register', [UserController::class, 'register']);    
 
-    Route::get('/show/{id}', [AlertaController::class, 'show']);
     //====== VER PREGUNTAS ========================
     Route::get('/preguntas',[PreguntaController::class, 'index']);
+
+    //====== PUBLICAR RESPOSTAS ===================
+    Route::post('/publicar-respostas', [RespostasController::class, 'store']);

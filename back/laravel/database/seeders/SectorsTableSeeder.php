@@ -14,42 +14,35 @@ class SectorsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $sectores = [
-            ['sector'=>'lavabo-alumnat', 'planta_id'=>4],
-            ['sector'=>'lavabo-dones', 'planta_id'=>4],
-            ['sector'=>'ala-ausias', 'planta_id'=>4],
-            ['sector'=>'ala-bosca', 'planta_id'=>4],
-            ['sector'=>'dept-catala', 'planta_id'=>4],
-            ['sector'=>'dept-matematiques', 'planta_id'=>4],
-            ['sector'=>'p3-inf9', 'planta_id'=>4],
-            ['sector'=>'pasillo-ausias', 'planta_id'=>4],
-            ['sector'=>'p3-inf7', 'planta_id'=>4],
-            ['sector'=>'p3-08', 'planta_id'=>4],
-            ['sector'=>'p3-06', 'planta_id'=>4],
-            ['sector'=>'p3-04', 'planta_id'=>4],
-            ['sector'=>'lab-ciencies-naturals', 'planta_id'=>4],
-            ['sector'=>'dept-ciencies-naturals', 'planta_id'=>4],
-            ['sector'=>'pasillo-bosca', 'planta_id'=>4],
-            ['sector'=>'p3-01', 'planta_id'=>4],
-            ['sector'=>'p3-02', 'planta_id'=>4],
-            ['sector'=>'p3-03', 'planta_id'=>4],
-            ['sector'=>'p3-05', 'planta_id'=>4],
-            ['sector'=>'p3-07', 'planta_id'=>4],
-            ['sector'=>'lab-ciencies-naturals-2', 'planta_id'=>4],
-            ['sector'=>'p3-inf11', 'planta_id'=>4],
-            ['sector'=>'p3-inf10', 'planta_id'=>4],
-            ['sector'=>'dept-ll-estangeres', 'planta_id'=>4],
-            ['sector'=>'dept-tecnologia', 'planta_id'=>4],
-            ['sector'=>'p3-inf3', 'planta_id'=>4],
-            ['sector'=>'fin-ala-bosca', 'planta_id'=>4],
-            ['sector'=>'fin-ala-ausias', 'planta_id'=>4],
-        ];
-
-        foreach ($sectores as $sector) {
-            DB::table('sectors')->updateOrInsert(
-                ['sector' => $sector['sector']], // Condición para buscar el registro existente
-                ['planta_id' => $sector['planta_id']] // Campos a actualizar o insertar
-            );
-        }
+        DB::table('sectors')->insert([
+            ['sector'=>'lavabo-alumnat'],
+            ['sector'=>'lavabo-dones'],
+            ['sector'=>'ala-ausias'],
+            ['sector'=>'ala-bosca'],
+            ['sector'=>'dept-catala'],
+            ['sector'=>'dept-matematiques'],
+            ['sector'=>'p3-inf9'],
+            ['sector'=>'pasillo-ausias'],
+            ['sector'=>'p3-inf7'],
+            ['sector'=>'p3-08'],
+            ['sector'=>'p3-06'],
+            ['sector'=>'p3-04'],
+            ['sector'=>'lab-ciencies-naturals'],
+            ['sector'=>'dept-ciencies-naturals'],
+            ['sector'=>'pasillo-bosca'],
+            ['sector'=>'p3-01'],
+            ['sector'=>'p3-02'],
+            ['sector'=>'p3-03'],
+            ['sector'=>'p3-05'],
+            ['sector'=>'p3-07'],
+            ['sector'=>'lab-ciencies-naturals-2'],
+            ['sector'=>'p3-inf11'],
+            ['sector'=>'p3-inf10'],
+            ['sector'=>'dept-ll-estangeres'],
+            ['sector'=>'dept-tecnologia'],
+            ['sector'=>'p3-inf3'],
+            ['sector'=>'fin-ala-bosca'],
+            ['sector'=>'fin-ala-ausias'],
+        ]);
     }
 }
