@@ -32,7 +32,7 @@ const data = JSON.parse(localStorage.getItem('userData'));
             <p>Informació general</p>
         </button>
         <button @click="navigateTo('perfil/alertes')">
-            <p>Meves alertes</p>
+            <p>Les meves alertes</p>
         </button>
         <button @click="navigateTo('soport')">
             <p>Soport de l'aplicació</p>

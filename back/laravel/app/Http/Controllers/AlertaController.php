@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Alerta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
@@ -23,6 +24,7 @@ class AlertaController extends Controller
             'id' => 'required|integer',
         ]);
 
+        // $alumne_id = Auth::id();
         $alumne_id = $request->id;
 
         $alertas = Alerta::with('sector', 'estado')
@@ -39,7 +41,6 @@ class AlertaController extends Controller
                     'created_at' => $alerta->created_at
                 ];
             });
-
         return response()->json($alertas, 200);
     }
 
@@ -99,6 +100,7 @@ class AlertaController extends Controller
             ->where('id', $id)
             ->first();
         
+        // AÑADIR IF(AUTH()->ID() != $ALERTA->ALUMNO_ID ) RETORNAR ERROR, PARA PROTEGER ALERTAS
         if (!$alerta){
             return response()->json(['error' => 'Alerta no encontrada'], 404);
         }
