@@ -6,7 +6,7 @@ const router = useRouter();
 const route = useRoute();
 
 function navigateTo(nameIcon) {
-  router.push(`/${nameIcon}?id=10`)
+  router.push(`/${nameIcon}`)
 };
 
 const isLogged = localStorage.getItem('loggedIn');
@@ -84,6 +84,10 @@ body {
 
 .f-column {
   flex-direction: column;
+}
+
+.mt-60{
+  margin-top: 60px;
 }
 
 .mx-10 {

@@ -4,11 +4,12 @@
     use App\Http\Controllers\UserController;
     use App\Http\Controllers\CursController;
     use App\Http\Controllers\AlertaController;
+    use App\Http\Controllers\MessageController;
     use App\Http\Controllers\PreguntaController;
     use App\Http\Controllers\RespostasController;
 
     Route::get('/user', function (Request $request) {
-        return $request->user();
+    return $request->user();
     })->middleware('auth:sanctum');
 
     //====== OBTENER CURSOS =======================
@@ -28,3 +29,14 @@
 
     //====== PUBLICAR RESPOSTAS ===================
     Route::post('/publicar-respostas', [RespostasController::class, 'store']);
+
+    
+    //USAR MIDDLEWARE, SINO PUEDE COMPROMETER ALUMNOS QUE HACEN ALERTAS-----
+    Route::post('/alertes', [AlertaController::class, 'myAlerts']);
+
+    Route::get('/show/{id}', [AlertaController::class, 'show']);
+    //----------------------------------------------------------------------
+
+
+    //====== VER PREGUNTAS ========================
+    Route::get('/preguntas', [PreguntaController::class, 'index']);
