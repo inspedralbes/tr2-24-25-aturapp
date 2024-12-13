@@ -24,32 +24,40 @@ async function getAlert() {
         }
         const result = await response.json();
         alerta.value = result;
+        alertaDescripcio.value = alerta.value.descripcion;
     } catch (error) {
         console.error(error);
     }
 }
 
-async function enviarAlerta() {
-    const response = await fetch(`${BASE_URL}/api/update`, {
-        method: 'POST',
-        headers: {
-            "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-            alerta_id: id,
-            usuario_id: user_id,
-            descripcio: alertaDescripcio.value,
-        })
+async function editarAlerta() {
+    try {
+        const response = await fetch(`${BASE_URL}/api/update`, {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                alerta_id: id,
+                alumne_id: user_id,
+                descripcio: alertaDescripcio.value,
+            })
+        });
 
-    });
+        if (!response.ok) {
+            throw new Error("Error en la solicitud");
+        }
 
-    if(!response.ok){
-        throw new Error("Error en la solicitud");
+        const result = await response.json();
+
+        if (result.success) {
+            alert('Alerta editada amb èxit')
+        } else {
+            alert(`Ha ocorregut un error (${result.message || 'Error desconegut'})`)
+        }
+    } catch (error) {
+        console.error(error);
     }
-
-    const result = await response.json();
-
-    
 }
 
 function formatFecha(isoDate) {
@@ -61,7 +69,6 @@ function formatHora(isoDate) {
     const date = new Date(isoDate);
     return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 }
-
 
 function formatText(text) {
     text = text || "";
@@ -89,15 +96,16 @@ onMounted(() => {
     </div>
     <div id="containAlerta" class="d-flex j-center align-center f-column mt-60" v-if="alerta != ''">
         <p class="no-margin"> {{ formatText(alerta.sector) }} ({{ alerta.planta }})</p>
-        <p> {{ formatFecha(alerta.created_at) }} - {{ formatHora(alerta.created_at) }} | Estado: {{ alerta.estado }}</p>
+        <p> {{ formatFecha(alerta.created_at) }} - {{ formatHora(alerta.created_at) }}h | Estado: {{ alerta.estado }}
+        </p>
         <div id="containDesc">
             <p class="no-margin">Descripció:</p>
             <textarea v-model="alertaDescripcio" id="textDesc" name="descripcion"
-                placeholder="Dona'ns més informació">{{ alerta.descripcion }}</textarea>
+                placeholder="Dona'ns més informació"></textarea>
         </div>
         <div id="containButtons" class="d-flex align-center j-around">
             <input class="btn-cancel" type="button" value="Cancelar" @click="navigateTo('perfil/alertes')">
-            <input class="btn-confirm" type="button" value="Guardar" @click="enviarAlerta">
+            <input class="btn-confirm" type="button" value="Guardar" @click="editarAlerta">
         </div>
 
     </div>
@@ -176,6 +184,6 @@ textarea:focus {
 
 #containAlerta>p:first-child {
     font-size: 19px;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 </style>

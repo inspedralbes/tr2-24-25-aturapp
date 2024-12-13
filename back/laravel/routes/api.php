@@ -1,5 +1,6 @@
 <?php
     use App\Http\Controllers\AlertaController;
+    use App\Http\Controllers\PreguntaController;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Route;
     use App\Http\Controllers\UserController;
@@ -24,11 +25,15 @@ Route::apiResource('cursos', CursController::class);
     //====== HACER LOGIN ==========================
     Route::post('/login', [UserController::class, 'login']);
 
-    //====== HACER ALERTA =========================
+    //====== ALERTAS =========================
     Route::post('/alert', [AlertaController::class, 'store']);
 
     Route::post('/alertes', [AlertaController::class, 'myAlerts']);
 
+    Route::post('/update', [AlertaController::class, 'update']);
+
     Route::get('/show/{id}', [AlertaController::class, 'show']);
+    //========================================
+
     //====== VER PREGUNTAS ========================
     Route::get('/preguntas',[PreguntaController::class, 'index']);
