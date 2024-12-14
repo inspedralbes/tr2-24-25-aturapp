@@ -36,7 +36,7 @@ class Respostas extends Model {
         return $this->belongsTo(User::class, 'id_alumno_emisor');
     }
 
-    public function cursoEmisor() {
+    public function curso() {
         return $this->belongsTo(Curs::class, 'id_curs_alumno_emisor');
     }
 }

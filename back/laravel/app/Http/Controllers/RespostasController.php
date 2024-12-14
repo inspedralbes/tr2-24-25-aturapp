@@ -14,31 +14,36 @@
         }
 
         public function store(Request $request) {
-            $validated = $request->validate([
-                'respuestas' => 'required|array',
-                'respuestas.*.id_pregunta' => 'required|integer|exists:preguntas,id',
-                'respuestas.*.resposta1' => 'required|integer|exists:users,id',
-                'respuestas.*.resposta2' => 'required|integer|exists:users,id',
-                'respuestas.*.resposta3' => 'required|integer|exists:users,id',
-                'respuestas.*.id_alumno_emisor' => 'required|integer|exists:users,id',
-                'respuestas.*.id_curs_alumno_emisor' => 'required|integer|exists:curs,id',
-            ]);
-        
-            foreach ($validated['respuestas'] as $respuesta) {
-                Respostas::create([
-                    'id_pregunta' => $respuesta['id_pregunta'],
-                    'resposta1' => $respuesta['resposta1'],
-                    'resposta2' => $respuesta['resposta2'],
-                    'resposta3' => $respuesta['resposta3'],
-                    'id_alumno_emisor' => $respuesta['id_alumno_emisor'],
-                    'id_curs_alumno_emisor' => $respuesta['id_curs_alumno_emisor'],
-                    'created_at' => now(),
-                    'updated_at' => now(),
+            try {
+                $validated = $request->validate([
+                    'respuestas' => 'required|array',
+                    'respuestas.*.id_pregunta' => 'required|integer|exists:preguntas,id',
+                    'respuestas.*.resposta1' => 'required|integer|exists:users,id',
+                    'respuestas.*.resposta2' => 'required|integer|exists:users,id',
+                    'respuestas.*.resposta3' => 'required|integer|exists:users,id',
+                    'respuestas.*.id_alumno_emisor' => 'required|integer|exists:users,id',
+                    'respuestas.*.id_curs_alumno_emisor' => 'required|integer|exists:curs,id',
                 ]);
-            }
         
-            return response()->json(['message' => 'Respuestas guardadas exitosamente.'], 200);
+                foreach ($validated['respuestas'] as $respuesta) {
+                    Respostas::create([
+                        'id_pregunta' => $respuesta['id_pregunta'],
+                        'resposta1' => $respuesta['resposta1'],
+                        'resposta2' => $respuesta['resposta2'],
+                        'resposta3' => $respuesta['resposta3'],
+                        'id_alumno_emisor' => $respuesta['id_alumno_emisor'],
+                        'id_curs_alumno_emisor' => $respuesta['id_curs_alumno_emisor'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+        
+                return response()->json(['message' => 'Respuestas guardadas exitosamente.'], 200);
+            } catch (Exception $e) {
+                return response()->json(['error' => 'Ocurrió un error al guardar las respuestas.', 'details' => $e->getMessage()], 500);
+            }
         }
+        
         
         
         public function get(Request $request) {
@@ -52,12 +57,13 @@
                     'resposta2' => $resposta->userResposta2 ? $resposta->userResposta2->nom . ' ' . $resposta->userResposta2->cognoms : null,
                     'resposta3' => $resposta->userResposta3 ? $resposta->userResposta3->nom . ' ' . $resposta->userResposta3->cognoms : null,
                     'id_alumno_emisor' => $resposta->alumnoEmisor ? $resposta->alumnoEmisor->nom . ' ' . $resposta->alumnoEmisor->cognoms : null,
-                    'curso' => $resposta->curso ? $resposta->curso->nombre : null,
+                    'curso' => $resposta->curso ? $resposta->curso->name : null,
                 ];
             });
         
             return response()->json($respostasTransformadas);
         }
+        
 
         public function show(Respostas $respostas) {
         }
