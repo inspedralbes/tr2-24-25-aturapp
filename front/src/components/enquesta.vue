@@ -1,100 +1,108 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useCounterStore } from '../stores/counter';
+    import { ref, onMounted, computed } from 'vue';
+    import { useCounterStore } from '../stores/counter';
 
-const preguntas = ref([]);
-const PaginaActual = ref(0);
-const asignaciones = ref({});
-const counterStore = useCounterStore();
-const BASE_URL = "http://localhost:8000";
-const userData = computed(() => counterStore.userData || {}); // ID PINIA
-const companysClase = computed(() => counterStore.userData?.companys_clase || []);
+    const preguntas = ref([]);
+    const PaginaActual = ref(0);
+    const asignaciones = ref({});
+    const counterStore = useCounterStore();
+    const BASE_URL = "http://localhost:8000";
+    const userData = computed(() => counterStore.userData || {});
+    const companysClase = computed(() => counterStore.userData?.companys_clase || []);
 
-const fetchPreguntas = async () => {
-    const response = await fetch(`${BASE_URL}/api/preguntas`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-
-    if (response.ok) {
-        const data = await response.json();
-        preguntas.value = data;
-        preguntas.value.forEach((pregunta) => {
-            asignaciones.value[pregunta.id] = { 1: '', 2: '', 3: '' };
+    const fetchPreguntas = async () => {
+        const response = await fetch(`${BASE_URL}/api/preguntas`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
         });
-    }
-};
 
-const actualizarAsignacion = (preguntaId, selectorId, valor) => {
-    if (!asignaciones.value[preguntaId]) {
-        asignaciones.value[preguntaId] = { 1: '', 2: '', 3: '' };
-    } asignaciones.value[preguntaId][selectorId] = valor;
-};
+        if (response.ok) {
+            const data = await response.json();
+            preguntas.value = data;
+            preguntas.value.forEach((pregunta) => {
+                asignaciones.value[pregunta.id] = { 1: '', 2: '', 3: '' };
+            });
+        }
+    };
 
-const validarAsignaciones = () => {
-    for (const preguntaId in asignaciones.value) {
-        const respuestas = asignaciones.value[preguntaId];
-        if (Object.values(respuestas).some((value) => value === '')) return false;
-    } return true;
-};
+    const actualizarAsignacion = (preguntaId, selectorId, valor) => {
+        if (!asignaciones.value[preguntaId]) {
+            asignaciones.value[preguntaId] = { 1: '', 2: '', 3: '' };
+        } 
+        asignaciones.value[preguntaId][selectorId] = valor;
+    };
 
-const publicarRespostas = async () => {
-    if (!validarAsignaciones()) {
-        alert('Por favor, completa todas las asignaciones antes de continuar.');
-        return;
-    }
+    const validarAsignaciones = () => {
+        for (const preguntaId in asignaciones.value) {
+            const respuestas = asignaciones.value[preguntaId];
+            if (Object.values(respuestas).some((value) => value === '')) return false;
+        } 
+        return true;
+    };
 
-    if (!userData.value || !userData.value.user || !userData.value.user.id) {
-        alert('No s\'ha trobat l\'id de l\'usuari');
-        return;
-    }
+    const publicarRespostas = async () => {
+        if (!validarAsignaciones()) {
+            alert('Por favor, completa todas las asignaciones antes de continuar.');
+            return;
+        }
 
-    const idAlumnoEmisor = parseInt(userData.value.user.id, 10);
+        if (!userData.value || !userData.value.user || !userData.value.user.id) {
+            alert('No s\'ha trobat l\'id de l\'usuari');
+            return;
+        }
 
-    if (isNaN(idAlumnoEmisor)) {
-        alert('El ID del alumno emisor no es válido.');
-        return;
-    }
+        const idAlumnoEmisor = parseInt(userData.value.user.id, 10);
+        const idCursAlumnoEmisor = parseInt(userData.value.course?.id || userData.value.curs, 10);
 
-    const data = Object.keys(asignaciones.value).map((preguntaId) => ({
-        id_pregunta: parseInt(preguntaId, 10),
-        resposta1: parseInt(asignaciones.value[preguntaId][1], 10),
-        resposta2: parseInt(asignaciones.value[preguntaId][2], 10),
-        resposta3: parseInt(asignaciones.value[preguntaId][3], 10),
-        id_alumno_emisor: idAlumnoEmisor,
-    }));
+        if (isNaN(idAlumnoEmisor) || isNaN(idCursAlumnoEmisor)) {
+            alert('El ID del alumno o el curso no es válido.');
+            return;
+        }
 
-    const response = await fetch(`${BASE_URL}/api/publicar-respostas`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ respuestas: data }),
+        counterStore.$patch({
+            cursoActual: idCursAlumnoEmisor,
+        });
+
+        const data = Object.keys(asignaciones.value).map((preguntaId) => ({
+            id_pregunta: parseInt(preguntaId, 10),
+            resposta1: parseInt(asignaciones.value[preguntaId][1], 10),
+            resposta2: parseInt(asignaciones.value[preguntaId][2], 10),
+            resposta3: parseInt(asignaciones.value[preguntaId][3], 10),
+            id_alumno_emisor: idAlumnoEmisor,
+            id_curs_alumno_emisor: idCursAlumnoEmisor,
+        }));
+
+        const response = await fetch(`${BASE_URL}/api/publicar-respostas`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ respuestas: data }),
+        });
+
+        if (response.ok) {
+            alert('Respuestas enviadas correctamente.');
+        } else {
+            const errorData = await response.json();
+            alert('Hubo un error al enviar las respuestas. Intenta nuevamente.');
+        }
+    };
+
+    const SiguientePagina = () => {
+        if (PaginaActual.value < preguntas.value.length - 1) PaginaActual.value++;
+    };
+
+    const PaginaAnterior = () => {
+        if (PaginaActual.value > 0) PaginaActual.value--;
+    };
+
+    onMounted(() => {
+        fetchPreguntas();
     });
-
-    if (response.ok) {
-        alert('Respuestas enviadas correctamente.');
-    } else {
-        const errorData = await response.json();
-        alert('Hubo un error al enviar las respuestas. Intenta nuevamente.');
-    }
-};
-
-
-const SiguientePagina = () => {
-    if (PaginaActual.value < preguntas.value.length - 1) PaginaActual.value++;
-};
-
-const PaginaAnterior = () => {
-    if (PaginaActual.value > 0) PaginaActual.value--;
-};
-
-onMounted(() => {
-    fetchPreguntas();
-});
 </script>
+
 
 <template>
     <div>
