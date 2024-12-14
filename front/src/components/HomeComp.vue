@@ -127,12 +127,14 @@
 
 <script setup>
     import { onMounted, ref } from 'vue';
+    import { useCounterStore } from '@/stores/counter';
 
+    const store = useCounterStore();
     const BASE_URL = 'http://localhost:8000';
     const sosActive = ref(false);
     const sectorInput = ref('');
     const plantaInput = ref('planta3');
-    const dataUser = JSON.parse(localStorage.getItem('userData'));
+    const dataUser = store.userData;
     const alumno_id = dataUser.user.id;
 
     function sosAlert() {

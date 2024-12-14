@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { useCounterStore } from '../stores/counter';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -101,9 +102,10 @@ const router = createRouter({
   ],
 });
 
-
 router.beforeEach((to, from, next) => {
-  const SessionIniciada = localStorage.getItem('loggedIn') === 'true';
+  const store = useCounterStore();
+
+  const SessionIniciada = store.Iniciado;
   const PaginasPublicas = ['/access', '/login', '/register', '/'];
   const EsPaginaPublica = PaginasPublicas.includes(to.path);
 

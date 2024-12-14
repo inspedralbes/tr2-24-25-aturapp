@@ -1,9 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useCounterStore } from '@/stores/counter';
 
 const BASE_URL = "http://localhost:8000";
-const data = JSON.parse(localStorage.getItem('userData'));
+const store = useCounterStore();
+const data = store.userData;
 const usuari_id = data.user.id;
 const router = useRouter();
 const alertes = ref([]);
@@ -70,7 +72,7 @@ onMounted(() => {
             <div class="contentItem">
                 <p>{{ formatText(alert.sector) }} ({{ alert.planta }})</p>
                 <p>{{ formatFecha(alert.created_at) }}</p>
-                <p>Estado: {{ alert.estado }}</p>
+                <p>Estat: {{ alert.estado }}</p>
                 <button class="btn-editar" @click="navigateTo(`perfil/alertes/editar?id=${alert.id}`)">Editar</button>
             </div>
         </li>

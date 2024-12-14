@@ -1,15 +1,17 @@
 <script setup>
 import { ref } from "vue";
 import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
+import { useCounterStore } from "./stores/counter";
 
 const router = useRouter();
 const route = useRoute();
+const store = useCounterStore();
 
 function navigateTo(nameIcon) {
   router.push(`/${nameIcon}`)
 };
 
-const isLogged = localStorage.getItem('loggedIn');
+const isLogged = store.Iniciado;
 
 </script>
 

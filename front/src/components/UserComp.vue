@@ -1,18 +1,27 @@
 <script setup>
 import { onMounted } from 'vue';
+import { useCounterStore } from '../stores/counter';
 import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
+
+const store = useCounterStore();
 
 const router = useRouter();
 function navigateTo(nameRoute) {
     router.push(`/${nameRoute}`)
 };
-const data = JSON.parse(localStorage.getItem('userData'));
+
+const data = store.userData;
 
  const UserInfo = {
     'nom': data.user.nom,
     'cognom': data.user.cognom,
     'email': data.user.email,
     'dni': data.user.dni,
+}
+
+function cerrarSesion() {
+    store.clearUserData();
+    location.href = "/login";
 }
 </script>
 
@@ -37,7 +46,7 @@ const data = JSON.parse(localStorage.getItem('userData'));
         <button @click="navigateTo('soport')">
             <p>Soport de l'aplicació</p>
         </button>
-        <button>
+        <button @click="cerrarSesion">
             <p>Tancar sessió</p>
         </button>
     </div>

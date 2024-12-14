@@ -1,14 +1,16 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useCounterStore } from '@/stores/counter';
 
 const BASE_URL = "http://localhost:8000";
+const store = useCounterStore();
 const route = useRoute();
 const router = useRouter();
 const alerta = ref('');
 const id = route.query.id;
-const data_user = JSON.parse(localStorage.getItem('userData'));
-const user_id = data_user.user.id
+const data = store.userData;
+const user_id = data.user.id
 const alertaDescripcio = ref('');
 
 function navigateTo(nameIcon) {
@@ -59,10 +61,6 @@ async function editarAlerta() {
         console.error(error);
     }
 }
-
-function navigateTo(nameIcon) {
-  router.push(`/${nameIcon}`)
-};
 
 function formatFecha(isoDate) {
     const date = new Date(isoDate);

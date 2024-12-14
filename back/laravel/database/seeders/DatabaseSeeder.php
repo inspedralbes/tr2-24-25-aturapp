@@ -22,31 +22,34 @@ class DatabaseSeeder extends Seeder
         $this->call(PreguntaTableSeeder::class);
 
         User::updateOrCreate([
-            'nom' => 'nom1',
-            'cognoms' => 'cognom1',
-            'dni' => '12345678Y',
-            'email' => 'email1@example.com',
-            'password' => 'password1',
+            'nom' => 'Agustín Enzo',
+            'cognoms' => 'Noviello',
+            'dni' => 'Z0000000M',
+            'email' => 'a23agunovnov@inspedralbes.cat',
+            'email_verified_at' => '11/12/2024',
+            'password' => '123456',
             'rol' => 1,
             'curs' => 2,
             'torn' => 1
         ]);
         User::updateOrCreate([
-            'nom' => 'nom2',
-            'cognoms' => 'cognom2',
-            'dni' => '12345678Z',
-            'email' => 'email2@example.com',
-            'password' => 'password2',
-            'rol' => 1,
+            'nom' => 'Marc',
+            'cognoms' => 'Ciurans',
+            'dni' => '12345678J',
+            'email' => 'a23marciucar@inspedralbes.cat',
+            'email_verified_at' => '11/12/2024',
+            'password' => '123456',
+            'rol' => 2,
             'curs' => 4,
             'torn' => 2
         ]);
         User::updateOrCreate([
-            'nom' => 'nom3',
-            'cognoms' => 'cognom3',
+            'nom' => 'Benjamin',
+            'cognoms' => 'Romero',
             'dni' => '12345678X',
-            'email' => 'email3@example.com',
-            'password' => 'password3',
+            'email' => 'a23benromdor@inspedralbes.cat',
+            'email_verified_at' => '11/12/2024',
+            'password' => '123456',
             'rol' => 2,
             'curs' => 3,
             'torn' => 1
