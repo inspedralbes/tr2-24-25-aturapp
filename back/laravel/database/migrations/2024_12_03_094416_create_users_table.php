@@ -16,9 +16,10 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
             $table->string('cognoms');
-            $table->string('dni');
+            $table->string('dni')->nullable();
 //            $table->timestamps('questionari_fet')->nullable();
             $table->string('email')->unique();
+            $table->integer('telefon')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('verification_token')->nullable();

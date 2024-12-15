@@ -22,6 +22,7 @@ class User extends Authenticatable
         'nom',
         'cognoms',
         'dni',
+        'telefon',
         'email',
         'password',
         'curs',
