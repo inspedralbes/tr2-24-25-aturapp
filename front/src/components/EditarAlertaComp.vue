@@ -114,13 +114,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-#containButtons {
-    position: fixed;
-    bottom: 80px;
-    left: 0;
-    right: 0;
-    margin: auto;
-}
 
 #textDesc {
     width: 300px;
@@ -140,23 +133,6 @@ textarea:focus {
 #containDesc p:first-child {
     font-size: 18px;
     margin: 10px 0 5px 0;
-}
-
-.cabezal {
-    position: fixed;
-    background-color: #a03939;
-    height: 60px;
-    width: 100%;
-    top: 0;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    z-index: 10;
-}
-
-.cabezal p {
-    color: white;
-    font-weight: bold;
-    font-size: 20px;
 }
 
 #containAlerta>p:first-child {

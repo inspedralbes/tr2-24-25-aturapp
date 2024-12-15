@@ -63,7 +63,7 @@ onMounted(() => {
 
 <template>
     <div class="d-flex align-center j-center cabezal">
-        <div id="contentHeaderProfile" class="d-flex align-center f-column" style="z-index: 20;">
+        <div class="d-flex align-center f-column" style="z-index: 20;">
             <img class="icon-arrow" src="../../public/assets/svg/arrow.svg" alt="back" width="40px" @click="navigateTo('perfil')">
             <p class="no-margin">Les meves alertes</p>
         </div>
@@ -84,23 +84,6 @@ onMounted(() => {
 #containAlertes{
     margin-top: 60px;
     margin-bottom: 80px;
-}
-
-.cabezal {
-    position: fixed;
-    background-color: #a03939;
-    height: 60px;
-    width: 100%;
-    top: 0;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    z-index: 10;
-}
-
-.cabezal p {
-    color: white;
-    font-weight: bold;
-    font-size: 20px;
 }
 
 .itemAlert {

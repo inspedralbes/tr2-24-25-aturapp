@@ -12,7 +12,7 @@ function navigateTo(nameRoute) {
 
 const data = store.userData;
 
- const UserInfo = {
+const UserInfo = {
     'nom': data.user.nom,
     'cognom': data.user.cognom,
     'email': data.user.email,
@@ -28,7 +28,7 @@ function cerrarSesion() {
 <template>
     <div id="headerProfile" class="d-flex f-column bg-red">
         <div id="bg-circle"></div>
-        <div id="contentHeaderProfile" class="d-flex align-center f-column" style="z-index: 20;">
+        <div id="contentHeaderProfile" class="d-flex align-center f-column" style="z-index: 20">
             <p class="no-margin">Perfil</p>
             <div id="profileImage">
                 <img src="../../public/assets/svg/noimage.svg" alt="profile">
