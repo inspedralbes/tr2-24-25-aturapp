@@ -64,6 +64,7 @@ onMounted(() => {
 <template>
     <div class="d-flex align-center j-center cabezal">
         <div id="contentHeaderProfile" class="d-flex align-center f-column" style="z-index: 20;">
+            <img class="icon-arrow" src="../../public/assets/svg/arrow.svg" alt="back" width="40px" @click="navigateTo('perfil')">
             <p class="no-margin">Les meves alertes</p>
         </div>
     </div>

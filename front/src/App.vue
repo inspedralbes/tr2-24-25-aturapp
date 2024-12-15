@@ -182,4 +182,12 @@ body {
   border-top: 3px solid red;
 
 }
+
+.icon-arrow{
+  position: absolute;
+  left: 10px;
+  bottom: 0;
+  top: 0;
+  margin: auto;
+}
 </style>
