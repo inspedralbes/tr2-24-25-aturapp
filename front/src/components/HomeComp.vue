@@ -121,7 +121,10 @@
                 </svg>
             </div>
         </div>
-        <input class="btn-confirm" type="button" value="Confirmar" @click="enviarAlerta">
+        <div id="containButtons" class="d-flex align-center j-around">
+            <input class="btn-cancel" type="button" value="Cancelar" @click="sosAlert">
+            <input class="btn-confirm" type="button" value="Confirmar" @click="enviarAlerta">
+        </div>
     </div>
 </template>
 
@@ -138,7 +141,7 @@
     const alumno_id = dataUser.user.id;
 
     function sosAlert() {
-        sosActive.value = true;
+        sosActive.value = !sosActive.value;
     }
 
     const sectors3 = ref([
@@ -205,6 +208,14 @@
 </script>
 
 <style scoped>
+#containButtons {
+    position: fixed;
+    bottom: 80px;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
 .btn-sos {
     height: 150px;
     width: 150px;
@@ -267,23 +278,5 @@ select:focus {
     left: 0;
     right: 0;
     margin: auto;
-}
-
-.btn-confirm{
-    position: fixed;
-    bottom: 80px;
-    left: 0;
-    right: 0;
-    margin: auto;
-    width: 180px;
-    height: 45px;
-    background-color: #a03939;
-    outline: none;
-    border: none;
-    padding: 10px 30px;
-    font-size: 20px;
-    font-weight: bold;
-    color: white;
-    border-radius: 10px;
 }
 </style>

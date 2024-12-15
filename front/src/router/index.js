@@ -6,8 +6,9 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'landingPage',
-      component: () => import('../views/LandingPage.vue'),
+      redirect: "login"
+      // name: 'landingPage',
+      // component: () => import('../views/LandingPage.vue'),
     },
     {
       path: '/home',
@@ -109,8 +110,12 @@ router.beforeEach((to, from, next) => {
   const PaginasPublicas = ['/access', '/login', '/register', '/'];
   const EsPaginaPublica = PaginasPublicas.includes(to.path);
 
+  if( (to.path === '/login' || to.path === '/register' || to.path === '/access') && SessionIniciada){
+    next('/home');
+  }
+
   if (!SessionIniciada && !EsPaginaPublica) {
-    next('/'); // Redirige al landing si no hay sesión y la página no es pública
+    next('/login');
   } else if (SessionIniciada && to.path === '/') {
     next('/home'); // Solo redirige a /home si intentas acceder al landing estando logueado
   } else {

@@ -1,9 +1,8 @@
 <template>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <h1>LOGIN</h1>
-  <div class="login-container">
-    <form @submit.prevent="handleSubmit" class="login-form">
-
+  <div id="containLogin" class="d-flex f-column align-center j-center">
+    <form @submit.prevent="handleSubmit">
       <input type="text" required v-model="email" placeholder="Correu Electrònic" />
 
       <div class="password-container">
@@ -13,7 +12,9 @@
 
       <button type="submit" class="submit-button">Iniciar Sesión</button>
     </form>
-
+    <div class="d-flex j-center align-center no-margin">
+      <button class="btn-register" @click="navigateTo('register')">Registrarse</button>
+    </div>
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
     <div v-if="Iniciado">
@@ -22,72 +23,68 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, nextTick } from 'vue';
 import { useCounterStore } from '../stores/counter';
+import { useRouter } from 'vue-router';
 
-export default {
-  data() {
-    return {
-      email: '',
-      password: '',
-      passwordType: 'password',
-      passwordIcon: 'fa fa-eye',
-      passwordVisible: false,
-      errorMessage: ''
-    };
-  },
-  computed: {
-    Iniciado() {
-      const store = useCounterStore();
-      return store.Iniciado;
-    },
-    userData() {
-      const store = useCounterStore();
-      return store.userData;
+const email = ref('');
+const password = ref('');
+const passwordType = ref("password");
+const passwordIcon = ref("fa fa-eye");
+// const passwordVisible = false;
+const errorMessage = ref('');
+
+const router = useRouter();
+const counterStore = useCounterStore();
+
+const Iniciado = computed(() => counterStore.Iniciado);
+const userData = computed(() => counterStore.userData);
+
+function togglePassword() {
+  passwordType.value = passwordType.value === 'password' ? 'text' : 'password';
+  passwordIcon.value = passwordType.value === 'password' ? 'fa fa-eye' : 'fa fa-eye-slash';
+}
+
+async function handleSubmit() {
+  const loginData = {
+    email: email.value,
+    password: password.value
+  };
+  const counterStore = useCounterStore();
+
+  try {
+    const response = await fetch('http://localhost:8000/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify(loginData)
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      counterStore.setUserData(data);
+
+      await nextTick();
+
+      location.href = "/home";
+    } else {
+      const data = await response.json();
+      errorMessage.value = data.message || 'Credenciales incorrectas';
+      counterStore.clearUserData();
     }
-  },
-  methods: {
-    togglePassword() {
-      this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
-      this.passwordIcon = this.passwordType === 'password' ? 'fa fa-eye' : 'fa fa-eye-slash';
-    },
-    async handleSubmit() {
-      const loginData = {
-        email: this.email,
-        password: this.password
-      };
-      const counterStore = useCounterStore();
-
-      try {
-        const response = await fetch('http://localhost:8000/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: JSON.stringify(loginData)
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          counterStore.setUserData(data);
-
-          await this.$nextTick(); 
-
-          location.href = "/";
-        } else {
-          const data = await response.json();
-          this.errorMessage = data.message || 'Credenciales incorrectas';
-          counterStore.clearUserData();
-        }
-      } catch (error) {
-        this.errorMessage = 'Hubo un problema al conectar con el servidor';
-        counterStore.clearUserData();
-      }
-    }
-
+  } catch (error) {
+    errorMessage.value = 'Hubo un problema al conectar con el servidor';
+    console.error(error);
+    counterStore.clearUserData();
   }
-};
+}
+
+function navigateTo(namePath) {
+  router.push(`/${namePath}`)
+}
 </script>
 
 <style scoped>
@@ -149,19 +146,22 @@ button {
   padding: 14px;
   font-size: 16px;
   font-weight: bold;
-  color: white;
-  background-color: #ff4d4d;
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #e60000;
-}
-
 button:focus {
   outline: none;
+}
+
+.submit-button {
+  color: white;
+  background-color: #ff4d4d;
+}
+
+.submit-button:hover {
+  background-color: #e60000;
 }
 
 .password-container {
@@ -207,5 +207,23 @@ button:focus {
     font-size: 14px;
     padding: 12px;
   }
+}
+
+#containLogin {
+  margin-top: 20px;
+}
+
+#containLogin form {
+  margin: 0;
+  padding: 0;
+  width: 320px;
+}
+
+.btn-register {
+  margin-top: 10px;
+  width: 320px;
+  background-color: white;
+  border: 1px solid #e60000;
+  color: #e60000;
 }
 </style>

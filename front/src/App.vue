@@ -133,6 +133,32 @@ body {
   height: 100%;
 }
 
+.btn-cancel {
+    width: 180px;
+    height: 45px;
+    background-color: #a83d3a;
+    border: 1px solid grey;
+    background-color: white;
+    padding: 10px 30px;
+    font-size: 20px;
+    font-weight: bold;
+    color: grey;
+    border-radius: 10px;
+}
+
+.btn-confirm {
+    width: 180px;
+    height: 45px;
+    background-color: #a83d3a;
+    outline: none;
+    border: none;
+    padding: 10px 30px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    border-radius: 10px;
+}
+
 /* ------------------------------------------ */
 
 .navbar {
