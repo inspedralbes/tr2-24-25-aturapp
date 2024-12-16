@@ -99,9 +99,12 @@ class AlertaController extends Controller
         $alerta = Alerta::with('sector.planta', 'estado')
             ->where('id', $id)
             ->first();
-        
-        // AÑADIR IF(AUTH()->ID() != $ALERTA->ALUMNO_ID ) RETORNAR ERROR, PARA PROTEGER ALERTAS
-        if (!$alerta){
+
+        // $user = 
+        // dd(Auth::user());
+
+
+        if (!$alerta) {
             return response()->json(['error' => 'Alerta no encontrada'], 404);
         }
 
@@ -114,7 +117,7 @@ class AlertaController extends Controller
             'created_at' => $alerta->created_at,
         ];
 
-        return response()->json($alertaFormat,201);
+        return response()->json($alertaFormat, 201);
     }
 
     /**
@@ -138,11 +141,11 @@ class AlertaController extends Controller
 
         $alerta = Alerta::find($validated['alerta_id']);
 
-        if(!$alerta){
+        if (!$alerta) {
             return response()->json(['success' => false, 'message' => 'Alerta no trobada'], 404);
         }
 
-        if($alerta->alumno_id != $validated['alumne_id']){
+        if ($alerta->alumno_id != $validated['alumne_id']) {
             return response()->json(['success' => false, 'message' => 'No pots editar aquesta alerta']);
         }
 
