@@ -51,29 +51,42 @@
         
             $respostasTransformadas = $respostas->map(function ($resposta) {
                 return [
-                    'id_pregunta' => $resposta->id_pregunta,
-                    'pregunta_texto' => $resposta->pregunta->pregunta,
-                    'resposta1' => $resposta->userResposta1 ? $resposta->userResposta1->nom . ' ' . $resposta->userResposta1->cognoms : null,
-                    'resposta2' => $resposta->userResposta2 ? $resposta->userResposta2->nom . ' ' . $resposta->userResposta2->cognoms : null,
-                    'resposta3' => $resposta->userResposta3 ? $resposta->userResposta3->nom . ' ' . $resposta->userResposta3->cognoms : null,
-                    'id_alumno_emisor' => $resposta->alumnoEmisor ? $resposta->alumnoEmisor->nom . ' ' . $resposta->alumnoEmisor->cognoms : null,
-                    'curso' => $resposta->curso ? $resposta->curso->name : null,
+                    'pregunta' => [
+                        'id' => $resposta->id_pregunta,
+                        'relacion' => $resposta->pregunta ? $resposta->pregunta->pregunta : null,
+                    ],
+                    'resposta 1' => [
+                        'id' => $resposta->resposta1,
+                        'relacion' => $resposta->userResposta1 ? $resposta->userResposta1->nom . ' ' . $resposta->userResposta1->cognoms : null,
+                    ],
+                    'resposta 2' => [
+                        'id' => $resposta->resposta2,
+                        'relacion' => $resposta->userResposta2 ? $resposta->userResposta2->nom . ' ' . $resposta->userResposta2->cognoms : null,
+                    ],
+                    'resposta 3' => [
+                        'id' => $resposta->resposta3,
+                        'relacion' => $resposta->userResposta3 ? $resposta->userResposta3->nom . ' ' . $resposta->userResposta3->cognoms : null,
+                    ],
+                    'Alumne emisor' => [
+                        'id' => $resposta->id_alumno_emisor,
+                        'relacion' => $resposta->alumnoEmisor ? $resposta->alumnoEmisor->nom . ' ' . $resposta->alumnoEmisor->cognoms : null,
+                    ],
+                    'Curs alumne emisor' => [
+                        'id' => $resposta->id_curs_alumno_emisor,
+                        'relacion' => $resposta->curso ? $resposta->curso->name : null,
+                    ],
                 ];
             });
         
             return response()->json($respostasTransformadas);
         }
-        
 
-        public function show(Respostas $respostas) {
-        }
 
-        public function edit(Respostas $respostas) {
-        }
+        public function show(Respostas $respostas) {}
 
-        public function update(Request $request, Respostas $respostas) {
-        }
+        public function edit(Respostas $respostas) {}
 
-        public function destroy(Respostas $respostas) {
-        }
+        public function update(Request $request, Respostas $respostas) {}
+
+        public function destroy(Respostas $respostas) {}
     }

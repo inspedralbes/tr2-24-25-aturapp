@@ -30,15 +30,17 @@
     //====== PUBLICAR RESPOSTAS ===================
     Route::post('/publicar-respostas', [RespostasController::class, 'store']);
 
-    
+    //====== VER PREGUNTAS ========================
+    Route::get('/preguntas', [PreguntaController::class, 'index']);
+
+    //====== VER ANALISIS =========================
+    Route::get('/analisis', [RespostasController::class, 'get']);
+
+
+
+    //====== MIDDLEWARE ============================
+
     //USAR MIDDLEWARE, SINO PUEDE COMPROMETER ALUMNOS QUE HACEN ALERTAS-----
     Route::post('/alertes', [AlertaController::class, 'myAlerts']);
 
     Route::get('/show/{id}', [AlertaController::class, 'show']);
-    //----------------------------------------------------------------------
-
-
-    //====== VER PREGUNTAS ========================
-    Route::get('/preguntas', [PreguntaController::class, 'index']);
-
-    Route::get('/analisis', [RespostasController::class, 'get']);
