@@ -50,7 +50,8 @@ function formatText(text) {
 }
 
 function navigateTo(nameIcon) {
-  router.push(`/${nameIcon}`)
+  router.push(`/${nameIcon}`);
+//   ()=>{router.push({ name: editarAlerta, params: { id: alert.id } })};
 };
 
 onMounted(() => {
@@ -74,7 +75,8 @@ onMounted(() => {
                 <p>{{ formatText(alert.sector) }} ({{ alert.planta }})</p>
                 <p>{{ formatFecha(alert.created_at) }}</p>
                 <p>Estat: {{ alert.estado }}</p>
-                <button class="btn-editar" @click="navigateTo(`perfil/alertes/editar?id=${alert.id}`)">Editar</button>
+                <!-- <button class="btn-editar" @click="navigateTo(`perfil/alertes/editar?id=${alert.id}`)">Editar</button> -->
+                <button class="btn-editar" @click="()=>{router.push({ path: '/perfil/alertes/editar', state: { id: alert.id } })}">Editar</button>
             </div>
         </li>
     </ul>

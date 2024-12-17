@@ -7,8 +7,6 @@ const router = createRouter({
     {
       path: '/',
       redirect: "login"
-      // name: 'landingPage',
-      // component: () => import('../views/LandingPage.vue'),
     },
     {
       path: '/home',
@@ -46,34 +44,9 @@ const router = createRouter({
       component: () => import('../components/UserComp.vue')
     },
     {
-      path: '/perfil/alertes',
-      name: 'mevesAlertes',
-      component: () => import('../components/MevesAlertesComp.vue')
-    },
-    {
-      path: '/perfil/dades',
-      name: 'dades',
-      component: () => import('../components/DadesUserComp.vue')
-    },
-    {
       path: '/soport',
       name: 'soport',
       component: () => import('../components/SoportComp.vue')
-    },
-    {
-      path: '/chat',
-      name: 'chat',
-      component: () => import('../components/ChatComp.vue')
-    },
-    {
-      path: '/mapa',
-      name: 'mapa',
-      component: () => import('../components/MapComp.vue')
-    },
-    {
-      path: '/perfil',
-      name: 'perfil',
-      component: () => import('../components/UserComp.vue')
     },
     {
       path: '/perfil/alertes',
@@ -91,15 +64,10 @@ const router = createRouter({
       component: () => import('../components/DadesUserComp.vue')
     },
     {
-      path: '/soport',
-      name: 'soport',
-      component: () => import('../components/SoportComp.vue')
-    },
-    {
       path: '/enquesta',
       name: 'enquesta',
       component: () => import('../components/enquesta.vue')
-    },
+    }
   ],
 });
 

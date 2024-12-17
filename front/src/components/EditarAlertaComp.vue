@@ -8,7 +8,6 @@ const store = useCounterStore();
 const route = useRoute();
 const router = useRouter();
 const alerta = ref('');
-const id = route.query.id;
 const data = store.userData;
 const user_id = data.user.id
 const alertaDescripcio = ref('');
@@ -19,7 +18,13 @@ function navigateTo(nameIcon) {
 
 async function getAlert() {
     try {
-        const response = await fetch(`${BASE_URL}/api/show/${id}`);
+        const id = router.options.history.state.id;
+        const response = await fetch(`${BASE_URL}/api/show/${id}`, {
+            method: 'GET',
+            headers: {
+                "Content-type": "application/json",
+            }
+        }); 
 
         if (!response.ok) {
             throw new Error("Error en la solicitud");
@@ -53,9 +58,10 @@ async function editarAlerta() {
         const result = await response.json();
 
         if (result.success) {
-            alert('Alerta editada amb èxit')
+            alert('Alerta editada amb èxit');
+            
         } else {
-            alert(`Ha ocorregut un error (${result.message || 'Error desconegut'})`)
+            alert(`Ha ocorregut un error (${result.message || 'Error desconegut'})`);
         }
     } catch (error) {
         console.error(error);
