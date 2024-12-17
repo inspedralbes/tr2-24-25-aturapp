@@ -42,7 +42,7 @@ const crearSociograma = () => {
                 if (!nodos.find(nodo => nodo.id === alumno.id)) {
                     nodos.push({ id: alumno.id, name: alumno.relacion });
                 }
-                enlaces.push({ source: alumnoEmisor.id, target: alumno.id, weight: 3, color });
+                enlaces.push({ source: alumnoEmisor.id, target: alumno.id, weight: 2, color });
             }
         });
     });
@@ -75,7 +75,7 @@ const crearSociograma = () => {
         .data(nodos)
         .enter().append("circle")
         .attr("class", "node")
-        .attr("r", 10)
+        .attr("r", 5)
         .attr("fill", "steelblue")
         .call(d3.drag()
             .on("start", dragstarted)
@@ -147,6 +147,6 @@ const actualizarSociograma = () => {
 
 <style scoped>
 svg {
-    border: 1px solid black;
+    background: rgb(183, 182, 182);
 }
 </style>
