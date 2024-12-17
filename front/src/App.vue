@@ -37,6 +37,8 @@ const icons = [
 </script>
 
 <style>
+/* @import url(https://www.onesaitplatform.online/web/Cesium160/Widgets/widgets.css); */
+
 body {
   margin: 0;
   box-sizing: border-box;

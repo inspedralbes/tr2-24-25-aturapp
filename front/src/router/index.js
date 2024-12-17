@@ -100,6 +100,11 @@ const router = createRouter({
       name: 'enquesta',
       component: () => import('../components/enquesta.vue')
     },
+    {
+      path: '/heatmap',
+      name: 'heatmap',
+      component: () => import('../components/Heatmap.vue')
+    },
   ],
 });
 
