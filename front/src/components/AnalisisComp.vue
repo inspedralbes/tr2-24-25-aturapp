@@ -6,7 +6,6 @@ const data = ref([]);
 const clases = ref([]);
 const selectedClass = ref('');
 
-// Cargar datos desde la API
 fetch('http://localhost:8000/api/analisis')
     .then(response => response.json())
     .then(json => {
@@ -20,29 +19,24 @@ fetch('http://localhost:8000/api/analisis')
         console.error('Error al obtener los datos:', error);
     });
 
-// Crear sociograma
 const crearSociograma = () => {
     const nodos = [];
     const enlaces = [];
 
-    // Filtrar datos según la clase seleccionada
     const filteredData = selectedClass.value
         ? data.value.filter(item => item['Curs alumne emisor'].relacion === selectedClass.value)
         : data.value;
 
-    // Construir nodos y enlaces
     filteredData.forEach(item => {
         const alumnoEmisor = item['Alumne emisor'];
         const alumnos = [item['resposta 1'], item['resposta 2'], item['resposta 3']];
-        const esPositiva = [1, 4, 7, 12].includes(item['pregunta'].id); // Preguntas positivas
+        const esPositiva = [1, 4, 7, 12].includes(item['pregunta'].id);
         const color = esPositiva ? 'green' : 'red';
 
-        // Agregar nodo del emisor si no existe
         if (!nodos.find(nodo => nodo.id === alumnoEmisor.id)) {
             nodos.push({ id: alumnoEmisor.id, name: alumnoEmisor.relacion });
         }
 
-        // Agregar nodos y enlaces para cada respuesta
         alumnos.forEach(alumno => {
             if (alumno.id !== alumnoEmisor.id) {
                 if (!nodos.find(nodo => nodo.id === alumno.id)) {
@@ -60,7 +54,6 @@ const crearSociograma = () => {
         .attr("width", width)
         .attr("height", height);
 
-    // Limpiar el svg
     svg.selectAll("*").remove();
 
     const simulation = d3.forceSimulation(nodos)
@@ -68,7 +61,6 @@ const crearSociograma = () => {
         .force("charge", d3.forceManyBody().strength(-100))
         .force("center", d3.forceCenter(width / 2, height / 2));
 
-    // Dibujar enlaces
     const link = svg.append("g")
         .selectAll(".link")
         .data(enlaces)
@@ -78,7 +70,6 @@ const crearSociograma = () => {
         .attr("stroke-width", d => d.weight)
         .attr("stroke-opacity", 0.6);
 
-    // Dibujar nodos
     const node = svg.append("g")
         .selectAll(".node")
         .data(nodos)
@@ -91,7 +82,6 @@ const crearSociograma = () => {
             .on("drag", dragged)
             .on("end", dragended));
 
-    // Añadir etiquetas de nodos
     const labels = svg.append("g")
         .selectAll(".label")
         .data(nodos)
@@ -117,7 +107,6 @@ const crearSociograma = () => {
             .attr("y", d => d.y);
     });
 
-    // Funciones de arrastre
     function dragstarted(event, d) {
         if (!event.active) simulation.alphaTarget(0.3).restart();
         d.fx = d.x;
@@ -143,8 +132,6 @@ const actualizarSociograma = () => {
 
 <template>
     <div>
-        <h1>Sociograma</h1>
-        
         <div>
             <label for="clase">Selecciona una clase:</label>
             <select id="clase" v-model="selectedClass" @change="actualizarSociograma">
