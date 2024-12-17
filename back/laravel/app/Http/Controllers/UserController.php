@@ -127,12 +127,27 @@ class UserController extends Controller
         $user = Auth::user();
 
         if (is_null($user->email_verified_at)) {
-            return response()->json([
-                'message' => 'No s\'ha verificat el correu electronic',
-            ], 403);
+            return response()->json(['message' => 'No s\'ha verificat el correu electronic'], 403);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
+
+        if ($user->rol == 2) {
+            return response()->json([
+                'message' => 'Inicio de sesión exitoso',
+                'user' => [
+                    'id' => $user->id,
+                    'email' => $user->email,
+                    'nom' => $user->nom,
+                    'cognom' => $user->cognoms,
+                    'dni' => $user->dni,
+                    'rol' => $user->rol
+                ],
+                'redirect_to' => '/admin',
+                'token' => $token,
+            ]);
+        }
+
         $companys_clase = User::where('curs', $user->curs)->select('nom', 'cognoms', 'id')->get();
 
         return response()->json([
@@ -144,11 +159,13 @@ class UserController extends Controller
                 'cognom' => $user->cognoms,
                 'curs' => $user->curs,
                 'dni' => $user->dni,
+                'rol' => $user->rol
             ],
             'course' => [
                 'id' => $user->curs,
             ],
             'companys_clase' => $companys_clase,
+            'redirect_to' => '/',
             'token' => $token,
         ]);
     }
