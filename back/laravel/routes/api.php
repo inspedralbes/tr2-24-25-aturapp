@@ -31,6 +31,8 @@ Route::get('/getrol/{id}', [UserController::class, 'getRol']);
 //====== ALERTAS =========================
 Route::post('/alert', [AlertaController::class, 'store']);
 
+Route::get('/getAllAlerts', [AlertaController::class, 'index']);
+
 //====== VER PREGUNTAS ========================
 Route::get('/preguntas', [PreguntaController::class, 'index']);
 

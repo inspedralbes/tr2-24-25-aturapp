@@ -38,7 +38,7 @@ class SectorsTableSeeder extends Seeder
             ['sector' => 'lab-ciencies-naturals-2', 'planta_id' => 1],
             ['sector' => 'p3-inf11', 'planta_id' => 1],
             ['sector' => 'p3-inf10', 'planta_id' => 1],
-            ['sector' => 'dept-ll-estangeres', 'planta_id' => 1],
+            ['sector' => 'dept-ll-estrangeres', 'planta_id' => 1],
             ['sector' => 'dept-tecnologia', 'planta_id' => 1],
             ['sector' => 'p3-inf3', 'planta_id' => 1],
             ['sector' => 'fin-ala-bosca', 'planta_id' => 1],
