@@ -17,7 +17,13 @@
     </div>
 </template>
 
-<style scoped>
+<style>
+*{
+    transition: 0.3s;
+}
+body {
+    margin: 0;
+}
 #container {
     margin: 0;
     padding: 0;
@@ -31,11 +37,25 @@
 }
 
 #menu {
-    width: 20%;
     height: 100vh;
     display: flex;
     align-items: center;
+    flex-direction: column;
     justify-content: center;
-    border-left: 2px solid red;
+    background-color: rgb(255, 39, 39);
+}
+
+button {
+    border: 0;
+    width: 100%;
+    padding: 15px 30px 15px 15px;
+    background: 0;
+    font-size: 15px;
+    text-align: left;
+}
+
+button:hover{
+    cursor: pointer;
+    background: white;
 }
 </style>

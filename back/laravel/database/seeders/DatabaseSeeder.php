@@ -38,8 +38,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'email2@example.com',
             'password' => 'password2',
             'rol' => 1,
-            'curs' => 4,
-            'torn' => 2
+            'curs' => 3,
+            'torn' => 1
         ]);
         User::updateOrCreate([
             'nom' => 'nom3',
