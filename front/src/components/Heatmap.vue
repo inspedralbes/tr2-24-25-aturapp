@@ -157,22 +157,22 @@ const sectors3 = [
     { id: "fin-ala-ausias", d: "M16.5 1787.5L9.5 1860.5L187 1863L201 1729H154L148 1787.5H16.5Z", color: "white" },
 ];
 
-const calcularCentro = (d) => {
-    const regex = /([ML])([\d.]+)\s([\d.]+)/g;
-    const puntos = [];
-    let match;
+// const calcularCentro = (d) => {
+//     const regex = /([ML])([\d.]+)\s([\d.]+)/g;
+//     const puntos = [];
+//     let match;
 
-    while ((match = regex.exec(d)) !== null) {
-        puntos.push({ x: parseFloat(match[2]), y: parseFloat(match[3]) });
-    }
+//     while ((match = regex.exec(d)) !== null) {
+//         puntos.push({ x: parseFloat(match[2]), y: parseFloat(match[3]) });
+//     }
 
-    const centro = puntos.reduce(
-        (acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }),
-        { x: 0, y: 0 }
-    );
+//     const centro = puntos.reduce(
+//         (acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }),
+//         { x: 0, y: 0 }
+//     );
 
-    return { x: centro.x / puntos.length, y: centro.y / puntos.length };
-}
+//     return { x: centro.x / puntos.length, y: centro.y / puntos.length };
+// }
 
 function definirSector() {
     switch (plantaInput.value) {
@@ -216,8 +216,8 @@ onMounted(() => {
 
     heatmapInstance.value = h337.create({
         container: container,
-        // radius: 50,
-        opacity: 1,
+        plugin: 'SvgAreaHeatmap',
+        svgUrl: '../../public/planos/planta3.svg', // Ruta al archivo SVG externo
     });
 
     console.log("Heatmap creado:", heatmapInstance.value);
