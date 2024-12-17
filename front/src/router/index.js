@@ -103,7 +103,7 @@ const router = createRouter({
     {
       path: '/heatmap',
       name: 'heatmap',
-      component: () => import('../components/Heatmap.vue')
+      component: () => import('../components/HeatmapComp.vue')
     },
   ],
 });

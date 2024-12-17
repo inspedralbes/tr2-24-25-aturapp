@@ -25,6 +25,19 @@ class UserController extends Controller
     //     return response()->json(['user' => $user], 200);
     // }
 
+    public function getRol($id) {
+        $user = User::with('rol')
+            ->where('id', $id)
+            ->first();
+
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => "L'usuari no existeix"], 400);
+        }
+
+        $rolName = $user->rol;
+        return response()->json(['success' => true, 'rol' => $rolName], 200);
+    }
+
     public function register(Request $request)
     {
         $blacklisted = Blacklist::where('email', $request->email)->exists();

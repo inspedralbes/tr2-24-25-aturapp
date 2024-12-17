@@ -25,8 +25,8 @@ Route::post('/register', [UserController::class, 'register']);
 // ====== EDITAR USUARIO ========================
 Route::post('/editaruser', [UserController::class, 'update']);
 
-// ====== OBTENER USUARIO ========================
-// Route::get('/getuser', [UserController::class, 'index']);
+// ====== OBTENER ROL USUARIO ========================
+Route::get('/getrol/{id}', [UserController::class, 'getRol']);
 
 //====== ALERTAS =========================
 Route::post('/alert', [AlertaController::class, 'store']);

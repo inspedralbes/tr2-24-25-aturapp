@@ -1,11 +1,13 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
 import { useCounterStore } from "./stores/counter";
 
+const BASE_URL = 'http://localhost:8000';
 const router = useRouter();
 const route = useRoute();
 const store = useCounterStore();
+let isAlumne = ref();
 
 function navigateTo(nameIcon) {
   router.push(`/${nameIcon}`)
@@ -13,6 +15,29 @@ function navigateTo(nameIcon) {
 
 const isLogged = store.Iniciado;
 
+const user_id = store.userData.user.id;
+
+// async function getRolUser() {
+//   try {
+//     const response = await fetch(`${BASE_URL}/api/getrol/${user_id}`);
+
+//     if(!response.ok){
+//       throw new Error("Error en la solicitud");
+//     }
+
+//     const result = await response.json();
+
+//     return result.rol;
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
+
+onMounted(async () => {
+  // const rol = await getRolUser();
+
+  
+})
 </script>
 
 <template>

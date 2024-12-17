@@ -113,8 +113,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import h337 from "heatmap.js";
-// import axios from 'axios';
 
 const BASE_URL = 'http://localhost:8000';
 
@@ -156,23 +154,6 @@ const sectors3 = [
     { id: "fin-ala-bosca", d: "M24 76.5L17 3.5L194.5 1L208 137L161 139L155.5 76.5H24Z", color: "white" },
     { id: "fin-ala-ausias", d: "M16.5 1787.5L9.5 1860.5L187 1863L201 1729H154L148 1787.5H16.5Z", color: "white" },
 ];
-
-const calcularCentro = (d) => {
-    const regex = /([ML])([\d.]+)\s([\d.]+)/g;
-    const puntos = [];
-    let match;
-
-    while ((match = regex.exec(d)) !== null) {
-        puntos.push({ x: parseFloat(match[2]), y: parseFloat(match[3]) });
-    }
-
-    const centro = puntos.reduce(
-        (acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }),
-        { x: 0, y: 0 }
-    );
-
-    return { x: centro.x / puntos.length, y: centro.y / puntos.length };
-}
 
 function definirSector() {
     switch (plantaInput.value) {

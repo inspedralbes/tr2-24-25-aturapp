@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Rol extends Model
 {
-    protected $fillable = ['rol'];
+    protected $fillable = ['name'];
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class, 'rol', 'id');
     }
 }
