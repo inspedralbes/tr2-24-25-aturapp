@@ -2,12 +2,14 @@
     import { useRouter } from "vue-router";
 
     import AnalisisComp from "../components/AnalisisComp.vue";
+    import MarginalitatComp from "../components/MarginalitatComp.vue";
 </script>
 
 <template>
     <div id="container">
         <div id="content">
             <AnalisisComp />
+            <!---<MarginalitatComp />-->
         </div>
         <div id="menu">
             <button>
