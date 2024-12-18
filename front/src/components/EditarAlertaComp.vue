@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useCounterStore } from '@/stores/counter';
+import { getAlert, editarAlerta } from '@/services/communictationManager.js'
 
 const BASE_URL = "http://localhost:8000";
 const store = useCounterStore();
@@ -9,64 +10,8 @@ const route = useRoute();
 const router = useRouter();
 const alerta = ref('');
 const data = store.userData;
-const user_id = data.user.id
-const alertaDescripcio = ref('');
-
-function navigateTo(nameIcon) {
-    router.push(`/${nameIcon}`)
-};
-
-async function getAlert() {
-    try {
-        const id = router.options.history.state.id;
-        const response = await fetch(`${BASE_URL}/api/show/${id}`, {
-            method: 'GET',
-            headers: {
-                "Content-type": "application/json",
-            }
-        }); 
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-        const result = await response.json();
-        alerta.value = result;
-        alertaDescripcio.value = alerta.value.descripcion;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-async function editarAlerta() {
-    try {
-        const response = await fetch(`${BASE_URL}/api/update`, {
-            method: 'POST',
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                alerta_id: id,
-                alumne_id: user_id,
-                descripcio: alertaDescripcio.value,
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-
-        const result = await response.json();
-
-        if (result.success) {
-            alert('Alerta editada amb èxit');
-            
-        } else {
-            alert(`Ha ocorregut un error (${result.message || 'Error desconegut'})`);
-        }
-    } catch (error) {
-        console.error(error);
-    }
-}
+const user_id = data.user.id;
+const id = route.query.id;
 
 function formatFecha(isoDate) {
     const date = new Date(isoDate);
@@ -91,8 +36,19 @@ function formatText(text) {
         .join(' '); // Une las palabras con un espacio
 }
 
-onMounted(() => {
-    getAlert();
+async function guardarEdicio() {
+    const res = await editarAlerta(id, user_id, alerta.value.descripcion);
+    
+    if (res.success) {
+        alert('Alerta editada amb èxit');
+        router.push(`/perfil/alertes`);
+    } else {
+        alert(`Ha ocorregut un error (${res.message || 'Error desconegut'})`);
+    }
+}
+
+onMounted(async () => {
+    alerta.value = await getAlert(id);
 })
 </script>
 
@@ -102,25 +58,23 @@ onMounted(() => {
             <p class="no-margin">Editar alerta</p>
         </div>
     </div>
-    <div id="containAlerta" class="d-flex j-center align-center f-column mt-60" v-if="alerta != ''">
+    <div id="containAlerta" class="d-flex j-center align-center f-column mt-60" v-if="alerta && Object.keys(alerta).length > 0">
         <p class="no-margin"> {{ formatText(alerta.sector) }} ({{ alerta.planta }})</p>
         <p> {{ formatFecha(alerta.created_at) }} - {{ formatHora(alerta.created_at) }}h | Estado: {{ alerta.estado }}
         </p>
         <div id="containDesc">
             <p class="no-margin">Descripció:</p>
-            <textarea v-model="alertaDescripcio" id="textDesc" name="descripcion"
+            <textarea v-model="alerta.descripcion" id="textDesc" name="descripcion"
                 placeholder="Dona'ns més informació"></textarea>
         </div>
         <div id="containButtons" class="d-flex align-center j-around">
-            <input class="btn-cancel" type="button" value="Cancelar" @click="navigateTo('perfil/alertes')">
-            <input class="btn-confirm" type="button" value="Guardar" @click="editarAlerta">
+            <input class="btn-cancel" type="button" value="Cancelar" @click="router.push(`/perfil/alertes`)">
+            <input class="btn-confirm" type="button" value="Guardar" @click="guardarEdicio">
         </div>
-
     </div>
 </template>
 
 <style scoped>
-
 #textDesc {
     width: 300px;
     height: 200px;

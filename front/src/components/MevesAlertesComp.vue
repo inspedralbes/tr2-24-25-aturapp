@@ -49,11 +49,6 @@ function formatText(text) {
         .join(' '); // Une las palabras con un espacio
 }
 
-function navigateTo(nameIcon) {
-  router.push(`/${nameIcon}`);
-//   ()=>{router.push({ name: editarAlerta, params: { id: alert.id } })};
-};
-
 onMounted(() => {
     if(usuari_id != undefined){
         getAlertas();
@@ -65,7 +60,7 @@ onMounted(() => {
 <template>
     <div class="d-flex align-center j-center cabezal">
         <div class="d-flex align-center f-column" style="z-index: 20;">
-            <img class="icon-arrow" src="../../public/assets/svg/arrow.svg" alt="back" width="40px" @click="navigateTo('perfil')">
+            <img class="icon-arrow" src="../../public/assets/svg/arrow.svg" alt="back" width="40px" @click="router.push(`/perfil`)">
             <p class="no-margin">Les meves alertes</p>
         </div>
     </div>
@@ -75,8 +70,7 @@ onMounted(() => {
                 <p>{{ formatText(alert.sector) }} ({{ alert.planta }})</p>
                 <p>{{ formatFecha(alert.created_at) }}</p>
                 <p>Estat: {{ alert.estado }}</p>
-                <!-- <button class="btn-editar" @click="navigateTo(`perfil/alertes/editar?id=${alert.id}`)">Editar</button> -->
-                <button class="btn-editar" @click="()=>{router.push({ path: '/perfil/alertes/editar', state: { id: alert.id } })}">Editar</button>
+                <button class="btn-editar" @click="()=>{router.push({ path: '/perfil/alertes/editar', query: { id: alert.id } })}">Editar</button>
             </div>
         </li>
     </ul>

@@ -79,16 +79,18 @@ router.beforeEach((to, from, next) => {
   const EsPaginaPublica = PaginasPublicas.includes(to.path);
 
   if( (to.path === '/login' || to.path === '/register' || to.path === '/access') && SessionIniciada){
-    next('/home');
+    return next('/home');
   }
 
   if (!SessionIniciada && !EsPaginaPublica) {
-    next('/login');
-  } else if (SessionIniciada && to.path === '/') {
-    next('/home'); // Solo redirige a /home si intentas acceder al landing estando logueado
-  } else {
-    next(); // Permite la navegación a cualquier otra ruta
+    return next('/login');
   }
+
+  if (SessionIniciada && to.path === '/') {
+    return next('/home'); // Solo redirige a /home si intentas acceder al landing estando logueado
+  }
+
+  next();
 });
 
 

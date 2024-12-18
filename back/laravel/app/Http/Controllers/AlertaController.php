@@ -136,6 +136,7 @@ class AlertaController extends Controller
             'descripcio' => 'required|string'
         ]);
 
+        dd($request);
         $alerta = Alerta::find($validated['alerta_id']);
 
         if(!$alerta){

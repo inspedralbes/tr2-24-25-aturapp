@@ -13,7 +13,7 @@
       <button type="submit" class="submit-button">Iniciar Sesión</button>
     </form>
     <div class="d-flex j-center align-center no-margin">
-      <button class="btn-register" @click="navigateTo('register')">Registrarse</button>
+      <button class="btn-register" @click="router.push(`/register`)">Registrarse</button>
     </div>
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
@@ -80,10 +80,6 @@ async function handleSubmit() {
     console.error(error);
     counterStore.clearUserData();
   }
-}
-
-function navigateTo(namePath) {
-  router.push(`/${namePath}`)
 }
 </script>
 

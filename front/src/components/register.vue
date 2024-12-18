@@ -24,7 +24,7 @@
             <button type="submit">Registrarse</button>
         </form>
         <div class="d-flex j-center align-center no-margin">
-            <button class="btn-login" @click="navigateTo('login')">Iniciar sesión</button>
+            <button class="btn-login" @click="router.push(`/login`)">Iniciar sesión</button>
         </div>
     </div>
 </template>
@@ -117,10 +117,6 @@ function togglePassword() {
 function toggleConfirmPassword() {
     confirmPasswordType.value = confirmPasswordType.value === "password" ? "text" : "password";
     confirmPasswordIcon.value = confirmPasswordType.value === "password" ? "fa fa-eye" : "fa fa-eye-slash";
-}
-
-function navigateTo(namePath) {
-  router.push(`/${namePath}`)
 }
 
 onMounted(() => {

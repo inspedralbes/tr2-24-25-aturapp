@@ -10,6 +10,10 @@ const BASE_URL = "http://localhost:8000";
 const userData = computed(() => counterStore.userData || {}); // ID PINIA
 const companysClase = computed(() => counterStore.userData?.companys_clase || []);
 
+async function fetchPreguntas(){
+
+}
+
 const fetchPreguntas = async () => {
     const response = await fetch(`${BASE_URL}/api/preguntas`, {
         method: "GET",

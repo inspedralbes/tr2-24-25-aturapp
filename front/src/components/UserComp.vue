@@ -6,9 +6,6 @@ import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
 const store = useCounterStore();
 
 const router = useRouter();
-function navigateTo(nameRoute) {
-    router.push(`/${nameRoute}`)
-};
 
 const data = store.userData;
 
@@ -37,13 +34,13 @@ function cerrarSesion() {
         </div>
     </div>
     <div id="containItems" class="d-flex align-center f-column">
-        <button @click="navigateTo('perfil/dades')">
+        <button @click="router.push(`/perfil/dades`)">
             <p>Informació general</p>
         </button>
-        <button @click="navigateTo('perfil/alertes')">
+        <button @click="router.push(`/perfil/alertes`)">
             <p>Les meves alertes</p>
         </button>
-        <button @click="navigateTo('soport')">
+        <button @click="router.push(`/soport`)">
             <p>Soport de l'aplicació</p>
         </button>
         <button @click="cerrarSesion">
