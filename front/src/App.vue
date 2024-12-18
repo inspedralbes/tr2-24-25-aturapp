@@ -1,40 +1,24 @@
 <script setup>
-import { ref } from "vue";
-import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
+import { computed } from "vue";
+import { RouterView } from 'vue-router';
 import { useCounterStore } from "./stores/counter";
+import AlumnoNavbar from "./components/AlumnoNavbar.vue";
+import AdminNavbar from "./components/AdminNavbar.vue";
 
-const router = useRouter();
-const route = useRoute();
 const store = useCounterStore();
 
-function navigateTo(nameIcon) {
-  router.push(`/${nameIcon}`)
-};
-
-const isLogged = store.Iniciado;
+const isLogged = computed(() => store.Iniciado);
+const isAlumne = computed(() => store.userData?.user?.rol === 1);
+const isAdmin = computed(() => store.userData?.user?.rol === 2);
 
 </script>
 
 <template>
+  <h1 v-if="isLogged && isAdmin" class="d-flex j-center">Panel de admin</h1>
+  <AdminNavbar v-if="isLogged && isAdmin" />
   <RouterView />
-  <nav class="navbar" v-if="isLogged">
-    <ul id="items" class="no-style d-flex align-center h-full no-margin j-around">
-      <li v-for="icon in icons" :key="icon.alt" :class="{ active: route.path.includes(icon.alt) }"
-        @click="navigateTo(icon.alt)">
-        <img :src="icon.src" :width="icon.width" />
-      </li>
-    </ul>
-  </nav>
+  <AlumnoNavbar v-if="isLogged && isAlumne" />
 </template>
-
-<script>
-const icons = [
-  { src: "/assets/svg/home.svg", alt: "home", width: "40px" },
-  { src: "/assets/svg/chat.svg", alt: "chat", width: "35px" },
-  { src: "/assets/svg/map.svg", alt: "mapa", width: "40px" },
-  { src: "/assets/svg/user.svg", alt: "perfil", width: "35px" },
-];
-</script>
 
 <style>
 body {
@@ -87,15 +71,15 @@ body {
   flex-direction: column;
 }
 
-.mt-20{
+.mt-20 {
   margin-top: 20px;
 }
 
-.mt-40{
+.mt-40 {
   margin-top: 40px;
 }
 
-.mt-60{
+.mt-60 {
   margin-top: 60px;
 }
 
@@ -109,7 +93,7 @@ body {
   margin-right: 20px;
 }
 
-.mt-60{
+.mt-60 {
   margin-top: 60px;
 }
 
@@ -142,29 +126,29 @@ body {
 }
 
 .btn-cancel {
-    width: 180px;
-    height: 45px;
-    background-color: #a83d3a;
-    border: 1px solid grey;
-    background-color: white;
-    padding: 10px 30px;
-    font-size: 20px;
-    font-weight: bold;
-    color: grey;
-    border-radius: 10px;
+  width: 180px;
+  height: 45px;
+  background-color: #a83d3a;
+  border: 1px solid grey;
+  background-color: white;
+  padding: 10px 30px;
+  font-size: 20px;
+  font-weight: bold;
+  color: grey;
+  border-radius: 10px;
 }
 
 .btn-confirm {
-    width: 180px;
-    height: 45px;
-    background-color: #a83d3a;
-    outline: none;
-    border: none;
-    padding: 10px 30px;
-    font-size: 20px;
-    font-weight: bold;
-    color: white;
-    border-radius: 10px;
+  width: 180px;
+  height: 45px;
+  background-color: #a83d3a;
+  outline: none;
+  border: none;
+  padding: 10px 30px;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  border-radius: 10px;
 }
 
 /* ------------------------------------------ */
@@ -191,7 +175,7 @@ body {
 
 }
 
-.icon-arrow{
+.icon-arrow {
   position: absolute;
   left: 10px;
   bottom: 0;
@@ -200,27 +184,27 @@ body {
 }
 
 .cabezal {
-    position: fixed;
-    background-color: #a03939;
-    height: 60px;
-    width: 100%;
-    top: 0;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    z-index: 10;
+  position: fixed;
+  background-color: #a03939;
+  height: 60px;
+  width: 100%;
+  top: 0;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  z-index: 10;
 }
 
 .cabezal p {
-    color: white;
-    font-weight: bold;
-    font-size: 20px;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
 }
 
 #containButtons {
-    position: fixed;
-    bottom: 65px;
-    left: 0;
-    right: 0;
-    margin: auto;
+  position: fixed;
+  bottom: 65px;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 </style>

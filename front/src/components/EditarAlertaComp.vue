@@ -139,4 +139,8 @@ textarea:focus {
     font-size: 19px;
     margin-top: 15px;
 }
+
+#containButtons{
+    margin-bottom: 15px;
+}
 </style>

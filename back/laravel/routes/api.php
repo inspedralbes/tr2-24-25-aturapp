@@ -1,43 +1,49 @@
 <?php
-    use Illuminate\Http\Request;
-    use Illuminate\Support\Facades\Route;
-    use App\Http\Controllers\UserController;
-    use App\Http\Controllers\CursController;
-    use App\Http\Controllers\AlertaController;
-    use App\Http\Controllers\MessageController;
-    use App\Http\Controllers\PreguntaController;
-    use App\Http\Controllers\RespostasController;
 
-    Route::get('/user', function (Request $request) {
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CursController;
+use App\Http\Controllers\AlertaController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PreguntaController;
+use App\Http\Controllers\RespostasController;
+
+Route::get('/user', function (Request $request) {
     return $request->user();
-    })->middleware('auth:sanctum');
+})->middleware('auth:sanctum');
 
-    //====== OBTENER CURSOS =======================
-    Route::get('/cursos',[CursController::class, 'index']);
+//====== OBTENER CURSOS =======================
+Route::get('/cursos', [CursController::class, 'index']);
 
-    //====== HACER LOGIN ==========================
-    Route::post('/login', [UserController::class, 'login']);
+//====== HACER LOGIN ==========================
+Route::post('/login', [UserController::class, 'login']);
 
-    //====== ALERTAS =========================
-    Route::post('/alert', [AlertaController::class, 'store']);
+// ====== CREAR USUARIO ========================
+Route::post('/register', [UserController::class, 'register']);
 
-    //====== CREAR USUARIO ========================
-    Route::post('/register', [UserController::class, 'register']);    
+// ====== EDITAR USUARIO ========================
+Route::post('/editaruser', [UserController::class, 'update']);
 
-    //====== VER PREGUNTAS ========================
-    Route::get('/preguntas',[PreguntaController::class, 'index']);
+// ====== OBTENER ROL USUARIO ========================
+Route::get('/getrol/{id}', [UserController::class, 'getRol']);
 
-    //====== PUBLICAR RESPOSTAS ===================
-    Route::post('/publicar-respostas', [RespostasController::class, 'store']);
+//====== ALERTAS =========================
+Route::post('/alert', [AlertaController::class, 'store']);
 
-    
-    //USAR MIDDLEWARE, SINO PUEDE COMPROMETER ALUMNOS QUE HACEN ALERTAS-----
-    Route::post('/alertes', [AlertaController::class, 'myAlerts']);
+//====== VER PREGUNTAS ========================
+Route::get('/preguntas', [PreguntaController::class, 'index']);
 
-    Route::post('/update', [AlertaController::class, 'update']);
+//====== PUBLICAR RESPOSTAS ===================
+Route::post('/publicar-respostas', [RespostasController::class, 'store']);
 
-    Route::get('/show/{id}', [AlertaController::class, 'show']);
-    //========================================
+//USAR MIDDLEWARE, SINO PUEDE COMPROMETER ALUMNOS QUE HACEN ALERTAS-----
+Route::post('/alertes', [AlertaController::class, 'myAlerts']);
 
-    //====== VER PREGUNTAS ========================
-    Route::get('/preguntas', [PreguntaController::class, 'index']);
+Route::post('/update', [AlertaController::class, 'update']);
+
+Route::get('/show/{id}', [AlertaController::class, 'show']);
+//========================================
+
+//====== VER PREGUNTAS ========================
+Route::get('/preguntas', [PreguntaController::class, 'index']);
