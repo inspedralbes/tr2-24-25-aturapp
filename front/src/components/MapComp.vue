@@ -91,7 +91,7 @@ const sectors = ref([
     { id: "lab-ciencies-naturals-2", d: "M163.5 1621.5L12 1616L27 1472.5L177.5 1479L163.5 1621.5Z", color: "white" },
     { id: "p3-inf11", d: "M214 1581.5L201.5 1729L347.5 1733L360 1587.5L214 1581.5Z", color: "white" },
     { id: "p3-inf10", d: "M360.5 1587.5L374 1454L227 1446.5L214 1581.5L360.5 1587.5Z", color: "white" },
-    { id: "dept-ll-estangeres", d: "M374.5 1453.5L387 1313.5L240 1306L227 1446L374.5 1453.5Z", color: "white" },
+    { id: "dept-ll-estrangeres", d: "M374.5 1453.5L387 1313.5L240 1306L227 1446L374.5 1453.5Z", color: "white" },
     { id: "dept-tecnologia", d: "M387.5 1313.5L393 1244L247 1233.5L240 1306L387.5 1313.5Z", color: "white" },
     { id: "p3-inf3", d: "M393 1244L410.5 1035.5L267 1022L247 1233.5L393 1244Z", color: "white" },
     { id: "fin-ala-bosca", d: "M24 76.5L17 3.5L194.5 1L208 137L161 139L155.5 76.5H24Z", color: "white" },

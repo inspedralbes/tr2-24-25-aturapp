@@ -15,7 +15,27 @@ class AlertaController extends Controller
      */
     public function index()
     {
-        //
+        $alertas = Alerta::with('sector', 'estado')
+            ->get()
+            ->groupBy('sector.sector') // Agrupar por el nombre del sector
+            ->map(function ($alertas, $sectorName) {
+                return [
+                    'nombre' => $sectorName,
+                    'total' => $alertas->count(),
+                    'detalles' => $alertas->map(function ($alerta) {
+                        return [
+                            'id' => $alerta->id,
+                            'sector_id' => $alerta->sector->id,
+                            'planta' => $alerta->sector->planta->name,
+                            'descripcion' => $alerta->descripcion,
+                            'estado' => $alerta->estado->name,
+                            'created_at' => $alerta->created_at
+                        ];
+                    })
+                ];
+            })
+            ->values();
+        return response()->json($alertas, 200);
     }
 
     public function myAlerts(Request $request)

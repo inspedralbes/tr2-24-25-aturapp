@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar" v-if="isLogged && isAlumne">
+    <nav class="navbar">
         <ul id="items" class="no-style d-flex align-center h-full no-margin j-around">
             <li v-for="icon in icons" :key="icon.alt" :class="{ active: route.path.includes(icon.alt) }"
                 @click="navigateTo(icon.alt)">

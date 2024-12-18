@@ -48,7 +48,7 @@ const sectorIds = [
     "lab-ciencies-naturals-2",
     "p3-inf11",
     "p3-inf10",
-    "dept-ll-estangeres",
+    "dept-ll-estrangeres",
     "dept-tecnologia",
     "p3-inf3",
     "fin-ala-bosca",
