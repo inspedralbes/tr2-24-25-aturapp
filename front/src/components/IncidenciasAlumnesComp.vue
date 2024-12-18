@@ -15,74 +15,101 @@
         </select>
     </div>
 
-    <div>
-        <h1>Lista de Alumnos</h1>
+    <div id="llistatAlumnes">
         <p v-for="alumne in alumnesFiltrats" :key="alumne.id">
-            Nom: {{ alumne.nom }}
-            <br>
-            Cognom: {{ alumne.cognoms }}
-            <br>
-            Email: {{ alumne.email }}
-            <br>
-            Curs: {{ alumne.curs?.name }} <!-- Usando encadenamiento opcional -->
-            <br>
-            Torn: {{ alumne.torn?.torn }} <!-- Usando encadenamiento opcional -->
+            Nom: {{ alumne.nom }}           <br>
+            Cognom: {{ alumne.cognoms }}    <br>
+            Email: {{ alumne.email }}       <br>
             <button @click="verDetall(alumne.id)">Més informació</button>
         </p>
-        <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
     </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { getAlumnes } from '../services/communictationManager';
+    import { ref, computed, onMounted } from 'vue';
+    import { useRouter } from 'vue-router';
+    import { getAlumnes } from '../services/communictationManager';
 
-const alumnes = ref([]);
-const errorMessage = ref('');
-const selectedCurs = ref('');
-const selectedTorn = ref('');
-const router = useRouter();
+    const alumnes = ref([]);
+    const errorMessage = ref('');
+    const selectedCurs = ref('');
+    const selectedTorn = ref('');
+    const router = useRouter();
 
-onMounted(async () => {
-    try {
-        const data = await getAlumnes();
-        alumnes.value = data;
-    } catch (error) {
-        errorMessage.value = 'No se han podido cargar los alumnos.';
-    }
-});
-
-const cursosUnicos = computed(() => {
-    return [...new Set(alumnes.value.map(alumne => alumne.curs?.name))]; // Usamos ?. para evitar errores
-});
-
-const tornsUnics = computed(() => {
-    return [...new Set(alumnes.value.map(alumne => alumne.torn?.torn))]; // Usamos ?. para evitar errores
-});
-
-const alumnesFiltrats = computed(() => {
-    return alumnes.value.filter(alumne => {
-        const cumpleCurs = selectedCurs.value === '' || alumne.curs?.name === selectedCurs.value;
-        const cumpleTorn = selectedTorn.value === '' || alumne.torn?.torn === selectedTorn.value;
-        return cumpleCurs && cumpleTorn;
+    onMounted(async () => {
+        try {
+            const data = await getAlumnes();
+            alumnes.value = data;
+        } catch (error) {
+            errorMessage.value = 'No se han podido cargar los alumnos.';
+        }
     });
-});
 
-const verDetall = (id) => {
-    router.push(`/admin/alumnes/${id}`);
-};
+    const cursosUnicos = computed(() => {
+        return [...new Set(alumnes.value.map(alumne => alumne.curs?.name))];
+    });
+
+    const tornsUnics = computed(() => {
+        return [...new Set(alumnes.value.map(alumne => alumne.torn?.torn))];
+    });
+
+    const alumnesFiltrats = computed(() => {
+        return alumnes.value.filter(alumne => {
+            const cumpleCurs = selectedCurs.value === '' || alumne.curs?.name === selectedCurs.value;
+            const cumpleTorn = selectedTorn.value === '' || alumne.torn?.torn === selectedTorn.value;
+            return cumpleCurs && cumpleTorn;
+        });
+    });
+
+    const verDetall = (id) => {
+        router.push(`/admin/alumnes/${id}`);
+    };
 </script>
 
 <style scoped>
-.error-message {
-    color: red;
-    margin-top: 20px;
-    font-weight: bold;
-}
+    #llistatAlumnes p{
+        width: 30%;
+        margin: 20px auto;
+    }
 
-p {
-    border: 1px solid black;
-    padding: 10px;
-}
+    h1 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    p {
+        padding: 15px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+    }
+
+    button {
+        background-color: #ff2600;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    button:hover {
+        background-color: #a04545;
+    }
+
+    .error-message {
+        color: red;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    select::after {
+        content: '▼';
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
 </style>

@@ -34,13 +34,13 @@ onMounted(async () => {
 
 
 <style scoped>
-p {
-    margin: 5px 0;
-}
+    p {
+        margin: 5px 0;
+    }
 
-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    cursor: pointer;
-}
+    button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
 </style>
