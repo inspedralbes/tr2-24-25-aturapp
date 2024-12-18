@@ -33,6 +33,8 @@ Route::post('/alert', [AlertaController::class, 'store']);
 
 Route::get('/getAllAlerts', [AlertaController::class, 'index']);
 
+Route::post('/getAlertsSector', [AlertaController::class, 'getAlertsSector']);
+
 //====== VER PREGUNTAS ========================
 Route::get('/preguntas', [PreguntaController::class, 'index']);
 

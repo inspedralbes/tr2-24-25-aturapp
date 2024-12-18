@@ -141,14 +141,14 @@
     const alumno_id = dataUser.user.id;
 
     function resetSector() {
-        
+        sectors3.value.forEach((sector, i) => {
+            sector.color = "white";
+        });
     }
 
     function sosAlert() {
         sosActive.value = !sosActive.value;
-        if(indexActive.value){
-            sectors3.value[indexActive.value].color = "white";
-        }
+        resetSector();
     }
 
     const sectors3 = ref([
@@ -187,7 +187,6 @@
             sector.color = i === index ? "red" : "white";
         });
         sectorInput.value = sectors3.value[index].id;
-        indexActive.value = sectorInput.value;
     }
 
     async function enviarAlerta() {
@@ -209,6 +208,7 @@
 
             const result = await response.json();
             alert(`Alerta enviada con éxito. ID: ${result.id}`);
+            resetSector();
         } catch (error) {
             console.log("Error: ", error);
         }

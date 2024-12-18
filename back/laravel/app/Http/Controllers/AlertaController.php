@@ -17,24 +17,48 @@ class AlertaController extends Controller
     {
         $alertas = Alerta::with('sector', 'estado')
             ->get()
-            ->groupBy('sector.sector') // Agrupar por el nombre del sector
-            ->map(function ($alertas, $sectorName) {
+            ->groupBy('sector.id') // Agrupar por el nombre del sector
+            ->map(function ($alertas, $sector_id) {
+                $sector = $alertas->first()->sector;
                 return [
-                    'nombre' => $sectorName,
+                    'id_sector' => $sector_id,
+                    'nombre' => $sector->sector,
                     'total' => $alertas->count(),
-                    'detalles' => $alertas->map(function ($alerta) {
-                        return [
-                            'id' => $alerta->id,
-                            'sector_id' => $alerta->sector->id,
-                            'planta' => $alerta->sector->planta->name,
-                            'descripcion' => $alerta->descripcion,
-                            'estado' => $alerta->estado->name,
-                            'created_at' => $alerta->created_at
-                        ];
-                    })
+                    // 'detalles' => $alertas->map(function ($alerta) {
+                    //     return [
+                    //         'id' => $alerta->id,
+                    //         'sector_id' => $alerta->sector->id,
+                    //         'planta' => $alerta->sector->planta->name,
+                    //         'descripcion' => $alerta->descripcion,
+                    //         'estado' => $alerta->estado->name,
+                    //         'created_at' => $alerta->created_at
+                    //     ];
+                    // })
                 ];
             })
             ->values();
+        return response()->json($alertas, 200);
+    }
+
+    public function getAlertsSector(Request $request)
+    {
+        $alertas = Alerta::with('sector', 'estado', 'user')
+                ->where('sector_id', $request->sector_id)
+                ->get()
+                ->map(function ($alerta) {
+                    return [
+                        'id' => $alerta->id,
+                        'alumne_id' => $alerta->alumno_id,
+                        'alumne_name' => $alerta->user->nom.' '.$alerta->user->cognoms,
+                        'sector_id' => $alerta->sector->id,
+                        'sector_name' => $alerta->sector->sector,
+                        'planta' => $alerta->sector->planta->name,
+                        'descripcion' => $alerta->descripcion,
+                        'estado' => $alerta->estado->name,
+                        'fecha' => $alerta->created_at->toDateTimeString(),
+                    ];
+                });
+
         return response()->json($alertas, 200);
     }
 
