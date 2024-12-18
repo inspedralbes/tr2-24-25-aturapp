@@ -83,6 +83,19 @@ const router = createRouter({
       meta: { requiresAuth: true, rol: 1 },
     },
     {
+      path: '/admin/alumnes',
+      name: 'alumnes',
+      component: () => import('../components/IncidenciasAlumnesComp.vue'),
+      meta: {requiresAuth: true, rol: 2},
+    },
+    {
+      path: '/admin/alumnes/:id',
+      name: 'alumne',
+      component: () => import('../components/DetallAlumne.vue'),
+      meta: { requiresAuth: true, rol: 2 },
+    },
+    
+    {
       path: '/admin/heatmap',
       name: 'heatmap',
       component: () => import('../components/HeatmapComp.vue'),

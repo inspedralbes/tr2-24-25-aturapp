@@ -1,10 +1,11 @@
 <template>
     <ul class="d-flex no-style j-around no-margin" style="color: red">
-        <li style="cursor: pointer;" @click="navigateTo('')">INICI</li>
-        <li style="cursor: pointer;" @click="navigateTo('/heatmap')">HEATMAP</li>
-        <li style="cursor: pointer;" @click="navigateTo('/usuaris')">ALUMNES</li>
-        <li style="cursor: pointer;" @click="navigateTo('/alertes')">ALERTES</li>
-        <li style="cursor: pointer;" @click="navigateTo('/sociograma')">SOCIOGRAMA</li>
+        <li @click="navigateTo('')">INICI</li>
+        <li @click="navigateTo('/heatmap')">HEATMAP</li>
+        <li @click="navigateTo('/alumnes')">ALUMNES</li>
+        <li @click="navigateTo('/alertes')">ALERTES</li>
+        <li @click="navigateTo('/sociograma')">SOCIOGRAMA</li>
+        <li>Incidencia</li>
     </ul>
 
 </template>
@@ -19,4 +20,8 @@ function navigateTo(path) {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+    li{
+        color: red;
+    }
+</style>

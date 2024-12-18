@@ -39,6 +39,12 @@ Route::get('/preguntas', [PreguntaController::class, 'index']);
 //====== PUBLICAR RESPOSTAS ===================
 Route::post('/publicar-respostas', [RespostasController::class, 'store']);
 
+
+//====== VER ALUMNOS ==========================
+Route::get('/get-alumnes', [UserController::class, 'getAlumnes']);
+
+Route::get('/alumnes/{id}', [UserController::class, 'getAlumneById']);
+
 //USAR MIDDLEWARE, SINO PUEDE COMPROMETER ALUMNOS QUE HACEN ALERTAS-----
 Route::post('/alertes', [AlertaController::class, 'myAlerts']);
 

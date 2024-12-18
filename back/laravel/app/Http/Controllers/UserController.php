@@ -38,8 +38,7 @@ class UserController extends Controller
         return response()->json(['success' => true, 'rol' => $rolName], 200);
     }
 
-    public function register(Request $request)
-    {
+    public function register(Request $request) {
         $blacklisted = Blacklist::where('email', $request->email)->exists();
         if ($blacklisted) {
             return response()->json([
@@ -92,8 +91,7 @@ class UserController extends Controller
         ], 201);
     }
 
-    public function verifyEmail($token)
-    {
+    public function verifyEmail($token) {
         $user = User::where('verification_token', $token)->first();
 
         if (!$user) {
@@ -111,8 +109,7 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function login(Request $request)
-    {
+    public function login(Request $request) {
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string|min:6',
@@ -170,8 +167,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(User $alumne, Request $request)
-    {
+    public function update(User $alumne, Request $request) {
         $validated = $request->validate([
             'alumne_id' => 'required|integer',
             'nom' => 'required|string',
@@ -198,4 +194,25 @@ class UserController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Usuari editada amb èxit', 'user' => $alumne], 201);
     }
+
+    public function getAlumnes(Request $request) {
+        $usuaris = User::with(['curs:id,name', 'torn:id,torn'])
+            ->select('id', 'nom', 'cognoms', 'email', 'curs', 'torn','dni','telefon')
+            ->get();
+    
+        return response()->json($usuaris);
+    }
+
+    public function getAlumneById($id) {
+        $alumne = User::with(['curs:id,name', 'torn:id,torn'])
+            ->select('id', 'nom', 'cognoms', 'email', 'curs', 'torn', 'dni', 'telefon')
+            ->find($id);
+
+        if (!$alumne) {
+            return response()->json(['success' => false, 'message' => "L'alumne no existeix"], 404);
+        }
+
+        return response()->json(['success' => true, 'alumne' => $alumne], 200);
+    }
+
 }
