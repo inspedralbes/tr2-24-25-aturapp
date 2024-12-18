@@ -94,6 +94,12 @@ const router = createRouter({
       component: () => import('../components/HomeAdminComp.vue'),
       meta: { requiresAuth: true, rol: 2 },
     },
+    {
+      path: '/admin/alertes',
+      name: 'alertes',
+      component: () => import('../components/AdminAlertes.vue'),
+      meta: { requiresAuth: true, rol: 2 },
+    }
   ],
 });
 

@@ -2,7 +2,7 @@
 set -e
 
 # Ejecutar composer install
-composer install
+#composer install
 # RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Copiar .env si no existe

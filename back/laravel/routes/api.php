@@ -42,7 +42,7 @@ Route::post('/publicar-respostas', [RespostasController::class, 'store']);
 //USAR MIDDLEWARE, SINO PUEDE COMPROMETER ALUMNOS QUE HACEN ALERTAS-----
 Route::post('/alertes', [AlertaController::class, 'myAlerts']);
 
-Route::post('/update', [AlertaController::class, 'update']);
+Route::put('/updateAlert/{id}', [AlertaController::class, 'update']);
 
 Route::get('/show/{id}', [AlertaController::class, 'show']);
 //========================================
