@@ -82,7 +82,7 @@ async function paintAlerts() {
             sectors3.value.forEach(sector => {
                 if (sector.id == sectorName) {
                     if (quantAlerts < 2) {
-                        sector.color = '#ffbebe'
+                        sector.color = '#ffdfdf'
                     } else if (quantAlerts < 4) {
                         sector.color = '#ff8686'
                     } else {
@@ -97,14 +97,14 @@ onMounted(async() => {
     await paintAlerts();
     setInterval(async () => {
         await paintAlerts();
-    }, 10000);
+    }, 5000);
 });
 
 </script>
 
 <style scoped>
 .testColors {
-    color: #ffbebe;
+    color: #ffdfdf;
     color: #ff8686;
     color: #ff4545;
 }

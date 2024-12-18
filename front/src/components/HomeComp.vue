@@ -140,8 +140,15 @@
     const dataUser = store.userData;
     const alumno_id = dataUser.user.id;
 
+    function resetSector() {
+        
+    }
+
     function sosAlert() {
         sosActive.value = !sosActive.value;
+        if(indexActive.value){
+            sectors3.value[indexActive.value].color = "white";
+        }
     }
 
     const sectors3 = ref([
@@ -180,6 +187,7 @@
             sector.color = i === index ? "red" : "white";
         });
         sectorInput.value = sectors3.value[index].id;
+        indexActive.value = sectorInput.value;
     }
 
     async function enviarAlerta() {
