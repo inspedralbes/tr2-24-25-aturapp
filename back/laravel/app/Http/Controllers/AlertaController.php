@@ -105,6 +105,9 @@ class AlertaController extends Controller
             return response()->json(['error' => 'Alerta no encontrada'], 404);
         }
 
+        $user = Auth::user();
+
+        dd($user);
         $alertaFormat = [
             'id' => $alerta->id,
             'sector' => $alerta->sector->sector,
@@ -128,7 +131,7 @@ class AlertaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Alerta $alerta)
+    public function update(Request $request)
     {
         $validated = $request->validate([
             'alerta_id' => 'required|integer',
@@ -136,7 +139,6 @@ class AlertaController extends Controller
             'descripcio' => 'required|string'
         ]);
 
-        dd($request);
         $alerta = Alerta::find($validated['alerta_id']);
 
         if(!$alerta){

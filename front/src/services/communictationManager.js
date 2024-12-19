@@ -1,5 +1,3 @@
-import { useRoute, useRouter } from 'vue-router';
-
 const laravel = { URL: "http://localhost:8000/api" };
 
 export async function guardarMissatgeBBDD(msg) {
@@ -23,6 +21,7 @@ export async function getAlert(id) {
             method: 'GET',
             headers: {
                 "Content-type": "application/json",
+                // "Authorization": `Bearer ${token}`
             }
         });
         if (!response.ok) {
