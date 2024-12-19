@@ -42,13 +42,13 @@ class AlertaController extends Controller
 
     public function getAlertsFilter(Request $request)
     {
-        if ($request->has('month')) {
+        if ($request->time === 'month') {
             $query = Alerta::whereDate('created_at', '>=', now()->startOfMonth())->get();
-        } else if ($request->has('week')) {
+        } else if ($request->time ==='week') {
             $query = Alerta::whereDate('created_at', '>=', now()->startOfWeek())->get();
-        } else if ($request->has('days')) {
-            $query = Alerta::whereDate('created_at', '>=', now()->subDays($request->days))->get();
-        } else {
+        } else if ($request->time ==='day') {
+            $query = Alerta::whereDate('created_at', '>=', now()->subDays($request->quant))->get();
+        } else if ($request->time === 'total'){
             $query = Alerta::all();
         }
         // dd($query);
