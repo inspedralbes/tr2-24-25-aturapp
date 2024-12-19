@@ -65,12 +65,12 @@ class User extends Authenticatable
 
     public function curs()
     {
-        return $this->belongsTo(Curs::class);
+        return $this->belongsTo(Curs::class, 'curs', 'id');
     }
 
     public function torn()
     {
-        return $this->belongsTo(Torn::class);
+        return $this->belongsTo(Torn::class, 'torn', 'id');
     }
 
     public function sentMessages()

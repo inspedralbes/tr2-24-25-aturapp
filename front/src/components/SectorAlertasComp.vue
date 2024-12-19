@@ -4,8 +4,7 @@
             <div id="alert-container">
                 <h2>Alertas del sector: {{ sector }}</h2>
                 <div id="alert-list">
-
-                    <div class="alert-card" v-for="alerta in alertes" @click="openAlert()">
+                    <div class="alert-card" v-for="alerta in alertes" @click="verAlerta(alerta.id)">
                         <h3 class="alert-title">Alerta #{{ alerta.id }}</h3>
                         <div class="alert-footer">
                             <span class="alert-user">Reportado por: {{ alerta.alumne_name }}</span>
@@ -15,9 +14,38 @@
 
                 </div>
             </div>
-    
+
             <div class="show-container">
-                
+                <div class="d-flex align-center j-center" v-if="!alertVisible">
+                    <p>Seleccioni una alerta</p>
+                </div>
+                <div class="alert-info" v-if="alertVisible">
+                    <!-- ID de la alerta -->
+                    <h1 class="alert-id">Alerta #{{ infoAlerta.id }}</h1>
+
+                    <!-- Fecha y hora -->
+                    <p class="alert-datetime">{{ infoAlerta.fecha }}</p>
+
+                    <!-- Autor de la alerta -->
+                    <h3 class="alert-author">Reportat per: <span @click="navigateTo(`alumnes/${infoAlerta.alumne_id}`)" style="color: blue; cursor: pointer;">{{ infoAlerta.alumne_name }}</span></h3>
+
+                    <!-- Descripción -->
+                    <p class="alert-description">
+                        Descripció: {{ infoAlerta.descripcion }}
+                    </p>
+
+                    <!-- Turno -->
+                    <span class="alert-shift">Torn: {{ infoAlumne.torn.torn }}</span>
+
+                    <!-- Curso -->
+                    <span class="alert-course">Curso: {{ infoAlumne.curs.name }}</span>
+
+                    <!-- Sector -->
+                    <span class="alert-sector">Sector: {{ formatText(infoAlerta.sector_name) }}</span>
+
+                    <!-- Planta -->
+                    <span class="alert-floor">{{ infoAlerta.planta }}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -33,8 +61,38 @@ const router = useRouter();
 const route = useRoute();
 const id_sector = route.query.id;
 const alertes = ref();
-const sector = ref()
+const sector = ref();
+const alertVisible = ref(false);
 const infoAlerta = ref();
+const infoAlumne = ref();
+
+function navigateTo(path) {
+    router.push(`/admin/${path}`)
+}
+
+async function getUser(){
+    try {
+        const response = await fetch(`${BASE_URL}/api/getUser`, {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                alumne_id: infoAlerta.value.alumne_id,
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Error en la solicitud");
+        }
+
+        const result = await response.json();
+        console.log(result)
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 async function getAlertsSector() {
     try {
@@ -54,6 +112,7 @@ async function getAlertsSector() {
         }
 
         const result = await response.json();
+        // console.log(result)
         return result;
     } catch (error) {
         console.error(error);
@@ -73,10 +132,16 @@ function formatText(text) {
         .join(' '); // Une las palabras con un espacio
 }
 
+async function verAlerta(id) {
+    alertVisible.value = true;
+    infoAlerta.value = alertes.value.find((alerta) => alerta.id === id);
+    infoAlumne.value = await getUser();
+    console.log(infoAlumne.value.user);
+}
+
 onMounted(async () => {
-   alertes.value = await getAlertsSector();
-   
-   sector.value = formatText(alertes.value[0].sector_name);
+    alertes.value = await getAlertsSector();
+    sector.value = formatText(alertes.value[0].sector_name);
 });
 
 </script>
@@ -174,8 +239,72 @@ onMounted(async () => {
 .show-container {
     display: flex;
     flex: 1.5;
-    border-radius: 16px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    background-color: #f9f9f9;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: max-content;
+}
+
+.show-container>div:first-child{
+    width: 100%;
+}
+
+.show-container>div:first-child>p:first-child {
+    font-size: 30px;
+    color: #b7b7b7;
+    font-weight: bold;
+}
+
+/* Información de la alerta */
+.alert-info {
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+    height: max-content;
+}
+
+/* Título (ID de la alerta) */
+.alert-id {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Fecha y hora */
+.alert-datetime {
+    font-size: 0.9rem;
+    color: rgba(0, 0, 0, 0.5);
+    margin-bottom: 15px;
+}
+
+/* Autor de la alerta */
+.alert-author {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+/* Descripción */
+.alert-description {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+/* Turno, curso, sector y planta */
+.alert-shift,
+.alert-course,
+.alert-sector,
+.alert-floor {
+    display: block;
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 8px;
+    font-weight: 500;
 }
 </style>

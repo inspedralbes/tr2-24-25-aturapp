@@ -13,6 +13,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::post('/getUser', [UserController::class, 'index']);
+
 //====== OBTENER CURSOS =======================
 Route::get('/cursos', [CursController::class, 'index']);
 

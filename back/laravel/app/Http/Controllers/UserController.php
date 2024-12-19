@@ -13,19 +13,19 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    // public function index(User $user, Request $request) 
-    // {
-    //     $user = User::find($request->id);
+    public function index(Request $request)
+    {
+        $user = User::with( ['rol:id,name', 'curs:id,name', 'torn:id,torn'])->where('id', $request->alumne_id)->first();
+        
+        if (!$user) {
+            return response()->json(['message' => "Error, no existeix l'usuari"], 400);
+        }
 
-    //     if(!$user)
-    //     {
-    //         return response()->json(['message' => "Error, no existeix l'usuari"], 400);
-    //     }
+        return response()->json($user, 200);
+    }
 
-    //     return response()->json(['user' => $user], 200);
-    // }
-
-    public function getRol($id) {
+    public function getRol($id)
+    {
         $user = User::with('rol')
             ->where('id', $id)
             ->first();
