@@ -167,33 +167,35 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(User $alumne, Request $request) {
-        $validated = $request->validate([
-            'alumne_id' => 'required|integer',
-            'nom' => 'required|string',
-            'cognom' => 'required|string',
-            'telefon' => 'nullable|integer',
-            'dni' => 'string|nullable'
-        ]);
-
-        $alumne = User::find($validated['alumne_id']);
-
+    public function updateAlumne(Request $request, $id) {
+        $alumne = User::find($id);
+    
         if (!$alumne) {
-            return response()->json(['success' => false, 'message' => "L'alumne no existeix"]);
+            return response()->json(['success' => false, 'message' => "L'alumne no existeix"], 404);
         }
-
-        if ($alumne->id != $validated['alumne_id']) {
-            return response()->json(['success' => false, 'message' => 'Error alumne no valid']);
+    
+        $data = $request->only(['nom', 'cognoms', 'email', 'curs', 'torn', 'dni', 'telefon']);
+    
+        $validator = Validator::make($data, [
+            'nom' => 'string|max:255',
+            'cognoms' => 'string|max:255',
+            'email' => 'email',
+            'curs' => 'integer|exists:curs,id',
+            'torn' => 'integer|exists:torns,id',
+            'dni' => 'string|max:10',
+            'telefon' => 'string|max:15',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 400);
         }
-
-        $alumne->nom = $validated['nom'];
-        $alumne->cognoms = $validated['cognom'];
-        $alumne->telefon = $validated['telefon'] ?? $alumne->telefon;
-        $alumne->dni = $validated['dni'] ?? $alumne->dni;
-        $alumne->save();
-
-        return response()->json(['success' => true, 'message' => 'Usuari editada amb èxit', 'user' => $alumne], 201);
+    
+        $alumne->update($data);
+    
+        return response()->json(['success' => true, 'message' => 'Alumne actualitzat correctament.']);
     }
+    
+    
 
     public function getAlumnes(Request $request) {
         $usuaris = User::with(['curs:id,name', 'torn:id,torn'])

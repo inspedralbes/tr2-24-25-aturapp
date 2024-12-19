@@ -10,9 +10,9 @@ class TornController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
+    public function index() {
+        $torn = Torn::select('id', 'torn')->get();
+        return response()->json($torn);
     }
 
     /**

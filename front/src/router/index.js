@@ -82,6 +82,8 @@ const router = createRouter({
       component: () => import('../components/enquesta.vue'),
       meta: { requiresAuth: true, rol: 1 },
     },
+
+    // ====== GESTIÓ D'ALUMNES ========================
     {
       path: '/admin/alumnes',
       name: 'alumnes',
@@ -94,7 +96,13 @@ const router = createRouter({
       component: () => import('../components/DetallAlumne.vue'),
       meta: { requiresAuth: true, rol: 2 },
     },
-    
+    {
+      path: '/admin/modificar-alumne/:id',
+      name: 'ModificarAlumne',
+      component: () => import('../components/ModificarAlumneComp.vue')
+    },
+
+
     {
       path: '/admin/heatmap',
       name: 'heatmap',

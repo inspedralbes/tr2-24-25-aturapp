@@ -19,8 +19,10 @@
         <p v-for="alumne in alumnesFiltrats" :key="alumne.id">
             Nom: {{ alumne.nom }}           <br>
             Cognom: {{ alumne.cognoms }}    <br>
-            Email: {{ alumne.email }}       <br>
+            Email: {{ alumne.email }}       <br><br>
             <button @click="verDetall(alumne.id)">Més informació</button>
+            <br>
+            <button @click="ModificarAlumne(alumne.id)">Modificar Alumne</button>
         </p>
     </div>
 </template>
@@ -29,6 +31,7 @@
     import { ref, computed, onMounted } from 'vue';
     import { useRouter } from 'vue-router';
     import { getAlumnes } from '../services/communictationManager';
+    import ModificarAlumneComp from './ModificarAlumneComp.vue';
 
     const alumnes = ref([]);
     const errorMessage = ref('');
@@ -61,55 +64,69 @@
         });
     });
 
+    const ModificarAlumne = (id) => {
+        router.push(`/admin/modificar-alumne/${id}`);
+    };
+
     const verDetall = (id) => {
         router.push(`/admin/alumnes/${id}`);
     };
 </script>
 
 <style scoped>
-    #llistatAlumnes p{
-        width: 30%;
+    #filtre {
+        margin: 50px auto;
+        display: flex;
+        justify-content: flex-start;
+        gap: 1rem;
+    }
+
+    #filtre select {
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 2px solid #ff0000;
+        background-color: #ffffff;
+        color: #333;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+
+    #filtre select:focus {
+        border-color: #cc0000;
+    }
+
+    #llistatAlumnes {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        padding: 1rem;
         margin: 20px auto;
     }
 
-    h1 {
-        font-size: 24px;
-        margin-bottom: 10px;
+    #llistatAlumnes p {
+        background-color: #ffffff;
+        border: 1px solid #ff0000;
+        padding: 1rem;
+        width: calc(33% - 2rem);
+        transition: transform 0.3s ease;
     }
 
-    p {
-        padding: 15px;
-        margin: 10px 0;
-        border: 1px solid #ddd;
-        background-color: #f9f9f9;
+    #llistatAlumnes p:hover {
+        transform: translateY(-5px);
     }
 
-    button {
-        background-color: #ff2600;
-        color: white;
+    #llistatAlumnes button {
+        padding: 0.5rem 1rem;
+        margin-top: 0.5rem;
+        font-size: 1rem;
+        color: #ffffff;
+        background-color: #ff0000;
         border: none;
-        padding: 8px 16px;
-        border-radius: 4px;
         cursor: pointer;
-        transition: background-color 0.3s;
+        transition: background-color 0.3s ease;
     }
 
-    button:hover {
-        background-color: #a04545;
-    }
-
-    .error-message {
-        color: red;
-        font-weight: bold;
-        margin-top: 10px;
-    }
-
-    select::after {
-        content: '▼';
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        pointer-events: none;
+    #llistatAlumnes button:hover {
+        background-color: #cc0000;
     }
 </style>
