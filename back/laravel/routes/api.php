@@ -53,7 +53,7 @@ Route::get('/user/{id}/alerts', [AlertaController::class, 'getAlertsByUser']);
 
 
 //====== MODIFICAR ALUMNAT ====================
-Route::put('/alumnes/{id}', [UserController::class, 'updateAlumne']);
+Route::post('/alumnes/{id}', [UserController::class, 'updateAlumne']);
 
 
 

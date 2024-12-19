@@ -15,7 +15,6 @@ export async function guardarMissatgeBBDD(msg) {
     return data;
 }
 
-
 // === OBTINDRE TOTS ELS ALUMENS ===========================
 export async function getAlumnes() {
     const URL = `${laravel.URL}/get-alumnes`;
@@ -56,10 +55,10 @@ export const alertasAlumne = async (id) => {
 }
 
 // === ACTUALIZAR DATOS DE UN ALUMNO ========================
-export const updateAlumne = async (id, data) => {
+export const updateAlumne = async (id, data, method = 'PUT') => {
     const URL = `${laravel.URL}/alumnes/${id}`;
     const response = await fetch(URL, {
-        method: 'PUT',
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -73,6 +72,7 @@ export const updateAlumne = async (id, data) => {
 
     return await response.json();
 };
+
 
 // === OBTENER CURSOS =====================
 export const getCursos = async () => {

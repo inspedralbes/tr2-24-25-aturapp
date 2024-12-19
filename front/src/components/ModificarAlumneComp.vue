@@ -45,16 +45,16 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getAlumneById, updateAlumne, getCursos, getTorns } from '../services/communictationManager.js';
 
-const router = useRouter();
 const route = useRoute();
+const router = useRouter();
 
+const torns = ref([]);
+const cursos = ref([]);
 const alumne = ref(null);
 const alumneEdit = ref({});
-const cursos = ref([]);
-const torns = ref([]);
+const errorMessage = ref('');
 const selectedCurs = ref(null);
 const selectedTorn = ref(null);
-const errorMessage = ref('');
 
 onMounted(async () => {
     const id = route.params.id;
@@ -78,20 +78,24 @@ onMounted(async () => {
 
 const guardarCambios = async () => {
     try {
-        alumneEdit.value.curs = cursos.value.find(c => c.id === selectedCurs.value);
-        alumneEdit.value.torn = torns.value.find(t => t.id === selectedTorn.value);
+        const datosActualizados = {
+            nom: alumneEdit.value.nom,
+            cognoms: alumneEdit.value.cognoms,
+            email: alumneEdit.value.email,
+            dni: alumneEdit.value.dni,
+            telefon: alumneEdit.value.telefon || "", // Asegurarse de enviar una cadena vacía si está vacío
+            curs_id: selectedCurs.value, // Solo el ID del curso
+            torn_id: selectedTorn.value, // Solo el ID del turno
+        };
 
-        await updateAlumne(alumneEdit.value.id, {
-            ...alumneEdit.value,
-            curs_id: selectedCurs.value,
-            torn_id: selectedTorn.value,
-        });
+        // Llamada al backend con el método PATCH
+        await updateAlumne(alumneEdit.value.id, datosActualizados, 'POST');
 
         alert('Datos guardados correctamente');
         router.push('/admin/alumnes');
     } catch (error) {
         console.error('Error al guardar los cambios:', error);
-        alert('Hubo un error al guardar los cambios');
+        alert('Hubo un error al guardar los cambios. Verifica los datos e inténtalo de nuevo.');
     }
 };
 </script>

@@ -167,33 +167,26 @@ class UserController extends Controller
         ]);
     }
 
-    public function updateAlumne(Request $request, $id) {
-        $alumne = User::find($id);
+public function updateAlumne(Request $request, $id)
+{
+    $validated = $request->validate([
+        'nom' => 'nullable|string|max:255',
+        'cognoms' => 'nullable|string|max:255',
+        'email' => 'nullable|email|max:255',
+        'dni' => 'nullable|string|max:20',
+        'telefon' => 'nullable|string|max:15',
+        'curs_id' => 'nullable|integer|exists:curs,id',
+        'torn_id' => 'nullable|integer|exists:torns,id',
+    ]);
+
+    $alumne = User::findOrFail($id);
+
+    $alumne->update($validated);
+
+    return response()->json(['success' => true, 'message' => 'Alumno actualizado correctamente.']);
+}
     
-        if (!$alumne) {
-            return response()->json(['success' => false, 'message' => "L'alumne no existeix"], 404);
-        }
     
-        $data = $request->only(['nom', 'cognoms', 'email', 'curs', 'torn', 'dni', 'telefon']);
-    
-        $validator = Validator::make($data, [
-            'nom' => 'string|max:255',
-            'cognoms' => 'string|max:255',
-            'email' => 'email',
-            'curs' => 'integer|exists:curs,id',
-            'torn' => 'integer|exists:torns,id',
-            'dni' => 'string|max:10',
-            'telefon' => 'string|max:15',
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->errors()], 400);
-        }
-    
-        $alumne->update($data);
-    
-        return response()->json(['success' => true, 'message' => 'Alumne actualitzat correctament.']);
-    }
     
     
 
@@ -216,5 +209,4 @@ class UserController extends Controller
 
         return response()->json(['success' => true, 'alumne' => $alumne], 200);
     }
-
 }
