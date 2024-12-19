@@ -77,11 +77,6 @@ const router = createRouter({
       name: 'adminHome',
       component: () => import('../components/HomeAdminComp.vue'),
       meta: { requiresAuth: true, rol: 2 },
-    },
-    {
-      path: '/enquesta',
-      name: 'enquesta',
-      component: () => import('../components/enquesta.vue')
     }
   ],
 });

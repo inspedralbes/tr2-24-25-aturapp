@@ -1,8 +1,9 @@
 const laravel = { URL: "http://localhost:8000/api" };
 
 export async function guardarMissatgeBBDD(msg) {
-    const URL = `${laravel.URL}/missatge`;
-    const response = await fetch(URL, {
+    try {
+        const URL = `${laravel.URL}/missatge`;
+        const response = await fetch(URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -12,6 +13,9 @@ export async function guardarMissatgeBBDD(msg) {
     const data = await response.json();
 
     return data;
+    } catch (error) {
+        console.error(error);    
+    }
 }
 
 export async function getAlert(id) {
@@ -58,6 +62,62 @@ export async function editarAlerta(id, user_id, descripcio) {
 
         const data = await response.json();
         
+        return data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export async function fetchPreguntas(){
+    try {
+        const URL = `${laravel.URL}/preguntas`;
+        const response = await fetch(URL);
+        const data = await response.json();
+        
+        return data;
+    } catch (error) {
+        console.error(error);        
+    }
+}
+
+export async function publicarRespostes(data) {
+    try {
+        const URL = `${laravel.URL}/publicar-respostas`;
+        const response = await fetch(URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ respuestas: data }),
+        });
+
+        if (!response.ok) {
+            throw new Error("Error en la solicitud");
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export async function getAllAlertes() {
+    try {
+        const URL = `${laravel.URL}/getAllAlerts`;
+        const response = await fetch(URL, {
+            method: 'GET',
+            headers: {
+                "Content-type": "application/json",
+                // "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error("Error en la solicitud");
+        }
+
+        const data = await response.json();
         return data;
     } catch (error) {
         console.error(error);

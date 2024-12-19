@@ -42,8 +42,8 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { paths3 } from '@/assets/planos/paths3h';
+import { getAllAlertes } from '@/services/communictationManager.js';
 
-const BASE_URL = 'http://localhost:8000';
 const router = useRouter();
 
 const plantaInput = ref('planta3');
@@ -83,21 +83,6 @@ const sectors3 = ref([
     { id: "fin-ala-bosca", idbd: 27, d: "M76.5 390L3.5 397L1 219.5L137 206L139 253L76.5 258.5V390Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "fin-ala-ausias", idbd: 28, d: "M1787.5 397.5L1860.5 404.5L1863 227L1729 213V260L1787.5 266V397.5Z", color: "white", hasAlerts: false, alerts: [] },
 ]);
-
-async function getAllAlertes() {
-    try {
-        const response = await fetch(`${BASE_URL}/api/getAllAlerts`);
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-
-        const result = await response.json();
-        return result;
-    } catch (error) {
-        console.error(error);
-    }
-}
 
 async function paintAlerts() {
     const allAlerts = await getAllAlertes();
@@ -172,9 +157,9 @@ onMounted(async () => {
     // arrayColors.value = transformaValors([0, 10, 100, 100, 0]);
     console.log(await paintAlerts());
 
-    setInterval(async () => {
-        // await paintAlerts();
-    }, 5000);
+    // setInterval(async () => {
+    //     // await paintAlerts();
+    // }, 5000);
 });
 
 </script>

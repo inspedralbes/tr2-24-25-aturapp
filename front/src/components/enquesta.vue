@@ -1,35 +1,14 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useCounterStore } from '../stores/counter';
+import { fetchPreguntas, publicarRespostes } from '@/services/communictationManager';
 
 const preguntas = ref([]);
 const PaginaActual = ref(0);
 const asignaciones = ref({});
 const counterStore = useCounterStore();
-const BASE_URL = "http://localhost:8000";
 const userData = computed(() => counterStore.userData || {}); // ID PINIA
 const companysClase = computed(() => counterStore.userData?.companys_clase || []);
-
-async function fetchPreguntas(){
-
-}
-
-const fetchPreguntas = async () => {
-    const response = await fetch(`${BASE_URL}/api/preguntas`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-
-    if (response.ok) {
-        const data = await response.json();
-        preguntas.value = data;
-        preguntas.value.forEach((pregunta) => {
-            asignaciones.value[pregunta.id] = { 1: '', 2: '', 3: '' };
-        });
-    }
-};
 
 const actualizarAsignacion = (preguntaId, selectorId, valor) => {
     if (!asignaciones.value[preguntaId]) {
@@ -70,14 +49,7 @@ const publicarRespostas = async () => {
         id_alumno_emisor: idAlumnoEmisor,
     }));
 
-    const response = await fetch(`${BASE_URL}/api/publicar-respostas`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ respuestas: data }),
-    });
-
+    const response = await publicarRespostes(data);
     if (response.ok) {
         alert('Respuestas enviadas correctamente.');
     } else {
@@ -95,8 +67,11 @@ const PaginaAnterior = () => {
     if (PaginaActual.value > 0) PaginaActual.value--;
 };
 
-onMounted(() => {
-    fetchPreguntas();
+onMounted(async () => {
+    preguntas.value = await fetchPreguntas();
+    preguntas.value.forEach((pregunta) => {
+        asignaciones.value[pregunta.id] = { 1: '', 2: '', 3: '' };
+    });
 });
 </script>
 
