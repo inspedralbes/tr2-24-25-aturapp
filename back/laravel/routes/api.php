@@ -8,10 +8,6 @@
     use App\Http\Controllers\PreguntaController;
     use App\Http\Controllers\RespostasController;
 
-    Route::get('/user', function (Request $request) {
-    return $request->user();
-    })->middleware('auth:sanctum');
-
     //====== OBTENER CURSOS =======================
     Route::get('/cursos',[CursController::class, 'index']);
 
@@ -19,25 +15,24 @@
     Route::post('/login', [UserController::class, 'login']);
 
     //====== ALERTAS =========================
-    Route::post('/alert', [AlertaController::class, 'store']);
+    
 
     //====== CREAR USUARIO ========================
     Route::post('/register', [UserController::class, 'register']);    
 
     //====== VER PREGUNTAS ========================
-    Route::get('/preguntas',[PreguntaController::class, 'index']);
+    
 
     //====== PUBLICAR RESPOSTAS ===================
-    Route::post('/publicar-respostas', [RespostasController::class, 'store']);
-
+    Route::get('/preguntas',[PreguntaController::class, 'index']);
     
-    //USAR MIDDLEWARE, SINO PUEDE COMPROMETER ALUMNOS QUE HACEN ALERTAS-----
-    Route::post('/alertes', [AlertaController::class, 'myAlerts']);
-
-    Route::post('/update', [AlertaController::class, 'update']);
-
-    Route::get('/show/{id}', [AlertaController::class, 'show']);
-    //========================================
-
-    //====== VER PREGUNTAS ========================
-    Route::get('/preguntas', [PreguntaController::class, 'index']);
+    // Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/user', function (Request $request) {
+            return $request->user();
+        });
+        Route::post('/publicar-respostas', [RespostasController::class, 'store']);
+        Route::post('/alert', [AlertaController::class, 'store']);
+        Route::post('/alertes', [AlertaController::class, 'myAlerts']);
+        Route::post('/update', [AlertaController::class, 'update']);
+        Route::get('/show/{id}', [AlertaController::class, 'show']);
+    // });
