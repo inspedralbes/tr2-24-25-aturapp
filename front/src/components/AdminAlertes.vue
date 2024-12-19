@@ -5,31 +5,43 @@
         <div v-else-if="error" class="error">Error al cargar alertas: {{ error }}</div>
         <ul v-else>
             <li v-for="alerta in alertas" :key="alerta.id">
-                <strong>{{ alerta.titulo || 'Sin título' }}</strong><br />
-                Descripció: {{ alerta.descripcion || 'Sin descripción' }}<br />
-                Sector: {{ alerta.sector || 'Sin sector' }}<br />
-                Planta: {{ alerta.planta || 'Sin planta' }}<br />
-                Estat:
-                <select v-model="alerta.estado" @change="actualizarEstado(alerta)">
-                    <option :value="alerta.estado" disabled>{{ alerta.estado }}</option>
-                    <option value="pendent">Pendent</option>
-                    <option value="en proges">En progés</option>
-                    <option value="resolt">Resolt</option>
-                </select>
-                <br />
-                Data: {{ formatearFecha(alerta.created_at) }}
+                <div class="alerta-header">
+                    <strong>{{ alerta.titulo || 'Sin título' }}</strong>
+                    <button class="alerta-btn" @click="redireccionarFormulario(alerta.id)">Incidencia</button>
+                </div>
+                <div class="alerta-content">
+                    Descripció: {{ alerta.descripcion || 'Sin descripción' }}<br />
+                    Sector: {{ alerta.sector || 'Sin sector' }}<br />
+                    Planta: {{ alerta.planta || 'Sin planta' }}<br />
+                    Estat:
+                    <select v-model="alerta.estado" @change="actualizarEstado(alerta)">
+                        <option :value="alerta.estado" disabled>{{ alerta.estado }}</option>
+                        <option value="pendent">Pendent</option>
+                        <option value="en progres">En progrés</option>
+                        <option value="resolt">Resolt</option>
+                    </select>
+                    <br /><br>
+                    Data: {{ formatearFecha(alerta.created_at) }}
+                </div>
             </li>
         </ul>
     </div>
 </template>
 
+
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 const alertas = ref([]);
 const cargando = ref(true);
 const error = ref(null);
-const pollingInterval = ref(null); 
+const pollingInterval = ref(null);
+const router = useRouter();
+
+const redireccionarFormulario = (id) => {
+    router.push({ name: 'Formulario', params: { id } }); 
+};
 
 const fetchAlertas = async (showNotification = false) => {
     try {
@@ -103,16 +115,18 @@ const formatearFecha = (fechaISO) => {
     if (!fechaISO) return 'Sin fecha';
 
     const fecha = new Date(fechaISO);
-    return fecha.toLocaleDateString('es-ES', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-    }) + ' ' + fecha.toLocaleTimeString('es-ES', {
-        hour: '2-digit',
-        minute: '2-digit',
-    });
-};
 
+    const opciones = { 
+        timeZone: 'UTC', 
+        year: 'numeric', 
+        month: '2-digit', 
+        day: '2-digit', 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    };
+
+    return fecha.toLocaleDateString('es-ES', opciones);
+};
 
 onMounted(() => {
     fetchAlertas();
@@ -176,6 +190,7 @@ li {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    position: relative;
 }
 
 li strong {
@@ -217,6 +232,31 @@ li .estado select {
 li .fecha {
     font-style: italic;
     color: #d32f2f; 
+}
+
+.alerta-header {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+}
+
+.alerta-btn {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.alerta-btn:hover {
+    background-color: #b71c1c;
+}
+
+.alerta-content {
+    margin-top: 10px;
 }
 
 </style>
