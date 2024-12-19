@@ -23,7 +23,7 @@
             <p class="no-margin">Telèfon: </p>
             <input type="number" v-model="telefon" name="telefon" id="telefon">
             <p class="no-margin">DNI / NIE: </p>
-            <input type="text" v-model="dni" name="nom" id="nom">
+            <input type="text" v-model="dni" name="nom" id="nom" value="">
         </div>
         <div id="containButtons" class="d-flex align-center j-around">
             <input class="btn-confirm" type="button" value="Guardar" @click="editarPerfil">
@@ -32,17 +32,53 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useCounterStore } from '../stores/counter';
 import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
 
+const BASE_URL = "http://localhost:8000";
 const router = useRouter();
 const store = useCounterStore();
-const user = store.userData.user;
+let user = store.userData.user;
 const nom = user.nom;
 const cognom = user.cognom;
-// const telefon = user.telefon
+const telefon = user.telefon
 const dni = user.dni;
+
+async function editarPerfil() {
+    try {
+        const response = await fetch(`${BASE_URL}/api/editaruser`, {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                alumne_id: user.id,
+                nom: nom.value,
+                cognom: cognom.value,
+                telefon: telefon.value,
+                dni: dni.value
+            })
+        });
+
+        if(!response.ok){
+            throw new Error("Error en la solicitud");
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert('Usuari editat amb èxit');
+            user = JSON.stringify(result.user);
+            console.log(user);
+        } else {
+            alert(`Ha ocorregut un error (${result.message || 'Error desconegut'})`)
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+}
 </script>
 
 <style>
@@ -114,7 +150,8 @@ input {
     transition: all 0.3s ease;
 }
 
-input:focus {
+input[type="text"]:focus,
+input[type="number"]:focus {
     outline: none;
     border-color: #ff4d4d;
     background-color: #fff;

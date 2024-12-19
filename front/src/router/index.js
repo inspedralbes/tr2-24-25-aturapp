@@ -12,36 +12,43 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: () => import('../components/HomeComp.vue'),
+      meta: { requiresAuth: true, rol: 1 },
     },
     {
       path: '/access',
       name: 'access',
       component: () => import('../views/access.vue'),
+      meta: { public: true },
     },
     {
       path: '/login',
       name: 'login',
       component: () => import('../components/login.vue'),
+      meta: { public: true },
     },
     {
       path: '/register',
       name: 'register',
-      component: () => import('../components/register.vue')
+      component: () => import('../components/register.vue'),
+      meta: { public: true },
     },
     {
       path: '/chat',
       name: 'chat',
-      component: () => import('../components/ChatComp.vue')
+      component: () => import('../components/ChatComp.vue'),
+      meta: { requiresAuth: true, rol: 1 },
     },
     {
       path: '/mapa',
       name: 'mapa',
-      component: () => import('../components/MapComp.vue')
+      component: () => import('../components/MapComp.vue'),
+      meta: { requiresAuth: true, rol: 1 },
     },
     {
       path: '/perfil',
       name: 'perfil',
-      component: () => import('../components/UserComp.vue')
+      component: () => import('../components/UserComp.vue'),
+      meta: { requiresAuth: true, rol: 1 },
     },
     {
       path: '/soport',
@@ -56,12 +63,20 @@ const router = createRouter({
     {
       path: '/perfil/alertes/editar',
       name: 'editarAlerta',
-      component: () => import('../components/EditarAlertaComp.vue')
+      component: () => import('../components/EditarAlertaComp.vue'),
+      meta: { requiresAuth: true, rol: 1 },
     },
     {
-      path: '/perfil/dades',
-      name: 'dades',
-      component: () => import('../components/DadesUserComp.vue')
+      path: '/enquesta',
+      name: 'enquesta',
+      component: () => import('../components/enquesta.vue'),
+      meta: { requiresAuth: true, rol: 1 },
+    },
+    {
+      path: '/admin',
+      name: 'adminHome',
+      component: () => import('../components/HomeAdminComp.vue'),
+      meta: { requiresAuth: true, rol: 2 },
     },
     {
       path: '/enquesta',

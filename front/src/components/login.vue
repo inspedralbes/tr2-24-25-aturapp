@@ -69,7 +69,7 @@ async function handleSubmit() {
 
       await nextTick();
 
-      location.href = "/home";
+      location.href = data.redirect_to;
     } else {
       const data = await response.json();
       errorMessage.value = data.message || 'Credenciales incorrectas';

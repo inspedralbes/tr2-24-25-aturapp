@@ -15,7 +15,51 @@ class AlertaController extends Controller
      */
     public function index()
     {
-        //
+        $alertas = Alerta::with('sector', 'estado')
+            ->get()
+            ->groupBy('sector.id') // Agrupar por el nombre del sector
+            ->map(function ($alertas, $sector_id) {
+                $sector = $alertas->first()->sector;
+                return [
+                    'id_sector' => $sector_id,
+                    'nombre' => $sector->sector,
+                    'total' => $alertas->count(),
+                    // 'detalles' => $alertas->map(function ($alerta) {
+                    //     return [
+                    //         'id' => $alerta->id,
+                    //         'sector_id' => $alerta->sector->id,
+                    //         'planta' => $alerta->sector->planta->name,
+                    //         'descripcion' => $alerta->descripcion,
+                    //         'estado' => $alerta->estado->name,
+                    //         'created_at' => $alerta->created_at
+                    //     ];
+                    // })
+                ];
+            })
+            ->values();
+        return response()->json($alertas, 200);
+    }
+
+    public function getAlertsSector(Request $request)
+    {
+        $alertas = Alerta::with('sector', 'estado', 'user')
+                ->where('sector_id', $request->sector_id)
+                ->get()
+                ->map(function ($alerta) {
+                    return [
+                        'id' => $alerta->id,
+                        'alumne_id' => $alerta->alumno_id,
+                        'alumne_name' => $alerta->user->nom.' '.$alerta->user->cognoms,
+                        'sector_id' => $alerta->sector->id,
+                        'sector_name' => $alerta->sector->sector,
+                        'planta' => $alerta->sector->planta->name,
+                        'descripcion' => $alerta->descripcion,
+                        'estado' => $alerta->estado->name,
+                        'fecha' => $alerta->created_at->toDateTimeString(),
+                    ];
+                });
+
+        return response()->json($alertas, 200);
     }
 
     public function myAlerts(Request $request)
@@ -99,9 +143,12 @@ class AlertaController extends Controller
         $alerta = Alerta::with('sector.planta', 'estado')
             ->where('id', $id)
             ->first();
-        
-        // AÑADIR IF(AUTH()->ID() != $ALERTA->ALUMNO_ID ) RETORNAR ERROR, PARA PROTEGER ALERTAS
-        if (!$alerta){
+
+        // $user = 
+        // dd(Auth::user());
+
+
+        if (!$alerta) {
             return response()->json(['error' => 'Alerta no encontrada'], 404);
         }
 
@@ -114,7 +161,7 @@ class AlertaController extends Controller
             'created_at' => $alerta->created_at,
         ];
 
-        return response()->json($alertaFormat,201);
+        return response()->json($alertaFormat, 201);
     }
 
     /**
@@ -138,11 +185,11 @@ class AlertaController extends Controller
 
         $alerta = Alerta::find($validated['alerta_id']);
 
-        if(!$alerta){
+        if (!$alerta) {
             return response()->json(['success' => false, 'message' => 'Alerta no trobada'], 404);
         }
 
-        if($alerta->alumno_id != $validated['alumne_id']){
+        if ($alerta->alumno_id != $validated['alumne_id']) {
             return response()->json(['success' => false, 'message' => 'No pots editar aquesta alerta']);
         }
 

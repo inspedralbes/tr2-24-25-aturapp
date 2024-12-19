@@ -22,6 +22,7 @@ class User extends Authenticatable
         'nom',
         'cognoms',
         'dni',
+        'telefon',
         'email',
         'password',
         'curs',
@@ -59,7 +60,7 @@ class User extends Authenticatable
 
     public function rol()
     {
-        return $this->belongsTo(Rol::class);
+        return $this->belongsTo(Rol::class, 'rol', 'id');
     }
 
     public function curs()
