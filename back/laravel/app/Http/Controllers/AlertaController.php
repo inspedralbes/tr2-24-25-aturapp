@@ -40,24 +40,40 @@ class AlertaController extends Controller
         return response()->json($alertas, 200);
     }
 
+    public function getAlertsFilter(Request $request)
+    {
+        if ($request->has('month')) {
+            $query = Alerta::whereDate('created_at', '>=', now()->startOfMonth())->get();
+        } else if ($request->has('week')) {
+            $query = Alerta::whereDate('created_at', '>=', now()->startOfWeek())->get();
+        } else if ($request->has('days')) {
+            $query = Alerta::whereDate('created_at', '>=', now()->subDays($request->days))->get();
+        } else {
+            $query = Alerta::all();
+        }
+        // dd($query);
+
+        return response()->json($query);
+    }
+
     public function getAlertsSector(Request $request)
     {
         $alertas = Alerta::with('sector', 'estado', 'user')
-                ->where('sector_id', $request->sector_id)
-                ->get()
-                ->map(function ($alerta) {
-                    return [
-                        'id' => $alerta->id,
-                        'alumne_id' => $alerta->alumno_id,
-                        'alumne_name' => $alerta->user->nom.' '.$alerta->user->cognoms,
-                        'sector_id' => $alerta->sector->id,
-                        'sector_name' => $alerta->sector->sector,
-                        'planta' => $alerta->sector->planta->name,
-                        'descripcion' => $alerta->descripcion,
-                        'estado' => $alerta->estado->name,
-                        'fecha' => $alerta->created_at->toDateTimeString(),
-                    ];
-                });
+            ->where('sector_id', $request->sector_id)
+            ->get()
+            ->map(function ($alerta) {
+                return [
+                    'id' => $alerta->id,
+                    'alumne_id' => $alerta->alumno_id,
+                    'alumne_name' => $alerta->user->nom . ' ' . $alerta->user->cognoms,
+                    'sector_id' => $alerta->sector->id,
+                    'sector_name' => $alerta->sector->sector,
+                    'planta' => $alerta->sector->planta->name,
+                    'descripcion' => $alerta->descripcion,
+                    'estado' => $alerta->estado->name,
+                    'fecha' => $alerta->created_at->toDateTimeString(),
+                ];
+            });
 
         return response()->json($alertas, 200);
     }

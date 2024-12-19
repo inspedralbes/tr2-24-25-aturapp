@@ -91,9 +91,11 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="d-flex align-center j-center cabezal">
-        <div id="contentHeaderProfile" class="d-flex align-center f-column" style="z-index: 20;">
-            <p class="no-margin">Editar alerta</p>
+    <div class="containCabezal">
+        <div class="d-flex align-center j-center cabezal">
+            <div id="contentHeaderProfile" class="d-flex align-center f-column" style="z-index: 20;">
+                <p class="no-margin">Editar alerta</p>
+            </div>
         </div>
     </div>
     <div id="containAlerta" class="d-flex j-center align-center f-column mt-60" v-if="alerta != ''">
@@ -128,6 +130,10 @@ onMounted(() => {
 
 textarea:focus {
     outline: none;
+}
+
+#containAlerta{
+    margin-top: 70px;
 }
 
 #containDesc p:first-child {

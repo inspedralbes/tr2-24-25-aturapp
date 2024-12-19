@@ -97,6 +97,10 @@ body {
   margin-top: 60px;
 }
 
+.p-15{
+  padding: 15px;
+}
+
 .py-10 {
   padding-top: 10px;
   padding-bottom: 10px;
@@ -183,14 +187,21 @@ body {
   margin: auto;
 }
 
-.cabezal {
+.containCabezal{
   position: fixed;
-  background-color: #a03939;
+  top: 0;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.cabezal {
+  box-sizing: border-box;
+  background-color: #ff4b45;
+  box-shadow: -5px -5px 9px rgba(255, 39, 39, 0.45), 5px 5px 9px rgba(255, 0, 0, 0.374);
   height: 60px;
   width: 100%;
-  top: 0;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border-radius: 20px;
   z-index: 10;
 }
 

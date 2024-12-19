@@ -100,6 +100,12 @@ const router = createRouter({
       component: () => import('../components/SectorAlertasComp.vue'),
       meta: { requiresAuth: true, rol: 2 },
     },
+    {
+      path: '/admin/estadisticas',
+      name: 'sector',
+      component: () => import('../components/EstadisticasComp.vue'),
+      meta: { requiresAuth: true, rol: 2 },
+    },
   ],
 });
 

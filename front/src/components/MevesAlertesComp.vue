@@ -62,10 +62,12 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="d-flex align-center j-center cabezal">
-        <div class="d-flex align-center f-column" style="z-index: 20;">
-            <img class="icon-arrow" src="../../public/assets/svg/arrow.svg" alt="back" width="40px" @click="navigateTo('perfil')">
-            <p class="no-margin">Les meves alertes</p>
+    <div class="containCabezal">
+        <div class="d-flex align-center j-center cabezal">
+            <div class="d-flex align-center f-column" style="z-index: 20;">
+                <img class="icon-arrow" src="../../public/assets/svg/arrow.svg" alt="back" width="40px" @click="navigateTo('perfil')">
+                <p class="no-margin">Les meves alertes</p>
+            </div>
         </div>
     </div>
     <ul id="containAlertes" class="no-margin d-flex j-center f-column align-center">
@@ -86,12 +88,16 @@ onMounted(() => {
     margin-bottom: 80px;
 }
 
+#containAlertes>.itemAlert:first-child{
+    margin-top: 30px;
+}
+
 .itemAlert {
     background-color: white;
     height: 80px;
     width: 350px;
-    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
-    margin-top: 10px;
+    box-shadow: -5px -5px 9px rgba(198, 198, 198, 0.45), 5px 5px 9px rgba(94, 104, 121, 0.263);
+    margin-top: 15px;
     border-radius: 10px;
     position: relative;
     list-style: none;
@@ -123,7 +129,7 @@ onMounted(() => {
 
 .contentItem .btn-editar {
     position: absolute;
-    background-color: #a03939;
+    background-color: #ff4b45;
     color: white;
     padding: 8px 16px;
     border-radius: 5px;

@@ -129,90 +129,90 @@
 </template>
 
 <script setup>
-    import { onMounted, ref } from 'vue';
-    import { useCounterStore } from '@/stores/counter';
+import { onMounted, ref } from 'vue';
+import { useCounterStore } from '@/stores/counter';
 
-    const store = useCounterStore();
-    const BASE_URL = 'http://localhost:8000';
-    const sosActive = ref(false);
-    const sectorInput = ref('');
-    const plantaInput = ref('planta3');
-    const dataUser = store.userData;
-    const alumno_id = dataUser.user.id;
+const store = useCounterStore();
+const BASE_URL = 'http://localhost:8000';
+const sosActive = ref(false);
+const sectorInput = ref('');
+const plantaInput = ref('planta3');
+const dataUser = store.userData;
+const alumno_id = dataUser.user.id;
 
-    function resetSector() {
-        sectors3.value.forEach((sector, i) => {
-            sector.color = "white";
+function resetSector() {
+    sectors3.value.forEach((sector, i) => {
+        sector.color = "white";
+    });
+}
+
+function sosAlert() {
+    sosActive.value = !sosActive.value;
+    resetSector();
+}
+
+const sectors3 = ref([
+    { id: "lavabo-alumnat", d: "M201.5 81L195 0.5H322.5L328.5 81H201.5Z", color: "white" },
+    { id: "lavabo-dones", d: "M195.5 1783L187 1863L315 1863.5L321 1783H195.5Z", color: "white" },
+    { id: "ala-ausias", d: "M267 1021.5L275.5 931.5H60.5L57.5 1003L267 1021.5Z", color: "white" },
+    { id: "ala-bosca", d: "M267.5 844L275.5 931H60.5V859.5L267.5 844Z", color: "white" },
+    { id: "dept-catala", d: "M154 1729L1 1724L12 1616L163.5 1621.5L154 1729Z", color: "white" },
+    { id: "dept-matematiques", d: "M177.5 1479L27 1472.5L40.5 1328.5L191.5 1337L177.5 1479Z", color: "white" },
+    { id: "p3-inf9", d: "M194.5 1300L44 1291L55 1148.5L208 1159L194.5 1300Z", color: "white" },
+    { id: "pasillo-ausias", d: "M201.5 1729H154L220.5 1018L267 1022L201.5 1729Z", color: "white" },
+    { id: "p3-inf7", d: "M208 1159L55 1148.5L66.5 1004L220.5 1018L208 1159Z", color: "white" },
+    { id: "p3-08", d: "M209.5 704.5L60.5 715.5L68 858.5L222 847L209.5 704.5Z", color: "white" },
+    { id: "p3-06", d: "M194.5 528.5L43 536L60.5 715.5L209.5 704.5L194.5 528.5Z", color: "white" },
+    { id: "p3-04", d: "M182.5 385.5L31 391L43 536L194.5 528.5L182.5 385.5Z", color: "white" },
+    { id: "lab-ciencies-naturals", d: "M170 242L19 247L31 391L182.5 385.5L170 242Z", color: "white" },
+    { id: "dept-ciencies-naturals", d: "M161 139L9.5 143L19 247L170 242L161 139Z", color: "white" },
+    { id: "pasillo-bosca", d: "M208 137.5L161 139L222 847.5L267.5 844L208 137.5Z", color: "white" },
+    { id: "p3-01", d: "M354.5 133.5L208 137.5L220 277.5L368 268.5L354.5 133.5Z", color: "white" },
+    { id: "p3-02", d: "M368 268.5L220 277.5L232 421L378.5 412.5L368 268.5Z", color: "white" },
+    { id: "p3-03", d: "M378.5 412.5L232 421L244 562L390 554.5L378.5 412.5Z", color: "white" },
+    { id: "p3-05", d: "M390 554.5L244 562L256 703.5L400 695L390 554.5Z", color: "white" },
+    { id: "p3-07", d: "M400 695L256 703.5L267.5 843.5L412.5 832.5L400 695Z", color: "white" },
+    { id: "lab-ciencies-naturals-2", d: "M163.5 1621.5L12 1616L27 1472.5L177.5 1479L163.5 1621.5Z", color: "white" },
+    { id: "p3-inf11", d: "M214 1581.5L201.5 1729L347.5 1733L360 1587.5L214 1581.5Z", color: "white" },
+    { id: "p3-inf10", d: "M360.5 1587.5L374 1454L227 1446.5L214 1581.5L360.5 1587.5Z", color: "white" },
+    { id: "dept-ll-estrangeres", d: "M374.5 1453.5L387 1313.5L240 1306L227 1446L374.5 1453.5Z", color: "white" },
+    { id: "dept-tecnologia", d: "M387.5 1313.5L393 1244L247 1233.5L240 1306L387.5 1313.5Z", color: "white" },
+    { id: "p3-inf3", d: "M393 1244L410.5 1035.5L267 1022L247 1233.5L393 1244Z", color: "white" },
+    { id: "fin-ala-bosca", d: "M24 76.5L17 3.5L194.5 1L208 137L161 139L155.5 76.5H24Z", color: "white" },
+    { id: "fin-ala-ausias", d: "M16.5 1787.5L9.5 1860.5L187 1863L201 1729H154L148 1787.5H16.5Z", color: "white" },
+]);
+
+function toggleSectorColor(index) {
+    sectors3.value.forEach((sector, i) => {
+        sector.color = i === index ? "red" : "white";
+    });
+    sectorInput.value = sectors3.value[index].id;
+}
+
+async function enviarAlerta() {
+    try {
+        const response = await fetch(`${BASE_URL}/api/alert`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                alumno_id: alumno_id,
+                sectorName: sectorInput.value
+            })
         });
-    }
 
-    function sosAlert() {
-        sosActive.value = !sosActive.value;
-        resetSector();
-    }
-
-    const sectors3 = ref([
-        { id: "lavabo-alumnat", d: "M201.5 81L195 0.5H322.5L328.5 81H201.5Z", color: "white" },
-        { id: "lavabo-dones", d: "M195.5 1783L187 1863L315 1863.5L321 1783H195.5Z", color: "white" },
-        { id: "ala-ausias", d: "M267 1021.5L275.5 931.5H60.5L57.5 1003L267 1021.5Z", color: "white" },
-        { id: "ala-bosca", d: "M267.5 844L275.5 931H60.5V859.5L267.5 844Z", color: "white" },
-        { id: "dept-catala", d: "M154 1729L1 1724L12 1616L163.5 1621.5L154 1729Z", color: "white" },
-        { id: "dept-matematiques", d: "M177.5 1479L27 1472.5L40.5 1328.5L191.5 1337L177.5 1479Z", color: "white" },
-        { id: "p3-inf9", d: "M194.5 1300L44 1291L55 1148.5L208 1159L194.5 1300Z", color: "white" },
-        { id: "pasillo-ausias", d: "M201.5 1729H154L220.5 1018L267 1022L201.5 1729Z", color: "white" },
-        { id: "p3-inf7", d: "M208 1159L55 1148.5L66.5 1004L220.5 1018L208 1159Z", color: "white" },
-        { id: "p3-08", d: "M209.5 704.5L60.5 715.5L68 858.5L222 847L209.5 704.5Z", color: "white" },
-        { id: "p3-06", d: "M194.5 528.5L43 536L60.5 715.5L209.5 704.5L194.5 528.5Z", color: "white" },
-        { id: "p3-04", d: "M182.5 385.5L31 391L43 536L194.5 528.5L182.5 385.5Z", color: "white" },
-        { id: "lab-ciencies-naturals", d: "M170 242L19 247L31 391L182.5 385.5L170 242Z", color: "white" },
-        { id: "dept-ciencies-naturals", d: "M161 139L9.5 143L19 247L170 242L161 139Z", color: "white" },
-        { id: "pasillo-bosca", d: "M208 137.5L161 139L222 847.5L267.5 844L208 137.5Z", color: "white" },
-        { id: "p3-01", d: "M354.5 133.5L208 137.5L220 277.5L368 268.5L354.5 133.5Z", color: "white" },
-        { id: "p3-02", d: "M368 268.5L220 277.5L232 421L378.5 412.5L368 268.5Z", color: "white" },
-        { id: "p3-03", d: "M378.5 412.5L232 421L244 562L390 554.5L378.5 412.5Z", color: "white" },
-        { id: "p3-05", d: "M390 554.5L244 562L256 703.5L400 695L390 554.5Z", color: "white" },
-        { id: "p3-07", d: "M400 695L256 703.5L267.5 843.5L412.5 832.5L400 695Z", color: "white" },
-        { id: "lab-ciencies-naturals-2", d: "M163.5 1621.5L12 1616L27 1472.5L177.5 1479L163.5 1621.5Z", color: "white" },
-        { id: "p3-inf11", d: "M214 1581.5L201.5 1729L347.5 1733L360 1587.5L214 1581.5Z", color: "white" },
-        { id: "p3-inf10", d: "M360.5 1587.5L374 1454L227 1446.5L214 1581.5L360.5 1587.5Z", color: "white" },
-        { id: "dept-ll-estrangeres", d: "M374.5 1453.5L387 1313.5L240 1306L227 1446L374.5 1453.5Z", color: "white" },
-        { id: "dept-tecnologia", d: "M387.5 1313.5L393 1244L247 1233.5L240 1306L387.5 1313.5Z", color: "white" },
-        { id: "p3-inf3", d: "M393 1244L410.5 1035.5L267 1022L247 1233.5L393 1244Z", color: "white" },
-        { id: "fin-ala-bosca", d: "M24 76.5L17 3.5L194.5 1L208 137L161 139L155.5 76.5H24Z", color: "white" },
-        { id: "fin-ala-ausias", d: "M16.5 1787.5L9.5 1860.5L187 1863L201 1729H154L148 1787.5H16.5Z", color: "white" },
-    ]);
-
-    function toggleSectorColor(index) {
-        sectors3.value.forEach((sector, i) => {
-            sector.color = i === index ? "red" : "white";
-        });
-        sectorInput.value = sectors3.value[index].id;
-    }
-
-    async function enviarAlerta() {
-        try {
-            const response = await fetch(`${BASE_URL}/api/alert`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    alumno_id: alumno_id,
-                    sectorName: sectorInput.value
-                })
-            });
-            
-            if(!response.ok){
-                throw new Error("Error al crear la alerta");   
-            }
-
-            const result = await response.json();
-            alert(`Alerta enviada con éxito. ID: ${result.id}`);
-            resetSector();
-        } catch (error) {
-            console.log("Error: ", error);
+        if (!response.ok) {
+            throw new Error("Error al crear la alerta");
         }
+
+        const result = await response.json();
+        alert(`Alerta enviada con éxito. ID: ${result.id}`);
+        resetSector();
+    } catch (error) {
+        console.log("Error: ", error);
     }
+}
 </script>
 
 <style scoped>
@@ -225,20 +225,26 @@
 }
 
 .btn-sos {
-    height: 150px;
-    width: 150px;
-    border-radius: 150px;
-    background: #a83d3a;
+    height: 250px;
+    width: 250px;
+    border-radius: 250px;
+    background: #ff4b45;
+    box-shadow: -5px -5px 9px rgba(255, 114, 114, 0.45), 5px 5px 9px rgba(255, 25, 25, 0.438);
+
     border: none;
-    /* border: 5px solid #a03939; */
     position: absolute;
     top: 0;
     bottom: 70px;
     left: 0;
     right: 0;
     margin: auto;
+    font-family: "Outfit", serif;
     font-size: 60px;
     color: white;
+}
+
+.btn-sos:hover {
+    background: linear-gradient(145deg, #e6443e, #ff504a);
 }
 
 select {
@@ -259,7 +265,7 @@ select:focus {
     font-size: 16px;
 }
 
-.sectorInput{
+.sectorInput {
     position: fixed;
     top: 55px;
     left: 0;
@@ -273,14 +279,14 @@ select:focus {
     padding: 10px 5px;
 }
 
-.planoContainer{
+.planoContainer {
     height: 100%;
     overflow: hidden;
     padding-bottom: 70px;
     margin: 100px 0 60px 0;
 }
 
-.plantaSelector{
+.plantaSelector {
     position: fixed;
     top: 8px;
     left: 0;

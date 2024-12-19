@@ -26,14 +26,15 @@ function cerrarSesion() {
 </script>
 
 <template>
-    <div id="headerProfile" class="d-flex f-column bg-red">
-        <div id="bg-circle"></div>
-        <div id="contentHeaderProfile" class="d-flex align-center f-column" style="z-index: 20">
-            <p class="no-margin">Perfil</p>
-            <div id="profileImage">
-                <img src="../../public/assets/svg/noimage.svg" alt="profile">
+    <div class="containHeader">
+        <div id="headerProfile" class="d-flex f-column bg-red">
+            <div id="contentHeaderProfile" class="d-flex align-center f-column" style="z-index: 20">
+                <p class="no-margin">Perfil</p>
+                <div id="profileImage">
+                    <img src="../../public/assets/svg/noimage.svg" alt="profile">
+                </div>
+                <p>{{ UserInfo.nom }} {{ UserInfo.cognom }}</p>
             </div>
-            <p>{{ UserInfo.nom }} {{ UserInfo.cognom }}</p>
         </div>
     </div>
     <div id="containItems" class="d-flex align-center f-column">
@@ -54,7 +55,7 @@ function cerrarSesion() {
 
 <style scoped>
 .bg-red {
-    background-color: #a03939;
+    background-color: #ff4b45;
 }
 
 #contentHeaderProfile p:first-child {
@@ -87,28 +88,19 @@ function cerrarSesion() {
     margin-top: 20px;
 }
 
-#headerProfile {
-    position: fixed;
-    top: 0;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    height: 200px;
-    width: 100%;
-    overflow: hidden;
+.containHeader{
+    padding: 10px;
 }
 
-#bg-circle {
-    position: absolute;
-    background-color: rgb(168, 61, 58);
-    height: 400px;
-    width: 400px;
-    border-radius: 300px;
-    left: -220px;
-    top: -230px;
+#headerProfile {
+    border-radius: 10px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: -5px -5px 9px rgba(255, 39, 39, 0.45), 5px 5px 9px rgba(255, 0, 0, 0.374);
+
 }
 
 #containItems {
-    margin-top: 200px;
     overflow-y: scroll;
     padding-bottom: 10px;
     margin-bottom: 70px;
@@ -117,8 +109,8 @@ function cerrarSesion() {
 #containItems button {
     height: 60px;
     width: 350px;
-    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
-    margin-top: 10px;
+    box-shadow: -5px -5px 9px rgba(198, 198, 198, 0.45), 5px 5px 9px rgba(94, 104, 121, 0.263);
+    margin-top: 15px;
     border-radius: 10px;
     display: flex;
     align-items: center;

@@ -1,9 +1,11 @@
 <template>
-    <div class="d-flex align-center j-center cabezal">
-        <div class="d-flex align-center f-column" style="z-index: 20;">
-            <img class="icon-arrow" src="../../public/assets/svg/arrow.svg" alt="back" width="40px"
-                @click="navigateTo('perfil')">
-            <p class="no-margin">informació general</p>
+    <div class="containCabezal">
+        <div class="d-flex align-center j-center cabezal">
+            <div class="d-flex align-center f-column" style="z-index: 20;">
+                <img class="icon-arrow" src="../../public/assets/svg/arrow.svg" alt="back" width="40px"
+                    @click="navigateTo('perfil')">
+                <p class="no-margin">informació general</p>
+            </div>
         </div>
     </div>
     <div class="d-flex align-center f-column contentProfile" style="z-index: 20;">
@@ -110,7 +112,7 @@ async function editarPerfil() {
 }
 
 .contentProfile {
-    margin-top: 55px;
+    margin-top: 60px;
 }
 
 .contentProfile img {
