@@ -78,17 +78,21 @@ onMounted(async () => {
 
 const guardarCambios = async () => {
     try {
+        // Datos que se enviarán al backend
         const datosActualizados = {
             nom: alumneEdit.value.nom,
             cognoms: alumneEdit.value.cognoms,
             email: alumneEdit.value.email,
             dni: alumneEdit.value.dni,
-            telefon: alumneEdit.value.telefon || "", // Asegurarse de enviar una cadena vacía si está vacío
-            curs_id: selectedCurs.value, // Solo el ID del curso
-            torn_id: selectedTorn.value, // Solo el ID del turno
+            telefon: alumneEdit.value.telefon || "",
+            curs: selectedCurs.value,
+            torn: selectedTorn.value,
         };
 
-        // Llamada al backend con el método PATCH
+        // Mostrar los datos en la consola antes de enviarlos
+        console.log('JSON que se enviará al backend:', JSON.stringify(datosActualizados, null, 2));
+
+        // Llamada a la función que realiza la actualización
         await updateAlumne(alumneEdit.value.id, datosActualizados, 'POST');
 
         alert('Datos guardados correctamente');

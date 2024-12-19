@@ -174,19 +174,15 @@ class UserController extends Controller
             'email' => 'nullable|email|max:255',
             'dni' => 'nullable|string|max:20',
             'telefon' => 'nullable|string|max:15',
-            'curs_id' => 'nullable|integer|exists:curs,id',
-            'torn_id' => 'nullable|integer|exists:torns,id',
+            'curs' => 'nullable|integer|exists:curs,id',
+            'torn' => 'nullable|integer|exists:torns,id',
         ]);
-
+    
         $alumne = User::findOrFail($id);
         $alumne->update($validated);
-
+    
         return response()->json(['success' => true, 'message' => 'Alumno actualizado correctamente.']);
     }
-    
-    
-    
-    
 
     public function getAlumnes(Request $request) {
         $usuaris = User::with(['curs:id,name', 'torn:id,torn'])

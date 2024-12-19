@@ -6,6 +6,7 @@
         <p>Email: {{ alumne.email }}</p>
         <p>Curs: {{ alumne.curs?.name }}</p>
         <p>Torn: {{ alumne.torn?.torn }}</p>
+        <p>Telefon: {{ alumne.telefon }}</p>
 
         <h2>Alertas del Alumno</h2>
         <div v-if="alertas.length > 0">

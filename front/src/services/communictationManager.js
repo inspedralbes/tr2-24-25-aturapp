@@ -55,10 +55,10 @@ export const alertasAlumne = async (id) => {
 }
 
 // === ACTUALIZAR DATOS DE UN ALUMNO ========================
-export const updateAlumne = async (id, data, method = 'PUT') => {
+export const updateAlumne = async (id, data) => {
     const URL = `${laravel.URL}/alumnes/${id}`;
     const response = await fetch(URL, {
-        method: 'POST',
+        method: 'POST', // Usamos POST como especificaste
         headers: {
             'Content-Type': 'application/json',
         },
@@ -67,6 +67,7 @@ export const updateAlumne = async (id, data, method = 'PUT') => {
 
     if (!response.ok) {
         const error = await response.text();
+        console.error('Error al actualizar el alumno:', error);
         throw new Error(`Error al actualizar el alumno: ${error}`);
     }
 
