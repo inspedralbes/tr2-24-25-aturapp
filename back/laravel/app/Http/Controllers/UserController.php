@@ -167,24 +167,22 @@ class UserController extends Controller
         ]);
     }
 
-public function updateAlumne(Request $request, $id)
-{
-    $validated = $request->validate([
-        'nom' => 'nullable|string|max:255',
-        'cognoms' => 'nullable|string|max:255',
-        'email' => 'nullable|email|max:255',
-        'dni' => 'nullable|string|max:20',
-        'telefon' => 'nullable|string|max:15',
-        'curs_id' => 'nullable|integer|exists:curs,id',
-        'torn_id' => 'nullable|integer|exists:torns,id',
-    ]);
+    public function updateAlumne(Request $request, $id) {
+        $validated = $request->validate([
+            'nom' => 'nullable|string|max:255',
+            'cognoms' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'dni' => 'nullable|string|max:20',
+            'telefon' => 'nullable|string|max:15',
+            'curs_id' => 'nullable|integer|exists:curs,id',
+            'torn_id' => 'nullable|integer|exists:torns,id',
+        ]);
 
-    $alumne = User::findOrFail($id);
+        $alumne = User::findOrFail($id);
+        $alumne->update($validated);
 
-    $alumne->update($validated);
-
-    return response()->json(['success' => true, 'message' => 'Alumno actualizado correctamente.']);
-}
+        return response()->json(['success' => true, 'message' => 'Alumno actualizado correctamente.']);
+    }
     
     
     
