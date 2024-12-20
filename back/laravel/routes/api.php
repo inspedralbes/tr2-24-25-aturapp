@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TornController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CursController;
 use App\Http\Controllers\AlertaController;
@@ -27,10 +28,10 @@ Route::post('/register', [UserController::class, 'register']);
 // ====== EDITAR USUARIO ========================
 Route::post('/editaruser', [UserController::class, 'update']);
 
-// ====== OBTENER ROL USUARIO ========================
+// ====== OBTENER ROL USUARIO =================
 Route::get('/getrol/{id}', [UserController::class, 'getRol']);
 
-//====== ALERTAS =========================
+//====== ALERTAS ==============================
 Route::post('/alert', [AlertaController::class, 'store']);
 
 Route::get('/getAllAlerts', [AlertaController::class, 'index']);
@@ -42,6 +43,23 @@ Route::get('/preguntas', [PreguntaController::class, 'index']);
 
 //====== PUBLICAR RESPOSTAS ===================
 Route::post('/publicar-respostas', [RespostasController::class, 'store']);
+
+//====== TURNOS ===============================
+Route::get('/torns', [TornController::class, 'index']);
+
+
+//====== VER ALUMNOS ==========================
+Route::get('/get-alumnes', [UserController::class, 'getAlumnes']);
+
+Route::get('/alumnes/{id}', [UserController::class, 'getAlumneById']);
+
+Route::get('/user/{id}/alerts', [AlertaController::class, 'getAlertsByUser']);
+
+
+//====== MODIFICAR ALUMNAT ====================
+Route::post('/alumnes/{id}', [UserController::class, 'updateAlumne']);
+
+
 
 //USAR MIDDLEWARE, SINO PUEDE COMPROMETER ALUMNOS QUE HACEN ALERTAS-----
 Route::post('/alertes', [AlertaController::class, 'myAlerts']);
