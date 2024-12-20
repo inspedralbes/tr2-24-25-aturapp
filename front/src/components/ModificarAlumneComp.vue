@@ -78,7 +78,6 @@ onMounted(async () => {
 
 const guardarCambios = async () => {
     try {
-        // Datos que se enviarán al backend
         const datosActualizados = {
             nom: alumneEdit.value.nom,
             cognoms: alumneEdit.value.cognoms,
@@ -89,10 +88,8 @@ const guardarCambios = async () => {
             torn: selectedTorn.value,
         };
 
-        // Mostrar los datos en la consola antes de enviarlos
-        console.log('JSON que se enviará al backend:', JSON.stringify(datosActualizados, null, 2));
+        console.log('JSON para el back:', JSON.stringify(datosActualizados, null, 2));
 
-        // Llamada a la función que realiza la actualización
         await updateAlumne(alumneEdit.value.id, datosActualizados, 'POST');
 
         alert('Datos guardados correctamente');

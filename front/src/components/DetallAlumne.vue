@@ -52,13 +52,66 @@
 </script>
 
 <style scoped>
+    * {
+        transition: 0.2s;
+    }
+
+    body {
+        color: #333;
+        background-color: #fff;
+        font-family: Arial, sans-serif;
+    }
+
+    h1, h2 {
+        text-align: center;
+        color: red;
+    }
+
+    div {
+        padding: 20px;
+        margin: 0 auto;
+        max-width: 800px;
+    }
+
     p {
-        margin: 5px 0;
+        margin: 10px 0;
+        font-size: 1.1em;
+    }
+
+    p strong {
+        font-weight: bold;
+    }
+
+    ul {
+        padding-left: 20px;
+    }
+
+    ul li {
+        margin-bottom: 10px;
+        background-color: #f9f9f9;
+        padding: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
     }
 
     button {
         margin-top: 20px;
         padding: 10px 20px;
         cursor: pointer;
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.2s;
+    }
+
+    button:hover {
+        background-color: darkred;
+    }
+
+    .loading {
+        text-align: center;
+        font-size: 1.2em;
+        color: #999;
     }
 </style>
