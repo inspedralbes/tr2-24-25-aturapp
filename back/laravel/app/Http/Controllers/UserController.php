@@ -196,14 +196,15 @@ class UserController extends Controller {
     }
 
     public function getAlumneById($id) {
-        $alumne = User::with(['curs:id,name', 'torn:id,torn'])
-            ->select('id', 'nom', 'cognoms', 'email', 'curs', 'torn', 'dni', 'telefon')
+        $alumne = User::with(['rol:id,name', 'curs:id,name', 'torn:id,torn'])
+            ->select('id', 'nom', 'cognoms', 'email', 'curs', 'torn', 'dni', 'telefon', 'rol')
             ->find($id);
-
+    
         if (!$alumne) {
             return response()->json(['success' => false, 'message' => "L'alumne no existeix"], 404);
         }
-
+    
         return response()->json(['success' => true, 'alumne' => $alumne], 200);
     }
+    
 }
