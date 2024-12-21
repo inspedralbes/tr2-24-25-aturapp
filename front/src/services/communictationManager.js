@@ -74,6 +74,16 @@ export const updateAlumne = async (id, data) => {
     return await response.json();
 };
 
+// === OBTENER ROLES ======================
+export const getRoles = async () => {
+    const URL = `${laravel.URL}/roles`;
+    const response = await fetch(URL, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    });
+    if (!response.ok) throw new Error('No s\' han pogut trobar els rols');
+    return await response.json();
+}
 
 // === OBTENER CURSOS =====================
 export const getCursos = async () => {

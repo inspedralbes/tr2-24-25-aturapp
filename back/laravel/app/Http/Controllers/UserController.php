@@ -11,10 +11,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
-class UserController extends Controller
-{
-    public function index(Request $request)
-    {
+class UserController extends Controller {
+    
+    public function index(Request $request) {
         $user = User::with( ['rol:id,name', 'curs:id,name', 'torn:id,torn'])->where('id', $request->alumne_id)->first();
         
         if (!$user) {
@@ -24,8 +23,7 @@ class UserController extends Controller
         return response()->json($user, 200);
     }
 
-    public function getRol($id)
-    {
+    public function getRol($id) {
         $user = User::with('rol')
             ->where('id', $id)
             ->first();
