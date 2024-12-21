@@ -76,7 +76,7 @@ export const updateAlumne = async (id, data) => {
 
 // === OBTENER ROLES ======================
 export const getRoles = async () => {
-    const URL = `${laravel.URL}/roles`;
+    const URL = `${laravel.URL}/rol`;
     const response = await fetch(URL, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
