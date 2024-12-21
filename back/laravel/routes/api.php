@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RolController;
 use App\Http\Controllers\TornController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CursController;
@@ -47,6 +48,8 @@ Route::post('/publicar-respostas', [RespostasController::class, 'store']);
 //====== TURNOS ===============================
 Route::get('/torns', [TornController::class, 'index']);
 
+//====== ROLES ================================
+Route::get('rol', [RolController::class, 'index']);
 
 //====== VER ALUMNOS ==========================
 Route::get('/get-alumnes', [UserController::class, 'getAlumnes']);
