@@ -138,3 +138,26 @@ export const getPreguntas = async () => {
 
     return await response.json();
 };
+
+// === PUBLICAR RESPUESTAS ENQUESTA =======
+export const publicarRespostas = async (data) => {
+    try {
+        const URL = `${laravel.URL}/publicar-respostas`;
+        const response = await fetch(URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ respuestas: data }),
+        });
+
+        if (response.ok) {
+            return { success: true };
+        } else {
+            const errorData = await response.json();
+            return { success: false, message: errorData.message || 'Error al enviar las respuestas' };
+        }
+    } catch (error) {
+        return { success: false, message: 'Error de conexión' };
+    }
+};
