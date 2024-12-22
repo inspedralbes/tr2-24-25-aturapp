@@ -1,125 +1,123 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useCounterStore } from '../stores/counter';
-import { getCompanysClase } from '../services/communictationManager';
+    import { ref, onMounted, computed } from 'vue';
+    import { useCounterStore } from '../stores/counter';
+    import { getCompanysClase, getPreguntas } from '../services/communictationManager';
 
-const preguntas = ref([]);
-const PaginaActual = ref(0);
-const asignaciones = ref({});
-const counterStore = useCounterStore();
-const companysClase = ref([]);
-const BASE_URL = "http://localhost:8000";
+    const preguntas = ref([]);
+    const PaginaActual = ref(0);
+    const asignaciones = ref({});
+    const counterStore = useCounterStore();
+    const companysClase = ref([]);
+    const BASE_URL = "http://localhost:8000";
 
-const userData = computed(() => counterStore.userData || {});
+    const userData = computed(() => counterStore.userData || {});
 
-const fetchPreguntas = async () => {
-    const response = await fetch(`${BASE_URL}/api/preguntas`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
+    const fetchPreguntas = async () => {
+        try {
+            const response = await getPreguntas();
+            if (response && Array.isArray(response)) {
+                preguntas.value = response;
+                preguntas.value.forEach((pregunta) => {
+                    asignaciones.value[pregunta.id] = { 1: '', 2: '', 3: '' };
+                });
+            } else {
+                preguntas.value = [];
+            }
+        } catch (error) {
+            console.error('Error al obtener las preguntas:', error);
+        }
+    };
 
-    if (response.ok) {
-        const data = await response.json();
-        preguntas.value = data;
-        preguntas.value.forEach((pregunta) => {
-            asignaciones.value[pregunta.id] = { 1: '', 2: '', 3: '' };
-        });
-    }
-};
+    const fetchCompanysClase = async () => {
+        try {
+            const courseId = counterStore.userData?.course?.id;
+            if (!courseId) {
+                return;
+            }
 
-const fetchCompanysClase = async () => {
-    try {
-        const courseId = counterStore.userData?.course?.id;
-        if (!courseId) {
+            const response = await getCompanysClase(courseId);
+
+            if (response && response.companys) companysClase.value = response.companys;
+            else companysClase.value = [];
+            
+        } catch (error) {
+            console.error('Error al obtener los compañeros de clase:', error);
+        }
+    };
+
+    const actualizarAsignacion = (preguntaId, selectorId, valor) => {
+        if (!asignaciones.value[preguntaId]) {
+            asignaciones.value[preguntaId] = { 1: '', 2: '', 3: '' };
+        }
+        asignaciones.value[preguntaId][selectorId] = valor;
+    };
+
+    const validarAsignaciones = () => {
+        for (const preguntaId in asignaciones.value) {
+            const respuestas = asignaciones.value[preguntaId];
+            if (Object.values(respuestas).some((value) => value === '')) return false;
+        }
+        return true;
+    };
+
+    const publicarRespostas = async () => {
+        if (!validarAsignaciones()) {
+            alert('Completa totes les preguntes per continuar');
             return;
         }
 
-        const response = await getCompanysClase(courseId);
-        if (response && response.companys) {
-            companysClase.value = response.companys;
-        } else {
-            companysClase.value = [];
+        if (!userData.value || !userData.value.user || !userData.value.user.id) {
+            alert('No s\'ha trobat l\'id de l\'usuari');
+            return;
         }
-    } catch (error) {
-        console.error('Error al obtener los compañeros de clase:', error);
-    }
-};
 
-const actualizarAsignacion = (preguntaId, selectorId, valor) => {
-    if (!asignaciones.value[preguntaId]) {
-        asignaciones.value[preguntaId] = { 1: '', 2: '', 3: '' };
-    }
-    asignaciones.value[preguntaId][selectorId] = valor;
-};
+        const idAlumnoEmisor = parseInt(userData.value.user.id, 10);
 
-const validarAsignaciones = () => {
-    for (const preguntaId in asignaciones.value) {
-        const respuestas = asignaciones.value[preguntaId];
-        if (Object.values(respuestas).some((value) => value === '')) return false;
-    }
-    return true;
-};
-
-const publicarRespostas = async () => {
-    if (!validarAsignaciones()) {
-        alert('Completa totes les preguntes per continuar');
-        return;
-    }
-
-    if (!userData.value || !userData.value.user || !userData.value.user.id) {
-        alert('No s\'ha trobat l\'id de l\'usuari');
-        return;
-    }
-
-    const idAlumnoEmisor = parseInt(userData.value.user.id, 10);
-
-    if (isNaN(idAlumnoEmisor)) {
-        alert('El ID del alumno emisor no es válido.');
-        return;
-    }
-
-    const data = Object.keys(asignaciones.value).map((preguntaId) => ({
-        id_pregunta: parseInt(preguntaId, 10),
-        resposta1: parseInt(asignaciones.value[preguntaId][1], 10),
-        resposta2: parseInt(asignaciones.value[preguntaId][2], 10),
-        resposta3: parseInt(asignaciones.value[preguntaId][3], 10),
-        id_alumno_emisor: idAlumnoEmisor,
-    }));
-
-    try {
-        const response = await fetch(`${BASE_URL}/api/publicar-respostas`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ respuestas: data }),
-        });
-
-        if (response.ok) {
-            alert('Respuestas enviadas correctamente.');
-        } else {
-            const errorData = await response.json();
-            alert('Hubo un error al enviar las respuestas. Intenta nuevamente.');
+        if (isNaN(idAlumnoEmisor)) {
+            alert('El ID del alumno emisor no es válido.');
+            return;
         }
-    } catch (error) {
-        console.error('Error al enviar las respuestas:', error);
-    }
-};
 
-const SiguientePagina = () => {
-    if (PaginaActual.value < preguntas.value.length - 1) PaginaActual.value++;
-};
+        const data = Object.keys(asignaciones.value).map((preguntaId) => ({
+            id_pregunta: parseInt(preguntaId, 10),
+            resposta1: parseInt(asignaciones.value[preguntaId][1], 10),
+            resposta2: parseInt(asignaciones.value[preguntaId][2], 10),
+            resposta3: parseInt(asignaciones.value[preguntaId][3], 10),
+            id_alumno_emisor: idAlumnoEmisor,
+        }));
 
-const PaginaAnterior = () => {
-    if (PaginaActual.value > 0) PaginaActual.value--;
-};
+        try {
+            const response = await fetch(`${BASE_URL}/api/publicar-respostas`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ respuestas: data }),
+            });
 
-onMounted(() => {
-    fetchPreguntas();
-    fetchCompanysClase();
-});
+            if (response.ok) {
+                alert('Respuestas enviadas correctamente.');
+            } else {
+                const errorData = await response.json();
+                alert('Hubo un error al enviar las respuestas. Intenta nuevamente.');
+            }
+        } catch (error) {
+            console.error('Error al enviar las respuestas:', error);
+        }
+    };
+
+    const SiguientePagina = () => {
+        if (PaginaActual.value < preguntas.value.length - 1) PaginaActual.value++;
+    };
+
+    const PaginaAnterior = () => {
+        if (PaginaActual.value > 0) PaginaActual.value--;
+    };
+
+    onMounted(() => {
+        fetchPreguntas();
+        fetchCompanysClase();
+    });
 </script>
 
 <template>

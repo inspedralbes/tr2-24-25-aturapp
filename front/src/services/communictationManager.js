@@ -122,3 +122,19 @@ export const getCompanysClase = async (courseId) => {
 
     return await response.json();
 };
+
+// === OBTENER PREGUNTAS ==================
+export const getPreguntas = async () => {
+    const URL = `${laravel.URL}/preguntas`;
+    const response = await fetch(URL, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Error al obtener las preguntas: ${response.statusText}`);
+    }
+
+    return await response.json();
+};
