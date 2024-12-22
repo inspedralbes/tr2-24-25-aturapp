@@ -105,3 +105,20 @@ export const getTorns = async () => {
     if (!response.ok) throw new Error('No s\'han pogut trobar els torns');
     return await response.json();
 };
+
+// === OBTENER COMPAÑEROS CLASE ===========
+export const getCompanysClase = async (courseId) => {
+    const URL = `${laravel.URL}/companys-clase/${courseId}`;
+    const response = await fetch(URL, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!response.ok) {
+        const error = await response.text();
+        console.error('Error al obtener los compañeros de clase:', error);
+        throw new Error(`Error al obtener los compañeros de clase: ${response.statusText}`);
+    }
+
+    return await response.json();
+};

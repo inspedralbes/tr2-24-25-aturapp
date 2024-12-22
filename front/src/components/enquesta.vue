@@ -1,14 +1,16 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useCounterStore } from '../stores/counter';
+import { getCompanysClase } from '../services/communictationManager';
 
 const preguntas = ref([]);
 const PaginaActual = ref(0);
 const asignaciones = ref({});
 const counterStore = useCounterStore();
+const companysClase = ref([]);
 const BASE_URL = "http://localhost:8000";
-const userData = computed(() => counterStore.userData || {}); // ID PINIA
-const companysClase = computed(() => counterStore.userData?.companys_clase || []);
+
+const userData = computed(() => counterStore.userData || {});
 
 const fetchPreguntas = async () => {
     const response = await fetch(`${BASE_URL}/api/preguntas`, {
@@ -27,22 +29,42 @@ const fetchPreguntas = async () => {
     }
 };
 
+const fetchCompanysClase = async () => {
+    try {
+        const courseId = counterStore.userData?.course?.id;
+        if (!courseId) {
+            return;
+        }
+
+        const response = await getCompanysClase(courseId);
+        if (response && response.companys) {
+            companysClase.value = response.companys;
+        } else {
+            companysClase.value = [];
+        }
+    } catch (error) {
+        console.error('Error al obtener los compañeros de clase:', error);
+    }
+};
+
 const actualizarAsignacion = (preguntaId, selectorId, valor) => {
     if (!asignaciones.value[preguntaId]) {
         asignaciones.value[preguntaId] = { 1: '', 2: '', 3: '' };
-    } asignaciones.value[preguntaId][selectorId] = valor;
+    }
+    asignaciones.value[preguntaId][selectorId] = valor;
 };
 
 const validarAsignaciones = () => {
     for (const preguntaId in asignaciones.value) {
         const respuestas = asignaciones.value[preguntaId];
         if (Object.values(respuestas).some((value) => value === '')) return false;
-    } return true;
+    }
+    return true;
 };
 
 const publicarRespostas = async () => {
     if (!validarAsignaciones()) {
-        alert('Por favor, completa todas las asignaciones antes de continuar.');
+        alert('Completa totes les preguntes per continuar');
         return;
     }
 
@@ -66,22 +88,25 @@ const publicarRespostas = async () => {
         id_alumno_emisor: idAlumnoEmisor,
     }));
 
-    const response = await fetch(`${BASE_URL}/api/publicar-respostas`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ respuestas: data }),
-    });
+    try {
+        const response = await fetch(`${BASE_URL}/api/publicar-respostas`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ respuestas: data }),
+        });
 
-    if (response.ok) {
-        alert('Respuestas enviadas correctamente.');
-    } else {
-        const errorData = await response.json();
-        alert('Hubo un error al enviar las respuestas. Intenta nuevamente.');
+        if (response.ok) {
+            alert('Respuestas enviadas correctamente.');
+        } else {
+            const errorData = await response.json();
+            alert('Hubo un error al enviar las respuestas. Intenta nuevamente.');
+        }
+    } catch (error) {
+        console.error('Error al enviar las respuestas:', error);
     }
 };
-
 
 const SiguientePagina = () => {
     if (PaginaActual.value < preguntas.value.length - 1) PaginaActual.value++;
@@ -93,6 +118,7 @@ const PaginaAnterior = () => {
 
 onMounted(() => {
     fetchPreguntas();
+    fetchCompanysClase();
 });
 </script>
 

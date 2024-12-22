@@ -187,7 +187,7 @@
         
         public function getCompanysClase($id){
             $companys = User::where('curs', $id)
-                    -> select('nom', 'cognoms')
+                    -> select('id','nom','cognoms')
                     -> get();
             
             if ($companys -> isEmpty()) {
