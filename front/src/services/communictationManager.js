@@ -1,7 +1,6 @@
 const laravel = { URL: "http://localhost:8000/api" }
 
-
-// === GUARDAR MISATGES ==================================
+// === GUARDAR MISATGES ===================================
 export async function guardarMissatgeBBDD(msg) {
     const URL = `${laravel.URL}/missatge`;
     const response = await fetch(URL, {
@@ -38,7 +37,7 @@ export async function getAlumnes() {
     }       
 }
 
-// === OBRIR INFO D' ALUMNE ================================
+// === OBRIR INFO D'ALUMNE =================================
 export const getAlumneById = async (id) => {
     const URL = `${laravel.URL}/alumnes/${id}`;
     const response = await fetch(URL);

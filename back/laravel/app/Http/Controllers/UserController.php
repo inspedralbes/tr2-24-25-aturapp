@@ -1,133 +1,149 @@
 <?php
+    namespace App\Http\Controllers;
 
-namespace App\Http\Controllers;
+    use App\Models\User;
+    use App\Models\Blacklist;
+    use Illuminate\Support\Str;
+    use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Auth;
+    use Illuminate\Support\Facades\Hash;
+    use Illuminate\Support\Facades\Mail;
+    use Illuminate\Support\Facades\Validator;
 
-use App\Models\User;
-use App\Models\Blacklist;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
-
-class UserController extends Controller {
-    
-    public function index(Request $request) {
-        $user = User::with( ['rol:id,name', 'curs:id,name', 'torn:id,torn'])->where('id', $request->alumne_id)->first();
+    class UserController extends Controller {
         
-        if (!$user) {
-            return response()->json(['message' => "Error, no existeix l'usuari"], 400);
-        }
-
-        return response()->json($user, 200);
-    }
-
-    public function getRol($id) {
-        $user = User::with('rol')
-            ->where('id', $id)
-            ->first();
-
-        if (!$user) {
-            return response()->json(['success' => false, 'message' => "L'usuari no existeix"], 400);
-        }
-
-        $rolName = $user->rol;
-        return response()->json(['success' => true, 'rol' => $rolName], 200);
-    }
-
-    public function register(Request $request) {
-        $blacklisted = Blacklist::where('email', $request->email)->exists();
-        if ($blacklisted) {
-            return response()->json([
-                'error' => 'El correu electronic està dintre de la llista negra.',
-            ], 400);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'surname' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'grade' => 'required|integer|exists:curs,id',
-            'dni' => 'required|string|unique:users,dni|max:10',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors(),
-            ], 400);
-        }
-
-        $user = User::create([
-            'nom' => $request->name,
-            'cognoms' => $request->surname,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'curs' => $request->grade,
-            'rol' => 1,
-            'torn' => 1,
-            'dni' => $request->dni,
-        ]);
-
-        $verificationToken = Str::random(32);
-        $user->verification_token = $verificationToken;
-        $user->save();
-
-        $verificationUrl = route('verify.email', ['token' => $verificationToken]);
-
-        Mail::raw(
-            "Hola {$user->nom} {$user->cognoms},\n\nConfirma el teu usuari fent clic al següent enllaç:\n\n{$verificationUrl}",
-            function ($message) use ($user) {
-                $message->to($user->email)
-                    ->subject("ATURAPP | Confirma el teu usuari");
+        public function index(Request $request) {
+            $user = User::with( ['rol:id,name', 'curs:id,name', 'torn:id,torn'])->where('id', $request->alumne_id)->first();
+            
+            if (!$user) {
+                return response()->json(['message' => "Error, no existeix l'usuari"], 400);
             }
-        );
 
-        return response()->json([
-            'message' => 'Usuari registrat amb èxit. Si us plau, revisa el teu correu per confirmar la teva adreça.',
-        ], 201);
-    }
+            return response()->json($user, 200);
+        }
 
-    public function verifyEmail($token) {
-        $user = User::where('verification_token', $token)->first();
+        public function getRol($id) {
+            $user = User::with('rol')
+                ->where('id', $id)
+                ->first();
 
-        if (!$user) {
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => "L'usuari no existeix"], 400);
+            }
+
+            $rolName = $user->rol;
+            return response()->json(['success' => true, 'rol' => $rolName], 200);
+        }
+
+        public function register(Request $request) {
+            $blacklisted = Blacklist::where('email', $request->email)->exists();
+            if ($blacklisted) {
+                return response()->json([
+                    'error' => 'El correu electronic està dintre de la llista negra.',
+                ], 400);
+            }
+
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'surname' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'grade' => 'required|integer|exists:curs,id',
+                'dni' => 'required|string|unique:users,dni|max:10',
+                'password' => 'required|string|min:6|confirmed',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            $user = User::create([
+                'nom' => $request->name,
+                'cognoms' => $request->surname,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'curs' => $request->grade,
+                'rol' => 1,
+                'torn' => 1,
+                'dni' => $request->dni,
+            ]);
+
+            $verificationToken = Str::random(32);
+            $user->verification_token = $verificationToken;
+            $user->save();
+
+            $verificationUrl = route('verify.email', ['token' => $verificationToken]);
+
+            Mail::raw(
+                "Hola {$user->nom} {$user->cognoms},\n\nConfirma el teu usuari fent clic al següent enllaç:\n\n{$verificationUrl}",
+                function ($message) use ($user) {
+                    $message->to($user->email)
+                        ->subject("ATURAPP | Confirma el teu usuari");
+                }
+            );
+
             return response()->json([
-                'error' => 'El token de verificació és invàlid o ha expirat.',
-            ], 400);
+                'message' => 'Usuari registrat amb èxit. Si us plau, revisa el teu correu per confirmar la teva adreça.',
+            ], 201);
         }
 
-        $user->email_verified_at = now();
-        $user->verification_token = null;
-        $user->save();
+        public function verifyEmail($token) {
+            $user = User::where('verification_token', $token)->first();
 
-        return response()->json([
-            'message' => 'El correu s\'ha verificat correctament.',
-        ], 200);
-    }
+            if (!$user) {
+                return response()->json([
+                    'error' => 'El token de verificació és invàlid o ha expirat.',
+                ], 400);
+            }
 
-    public function login(Request $request) {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string|min:6',
-        ]);
+            $user->email_verified_at = now();
+            $user->verification_token = null;
+            $user->save();
 
-        if (!Auth::attempt($credentials)) {
             return response()->json([
-                'message' => 'Credenciales incorrectas',
-            ], 401);
+                'message' => 'El correu s\'ha verificat correctament.',
+            ], 200);
         }
 
-        $user = Auth::user();
+        public function login(Request $request) {
+            $credentials = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required|string|min:6',
+            ]);
 
-        if (is_null($user->email_verified_at)) {
-            return response()->json(['message' => 'No s\'ha verificat el correu electronic'], 403);
-        }
+            if (!Auth::attempt($credentials)) {
+                return response()->json([
+                    'message' => 'Credenciales incorrectas',
+                ], 401);
+            }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+            $user = Auth::user();
 
-        if ($user->rol == 2) {
+            if (is_null($user->email_verified_at)) {
+                return response()->json(['message' => 'No s\'ha verificat el correu electronic'], 403);
+            }
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            if ($user->rol == 2) {
+                return response()->json([
+                    'message' => 'Inicio de sesión exitoso',
+                    'user' => [
+                        'id' => $user->id,
+                        'email' => $user->email,
+                        'nom' => $user->nom,
+                        'cognom' => $user->cognoms,
+                        'dni' => $user->dni,
+                        'rol' => $user->rol
+                    ],
+                    'redirect_to' => '/admin',
+                    'token' => $token,
+                ]);
+            }
+
+            $companys_clase = User::where('curs', $user->curs)->select('nom', 'cognoms', 'id')->get();
+
             return response()->json([
                 'message' => 'Inicio de sesión exitoso',
                 'user' => [
@@ -135,76 +151,69 @@ class UserController extends Controller {
                     'email' => $user->email,
                     'nom' => $user->nom,
                     'cognom' => $user->cognoms,
+                    'curs' => $user->curs,
                     'dni' => $user->dni,
                     'rol' => $user->rol
                 ],
-                'redirect_to' => '/admin',
+                'course' => [
+                    'id' => $user->curs,
+                ],
+                'companys_clase' => $companys_clase,
+                'redirect_to' => '/',
                 'token' => $token,
             ]);
         }
 
-        $companys_clase = User::where('curs', $user->curs)->select('nom', 'cognoms', 'id')->get();
+        public function updateAlumne(Request $request, $id) {
+            $validated = $request->validate([
+                'nom' => 'nullable|string|max:255',
+                'cognoms' => 'nullable|string|max:255',
+                'email' => 'nullable|email|max:255',
+                'dni' => 'nullable|string|max:20',
+                'telefon' => 'nullable|string|max:15',
+                'curs' => 'nullable|integer|exists:curs,id',
+                'torn' => 'nullable|integer|exists:torns,id',
+                'rol' => 'nullable|integer|exists:rols,id',
+            ]);
 
-        return response()->json([
-            'message' => 'Inicio de sesión exitoso',
-            'user' => [
-                'id' => $user->id,
-                'email' => $user->email,
-                'nom' => $user->nom,
-                'cognom' => $user->cognoms,
-                'curs' => $user->curs,
-                'dni' => $user->dni,
-                'rol' => $user->rol
-            ],
-            'course' => [
-                'id' => $user->curs,
-            ],
-            'companys_clase' => $companys_clase,
-            'redirect_to' => '/',
-            'token' => $token,
-        ]);
-    }
-
-    public function updateAlumne(Request $request, $id) {
-        $validated = $request->validate([
-            'nom' => 'nullable|string|max:255',
-            'cognoms' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'dni' => 'nullable|string|max:20',
-            'telefon' => 'nullable|string|max:15',
-            'curs' => 'nullable|integer|exists:curs,id',
-            'torn' => 'nullable|integer|exists:torns,id',
-            'rol' => 'nullable|integer|exists:rols,id',
-        ]);
-
-        $alumne = User::findOrFail($id);
-        $alumne->update($validated);
-    
-        return response()->json([
-            'success' => true,
-            'message' => 'Alumno actualizado correctamente.',
-        ]);
-    }
-    
-
-    public function getAlumnes(Request $request) {
-        $usuaris = User::with(['curs:id,name', 'torn:id,torn'])
-            ->select('id', 'nom', 'cognoms', 'email', 'curs', 'torn','dni','telefon')
-            ->get();
-    
-        return response()->json($usuaris);
-    }
-
-    public function getAlumneById($id) {
-        $alumne = User::with(['rol:id,name', 'curs:id,name', 'torn:id,torn'])
-            ->select('id', 'nom', 'cognoms', 'email', 'curs', 'torn', 'dni', 'telefon', 'rol')
-            ->find($id);
-    
-        if (!$alumne) {
-            return response()->json(['success' => false, 'message' => "L'alumne no existeix"], 404);
+            $alumne = User::findOrFail($id);
+            $alumne->update($validated);
+        
+            return response()->json([
+                'success' => true,
+                'message' => 'Alumno actualizado correctamente.',
+            ]);
         }
-    
-        return response()->json(['success' => true, 'alumne' => $alumne], 200);
+        
+        public function getCompanysClase($id){
+            $companys = User::where('curs', $id)
+                    -> select('nom', 'cognoms')
+                    -> get();
+            
+            if ($companys -> isEmpty()) {
+                return response() -> json (['success' => false, 'message' => 'No s\'han trobat els companys'], 404);
+            }
+
+            return response() -> json(['success' => true, 'companys' => $companys], 200);
+        }
+
+        public function getAlumnes(Request $request) {
+            $usuaris = User::with(['curs:id,name', 'torn:id,torn'])
+                ->select('id', 'nom', 'cognoms', 'email', 'curs', 'torn','dni','telefon')
+                ->get();
+        
+            return response()->json($usuaris);
+        }
+
+        public function getAlumneById($id) {
+            $alumne = User::with(['rol:id,name', 'curs:id,name', 'torn:id,torn'])
+                ->select('id', 'nom', 'cognoms', 'email', 'curs', 'torn', 'dni', 'telefon', 'rol')
+                ->find($id);
+        
+            if (!$alumne) {
+                return response()->json(['success' => false, 'message' => "L'alumne no existeix"], 404);
+            }
+        
+            return response()->json(['success' => true, 'alumne' => $alumne], 200);
+        }   
     }
-    
-}

@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'a23arnbarsor@inspedralbes.cat',
             'email_verified_at' => '11/12/2024',
             'password' => 'Arnau_2004',
-            'rol' => 2,
+            'rol' => 1,
             'curs' => 3,
             'torn' => 1
         ]);

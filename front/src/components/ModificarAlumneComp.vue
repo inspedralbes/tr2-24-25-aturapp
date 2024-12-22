@@ -48,73 +48,72 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { getAlumneById, updateAlumne, getCursos, getTorns, getRoles } from '../services/communictationManager.js';
+    import { ref, onMounted } from 'vue';
+    import { useRoute, useRouter } from 'vue-router';
+    import { getAlumneById, updateAlumne, getCursos, getTorns, getRoles } from '../services/communictationManager.js';
 
-const route = useRoute();
-const router = useRouter();
+    const route = useRoute();
+    const router = useRouter();
 
-const roles = ref([]);
-const torns = ref([]);
-const cursos = ref([]);
-const alumne = ref(null);
-const alumneEdit = ref({});
-const errorMessage = ref('');
-const selectedRol = ref(null);
-const selectedCurs = ref(null);
-const selectedTorn = ref(null);
+    const roles = ref([]);
+    const torns = ref([]);
+    const cursos = ref([]);
+    const alumne = ref(null);
+    const alumneEdit = ref({});
+    const errorMessage = ref('');
+    const selectedRol = ref(null);
+    const selectedCurs = ref(null);
+    const selectedTorn = ref(null);
 
-onMounted(async () => {
-    try {
-        roles.value = await getRoles();
-        cursos.value = await getCursos();
-        torns.value = await getTorns();
+    onMounted(async () => {
+        try {
+            roles.value = await getRoles();
+            cursos.value = await getCursos();
+            torns.value = await getTorns();
 
-        const id = route.params.id;
+            const id = route.params.id;
 
-        const response = await getAlumneById(id);
-        if (response.success) {
-            alumne.value = response.alumne;
-            alumneEdit.value = { ...response.alumne };
+            const response = await getAlumneById(id);
+            if (response.success) {
+                alumne.value = response.alumne;
+                alumneEdit.value = { ...response.alumne };
 
-            selectedRol.value = response.alumne.rol?.id || response.alumne.rol || null;
-            selectedCurs.value = response.alumne.curs?.id || null;
-            selectedTorn.value = response.alumne.torn?.id || null;
-        } else {
+                selectedRol.value = response.alumne.rol?.id || response.alumne.rol || null;
+                selectedCurs.value = response.alumne.curs?.id || null;
+                selectedTorn.value = response.alumne.torn?.id || null;
+            } else {
+                errorMessage.value = "Error cargando datos del alumno.";
+            }
+        } catch (error) {
+            console.error('Error cargando datos del alumno:', error);
             errorMessage.value = "Error cargando datos del alumno.";
         }
-    } catch (error) {
-        console.error('Error cargando datos del alumno:', error);
-        errorMessage.value = "Error cargando datos del alumno.";
-    }
-});
+    });
 
-const guardarCambios = async () => {
-    try {
-        const datosActualizados = {
-            nom: alumneEdit.value.nom,
-            cognoms: alumneEdit.value.cognoms,
-            email: alumneEdit.value.email,
-            dni: alumneEdit.value.dni,
-            telefon: alumneEdit.value.telefon || "",
+    const guardarCambios = async () => {
+        try {
+            const datosActualizados = {
+                nom: alumneEdit.value.nom,
+                cognoms: alumneEdit.value.cognoms,
+                email: alumneEdit.value.email,
+                dni: alumneEdit.value.dni,
+                telefon: alumneEdit.value.telefon || "",
 
-            rol: selectedRol.value,
-            curs: selectedCurs.value,
-            torn: selectedTorn.value,
-        };
+                rol: selectedRol.value,
+                curs: selectedCurs.value,
+                torn: selectedTorn.value,
+            };
 
-        console.log('Datos enviados al backend:', datosActualizados);
+            console.log('Datos enviados al backend:', datosActualizados);
 
-        await updateAlumne(alumneEdit.value.id, datosActualizados);
+            await updateAlumne(alumneEdit.value.id, datosActualizados);
 
-        alert('Datos guardados correctamente');
-        router.push('/admin/alumnes');
-    } catch (error) {
-        console.error('Error al guardar los cambios:', error);
-        alert('Hubo un error al guardar los cambios. Verifica los datos e inténtalo de nuevo.');
-    }
-};
+            alert('Datos guardados correctamente');
+            router.push('/admin/alumnes');
+        } catch (error) {
+            alert('Error al guardar los cambios');
+        }
+    };
 </script>
 
 <style scoped>

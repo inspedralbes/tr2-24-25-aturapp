@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('verification_token')->nullable();
-            $table->unsignedBigInteger('rol')->default(0);
+            $table->unsignedBigInteger('rol')->default(1);
             $table->foreign('rol')->references('id')->on('rols')->onDelete('cascade');
             $table->unsignedBigInteger('curs')->default(0);
             $table->foreign('curs')->references('id')->on('curs')->onDelete('cascade');
