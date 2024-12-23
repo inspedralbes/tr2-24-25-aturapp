@@ -88,7 +88,7 @@ const router = createRouter({
       path: '/admin/alumnes',
       name: 'alumnes',
       component: () => import('../components/IncidenciasAlumnesComp.vue'),
-      meta: {requiresAuth: true, rol: 2},
+      meta: { requiresAuth: true, rol: 2 },
     },
     {
       path: '/admin/alumnes/:id',
@@ -127,11 +127,6 @@ const router = createRouter({
       component: () => import('../components/EstadisticasComp.vue'),
       meta: { requiresAuth: true, rol: 2 },
     },
-
-
-
-
-
     {
       path: '/password/solicitar',
       name: 'Solicitar reset password',
@@ -143,11 +138,6 @@ const router = createRouter({
       component: () => import('../components/ResetPasswordComp.vue'),
       props: route => ({ token: route.query.token, email: route.query.email }),
     },
-
-
-
-
-
   ],
 });
 
@@ -159,27 +149,21 @@ router.beforeEach((to, from, next) => {
   const isUser = store.userData?.user.rol === 1;
 
   const EsPaginaPublica = to.matched.some((record) => record.meta.public);
-
   const RequiereAutenticacion = to.matched.some((record) => record.meta.requiresAuth);
-
   const RolRequerido = to.meta.rol;
 
-  // Redirección lógica
   if (!SessionIniciada && RequiereAutenticacion) {
-    // Si no está logueado y la página requiere autenticación
     next('/login');
   } else if (SessionIniciada && EsPaginaPublica) {
-    // Si ya está logueado, evita acceder a páginas públicas como login o register
     next(isAdmin ? '/admin' : '/home');
   } else if (RequiereAutenticacion && RolRequerido) {
-    // Si la página requiere un rol específico
     if ((RolRequerido === 2 && isAdmin) || (RolRequerido === 1 && isUser)) {
-      next(); // El rol coincide, permite el acceso
+      next();
     } else {
-      next('/'); // Redirige al inicio si no tiene el rol correcto
+      next('/');
     }
   } else {
-    next(); // Permite la navegación
+    next();
   }
 });
 

@@ -9,7 +9,6 @@
     use App\Http\Controllers\MessageController;
     use App\Http\Controllers\PreguntaController;
     use App\Http\Controllers\RespostasController;
-
     use App\Http\Controllers\Auth\PasswordResetController;
 
 
@@ -79,15 +78,7 @@
     //====== VER PREGUNTAS ========================
     Route::get('/preguntas', [PreguntaController::class, 'index']);
     
-
-
-
-
-
-
+    //====== CAMBIAR PASSWORD =====================
+    Route::post('/password/reset', [PasswordResetController::class, 'reset']);
 
     Route::post('/password/solicitar', [PasswordResetController::class, 'sendResetLinkEmail']);    
-
-    Route::post('/password/reset', [PasswordResetController::class, 'reset']);
-    
-
