@@ -19,7 +19,7 @@ export default {
     },
     methods: {
         async submitRequest() {
-            const url = 'http://localhost:8000/api/password/solicitar';  // Asegúrate de que la URL sea correcta
+            const url = 'http://localhost:8000/api/password/solicitar';
             const data = { email: this.email };
 
             try {
