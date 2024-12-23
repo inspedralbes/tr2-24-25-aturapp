@@ -1,15 +1,11 @@
 <template>
-    <div class="request-reset">
-        <h2>Restablecer Contraseña</h2>
-        <form @submit.prevent="requestResetLink">
-            <div>
-                <label for="email">Correo Electrónico</label>
-                <input type="email" id="email" v-model="email" required placeholder="Ingresa tu correo" />
-            </div>
-            <button type="submit">Enviar Enlace</button>
-            <p v-if="message" class="success">{{ message }}</p>
-            <p v-if="error" class="error">{{ error }}</p>
+    <div>
+        <h1>Solicitar restablecimiento de contraseña</h1>
+        <form @submit.prevent="submitRequest">
+            <input type="email" v-model="email" placeholder="Correo electrónico" required />
+            <button type="submit">Enviar enlace</button>
         </form>
+        <p v-if="message">{{ message }}</p>
     </div>
 </template>
 
@@ -17,46 +13,35 @@
 export default {
     data() {
         return {
-            email: "",
-            message: null,
-            error: null,
+            email: '',
+            message: '',
         };
     },
     methods: {
-        async requestResetLink() {
-            try {
-                this.message = null;
-                this.error = null;
+        async submitRequest() {
+            const url = 'http://localhost:8000/api/password/solicitar';  // Asegúrate de que la URL sea correcta
+            const data = { email: this.email };
 
-                const response = await fetch("http://localhost:8000/api/password/email", {
-                    method: "POST",
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
                     headers: {
-                        "Content-Type": "application/json",
+                        'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ email: this.email }),
+                    body: JSON.stringify(data),
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || "Ocurrió un error.");
+                    throw new Error('Error al enviar el enlace');
                 }
 
-                const data = await response.json();
-                this.message = data.message;
-            } catch (err) {
-                this.error = err.message;
+                const result = await response.json();
+                this.message = result.message || 'Enlace enviado correctamente';
+            } catch (error) {
+                this.message = error.message || 'Hubo un error';
             }
-        },
+        }
+
     },
 };
 </script>
-
-<style scoped>
-.success {
-    color: green;
-}
-
-.error {
-    color: red;
-}
-</style>

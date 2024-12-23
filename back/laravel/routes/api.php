@@ -10,8 +10,8 @@
     use App\Http\Controllers\PreguntaController;
     use App\Http\Controllers\RespostasController;
 
-    use App\Http\Controllers\Auth\ResetPasswordController;
-    use App\Http\Controllers\Auth\ForgotPasswordController;
+    use App\Http\Controllers\Auth\PasswordResetController;
+
 
     Route::get('/user', function (Request $request) {
         return $request->user();
@@ -79,11 +79,15 @@
     //====== VER PREGUNTAS ========================
     Route::get('/preguntas', [PreguntaController::class, 'index']);
     
-    //====== REST PASSWORD - middleware ===========
-    Route::middleware('api')->group(function () {
-        Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])
-            ->name('password.email');
 
-        Route::post('/password/reset', [ResetPasswordController::class, 'reset'])
-            ->name('password.update');
-    });
+
+
+
+
+
+
+    Route::post('/password/solicitar', [PasswordResetController::class, 'sendResetLinkEmail']);    
+
+    Route::post('/password/reset', [PasswordResetController::class, 'reset']);
+    
+

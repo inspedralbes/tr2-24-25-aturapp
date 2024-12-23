@@ -127,6 +127,11 @@ const router = createRouter({
       component: () => import('../components/EstadisticasComp.vue'),
       meta: { requiresAuth: true, rol: 2 },
     },
+
+
+
+
+
     {
       path: '/password/solicitar',
       name: 'Solicitar reset password',
@@ -136,7 +141,13 @@ const router = createRouter({
       path: '/password/reset',
       name: 'Reiniciar password',
       component: () => import('../components/ResetPasswordComp.vue'),
+      props: route => ({ token: route.query.token, email: route.query.email }),
     },
+
+
+
+
+
   ],
 });
 
@@ -171,6 +182,5 @@ router.beforeEach((to, from, next) => {
     next(); // Permite la navegación
   }
 });
-
 
 export default router;
