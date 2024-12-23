@@ -127,6 +127,16 @@ const router = createRouter({
       component: () => import('../components/EstadisticasComp.vue'),
       meta: { requiresAuth: true, rol: 2 },
     },
+    {
+      path: '/password/solicitar',
+      name: 'Solicitar reset password',
+      component: () => import('../components/SolicitarResetComp.vue'),
+    },
+    {
+      path: '/password/reset',
+      name: 'Reiniciar password',
+      component: () => import('../components/ResetPasswordComp.vue'),
+    },
   ],
 });
 
