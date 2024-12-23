@@ -35,10 +35,10 @@
                     </p>
 
                     <!-- Turno -->
-                    <span class="alert-shift">Torn: {{ infoAlumne.torn.torn }}</span>
+                    <span class="alert-shift">Torn: {{ infoAlumne?.torn?.torn || 'Cargando...' }}</span>
 
                     <!-- Curso -->
-                    <span class="alert-course">Curso: {{ infoAlumne.curs.name }}</span>
+                    <span class="alert-course">Curso: {{ infoAlumne?.curs?.name || 'Cargando...' }}</span>
 
                     <!-- Sector -->
                     <span class="alert-sector">Sector: {{ formatText(infoAlerta.sector_name) }}</span>

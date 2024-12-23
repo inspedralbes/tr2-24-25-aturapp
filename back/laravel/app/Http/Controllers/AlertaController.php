@@ -17,7 +17,7 @@ class AlertaController extends Controller
     {
         $alertas = Alerta::with('sector', 'estado')
             ->get()
-            ->groupBy('sector.id') // Agrupar por el nombre del sector
+            ->groupBy('sector.id')
             ->map(function ($alertas, $sector_id) {
                 $sector = $alertas->first()->sector;
                 return [
@@ -36,6 +36,7 @@ class AlertaController extends Controller
                     // })
                 ];
             })
+            ->sortByDesc('total')
             ->values();
         return response()->json($alertas, 200);
     }

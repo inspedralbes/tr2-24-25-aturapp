@@ -102,11 +102,12 @@ const router = createRouter({
     },
     {
       path: '/admin/estadisticas',
-      name: 'sector',
+      name: 'estadisticas',
       component: () => import('../components/EstadisticasComp.vue'),
       meta: { requiresAuth: true, rol: 2 },
     },
-  ],
+    
+  ]
 });
 
 router.beforeEach((to, from, next) => {
