@@ -1,39 +1,38 @@
 <template>
-    <ul class="no-style">
-        <li><button @click="getAlerts('dia', 0)">Hoy</button></li>
-        <li><button @click="getAlerts('semana', 0)">Setmana</button></li>
-        <li><button @click="getAlerts('mes', 0)">Mes</button></li>
-        <li><button @click="getAlerts('total', 0)">Todo</button></li>
-    </ul>
-    <ul>
-        <li>
-            Cantidad de alertas recibidas (1 dia, 1 semana, 1 mes, total)<br>
-            Alertas recibidas: {{ count(alertas_recibidas) }}
-        </li>
-
-        <li>
-            Poder tener un porcentaje de casos de bullying solucionados (Se debe marcar como resuelto el caso y la
-            víctima la debe marcar también como resuelta para que cuente)<br>
-            <!-- {{ porcentajeExito() }} -->
-        </li>
-        <li>
-            Ranking con mayores casos/incidentes (mostrará el nombre del sector y cantidad de casos reportados)<br>
-            <ul>
-                <li v-for="index in 3">
-                    {{ formatText(rankingSectores[index - 1]?.nombre) }}
-                </li>
-            </ul>
-        </li>
-        <li class="activo">
-            Gráficos que mostrarán horarios-casos (gráfico queso), dias-casos (gráfico de barras), total-casos (grafico
-            lineal)<br>
-        </li>
-    </ul>
-    <button @click="choiseChart('horario')">Horario</button>
-    <button @click="choiseChart('dia')" :class="{'isUnclickable': time === 'dia'}">Dia</button>
-    <button @click="choiseChart('total')" :class="{'isUnclickable': time != 'total'}">Total</button>
-    <div style="width: 1000px; height: 500px;">
-        <canvas ref="chartCanvas"></canvas>
+    <div id="containAll">
+        <ul class="no-style d-flex j-center button-group">
+            <li><button @click="getAlerts('dia', 0)">Avui</button></li>
+            <li><button @click="getAlerts('semana', 0)">Setmana</button></li>
+            <li><button @click="getAlerts('mes', 0)">Mes</button></li>
+            <li><button @click="getAlerts('total', 0)">Tot</button></li>
+        </ul>
+        <div id="statsContain">
+            <div id="item-a" class="box">
+                <p class="no-margin">Alertas recibidas</p><span class="resultado">{{ count(alertas_recibidas) }}</span>
+            </div>
+            <div id="item-b" class="box">
+                <p class="no-margin">Porcentaje de éxito (test)</p><span class="resultado">87%</span>
+                <!-- {{ porcentajeExito() }} -->
+            </div>
+            <div id="item-c" class="box">
+                <p class="no-margin">Ranking sectores</p>
+                <ul>
+                    <li v-for="index in 3" class="ranking-item">
+                        <p class="ranking-text">{{ index }} - {{ formatText(rankingSectores[index - 1]?.nombre) }}</p>
+                    </li>
+                </ul>
+            </div>
+            <div id="item-d" class="box">
+                <button @click="choiseChart('horario')">Horario</button>
+                <button @click="choiseChart('dia')" :class="{ 'isUnclickable': time === 'dia' }">Dia</button>
+                <button @click="choiseChart('total')" :class="{ 'isUnclickable': time != 'total' }">Total</button>
+                <div class="d-flex j-center">
+                    <div>
+                        <canvas width="600px" height="400px" ref="chartCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </template>
@@ -76,7 +75,6 @@ async function getAlerts(tiempo, cantidad) {
 
         const result = await response.json();
         alertas_recibidas.value = result;
-        console.log(alertas_recibidas.value);
     } catch (error) {
 
     }
@@ -137,7 +135,6 @@ function getQuantitat(caso, alertas) {
                     datos.value[dia] += 1;
                 }
             })
-            console.log(datos.value);
             break;
         case 'total':
             datos.value = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -147,7 +144,6 @@ function getQuantitat(caso, alertas) {
                 const mes = new Date(alerta.created_at).getMonth();
                 datos.value[mes] += 1;
             })
-            console.log(datos.value);
             break;
         // default:
         //     break;
@@ -179,7 +175,7 @@ function count(array) {
 }
 
 function createChart(tipo, etiquetas, datos) {
-    if(grafico){
+    if (grafico) {
         grafico.destroy();
     }
     grafico = new Chart(chartCanvas.value, {
@@ -202,7 +198,7 @@ function createChart(tipo, etiquetas, datos) {
     });
 }
 
-function choiseChart(type){
+function choiseChart(type) {
     datos.value = getQuantitat(type, alertas_recibidas.value);
     createChart(tipo.value, etiquetas.value, datos.value);
 }
@@ -210,26 +206,131 @@ function choiseChart(type){
 onMounted(async () => {
     await getAlerts(time.value, quant.value);
     rankingSectores.value = await getAllAlertes();
-    console.log(rankingSectores.value);
     datos.value = getQuantitat('total', alertas_recibidas.value);
     createChart(tipo.value, etiquetas.value, datos.value);
 });
 </script>
 
 <style scoped>
+#containAll {
+  box-sizing: border-box;
+  padding: 20px; /* Márgenes laterales */
+}
+
+.button-group {
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#statsContain {
+  display: grid;
+  grid-template-areas:
+    "a a b b c"
+    "a a b b c"
+    "d d d d c"
+    "d d d d e"
+    "d d d d e";
+  grid-template-columns: repeat(4, 1fr) 1fr; /* 4 columnas iguales y una más pequeña */
+  gap: 20px;
+  max-width: 1200px; /* Máximo ancho para grandes pantallas */
+  margin: auto; /* Centrado horizontal */
+}
+
+.resultado{
+    font-weight: bolder;
+    font-size: 40px
+}
+
+#item-a {
+    grid-area: a;
+    /* width: 20rem; */
+    font-size: 30px;
+}
+
+#item-b {
+    grid-area: b;
+    /* width: 20rem; */
+    font-size: 30px;
+}
+
+#item-c {
+    grid-area: c;
+    width: 15rem;
+    font-size: 30px;
+}
+
+#item-c>ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#item-d {
+    grid-area: d;
+    /* width: 60rem; */
+    padding: 20px;
+}
+
 .activo {
     font-weight: bold;
     margin-bottom: 100px;
 }
 
-button{
+button {
     cursor: pointer;
 }
 
-.isUnclickable{
-    cursor: not-allowed; /* Cambia el cursor para indicar que no se puede hacer clic */
+.isUnclickable {
+    cursor: not-allowed;
+    /* Cambia el cursor para indicar que no se puede hacer clic */
     pointer-events: none;
     background-color: #e0e0e0fd;
     border: 2px solid #c4c4c4;
+}
+
+.ranking-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+}
+
+/* Estilo de cada ítem de la lista */
+.ranking-item {
+  background-color: #f4f4f4;
+  margin: 8px 0;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.ranking-item>p{
+  margin: 0;
+  font-size: 20px;
+}
+
+@media (max-width: 768px) {
+  #statsContain {
+    grid-template-areas:
+      "a"
+      "b"
+      "c"
+      "d";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .button-group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
 }
 </style>
