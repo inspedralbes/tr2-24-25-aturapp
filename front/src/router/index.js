@@ -133,7 +133,7 @@ const router = createRouter({
       component: () => import('../components/SolicitarResetComp.vue'),
     },
     {
-      path: '/password/reset',
+      path: '/password/reset/:id',
       name: 'Reiniciar password',
       component: () => import('../components/ResetPasswordComp.vue'),
       props: route => ({ token: route.query.token, email: route.query.email }),

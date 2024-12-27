@@ -79,6 +79,9 @@
     Route::get('/preguntas', [PreguntaController::class, 'index']);
     
     //====== CAMBIAR PASSWORD =====================
-    Route::post('/password/reset', [PasswordResetController::class, 'reset']);
 
-    Route::post('/password/solicitar', [PasswordResetController::class, 'sendResetLinkEmail']);    
+
+
+    use App\Http\Controllers\EmailController;
+
+    Route::post('send-email', [EmailController::class, 'sendEmail']);

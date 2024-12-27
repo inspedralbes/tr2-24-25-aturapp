@@ -1,10 +1,7 @@
 <template>
     <div>
-        <h1>Solicitar restablecimiento de contraseña</h1>
-        <form @submit.prevent="submitRequest">
-            <input type="email" v-model="email" placeholder="Correo electrónico" required />
-            <button type="submit">Enviar enlace</button>
-        </form>
+        <input v-model="email" type="email" placeholder="Introduce tu correo" />
+        <button @click="sendRequest">Enviar solicitud</button>
         <p v-if="message">{{ message }}</p>
     </div>
 </template>
@@ -13,35 +10,50 @@
 export default {
     data() {
         return {
-            email: '',
-            message: '',
+            email: '', // Aquí guardaremos el correo introducido por el usuario
+            message: null,
         };
     },
     methods: {
-        async submitRequest() {
-            const url = 'http://localhost:8000/api/password/solicitar';
-            const data = { email: this.email };
-
+        async sendRequest() {
             try {
-                const response = await fetch(url, {
+                // Realizamos la solicitud POST usando fetch
+                const response = await fetch('http://localhost:8000/api/send-email', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(data),
+                    body: JSON.stringify({
+                        email: this.email, // El correo que se envía
+                    }),
                 });
 
-                if (!response.ok) {
-                    throw new Error('Error al enviar el enlace');
+                // Verificamos si la respuesta es exitosa
+                if (response.ok) {
+                    const data = await response.json();
+                    this.message = data.message; // Mostramos el mensaje de éxito
+                } else {
+                    this.message = 'Hubo un error al enviar el correo';
                 }
-
-                const result = await response.json();
-                this.message = result.message || 'Enlace enviado correctamente';
             } catch (error) {
-                this.message = error.message || 'Hubo un error';
+                console.error('Error al hacer la solicitud', error);
+                this.message = 'Hubo un error al enviar el correo';
             }
-        }
-
+        },
     },
 };
 </script>
+
+<style scoped>
+button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+</style>
