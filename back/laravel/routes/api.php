@@ -9,7 +9,14 @@
     use App\Http\Controllers\MessageController;
     use App\Http\Controllers\PreguntaController;
     use App\Http\Controllers\RespostasController;
-    use App\Http\Controllers\Auth\PasswordResetController;
+
+
+
+
+    use App\Http\Controllers\EmailController;
+    use App\Http\Controllers\PasswordResetController;
+
+
 
 
     Route::get('/user', function (Request $request) {
@@ -79,9 +86,6 @@
     Route::get('/preguntas', [PreguntaController::class, 'index']);
     
     //====== CAMBIAR PASSWORD =====================
+    Route::post('/password/reset/email', [PasswordResetController::class, 'sendEmail']);
 
-
-
-    use App\Http\Controllers\EmailController;
-
-    Route::post('send-email', [EmailController::class, 'sendEmail']);
+    Route::post('/password/reset', [PasswordResetController::class, 'reset']);
