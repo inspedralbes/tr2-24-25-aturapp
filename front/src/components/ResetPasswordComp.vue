@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import { resetPassword } from '../services/communictationManager';
+
 export default {
     data() {
         return {
@@ -21,7 +23,7 @@ export default {
         };
     },
     mounted() {
-        console.log('Token desde la URL:', this.token); 
+        console.log('Token desde la URL:', this.token);
     },
     methods: {
         async resetPassword() {
@@ -35,35 +37,14 @@ export default {
                 return;
             }
 
-            const requestData = {
-                token: this.token,
-                password: this.password,
-                password_confirmation: this.password_confirmation,
-            };
-            console.log('Datos enviados al backend:', requestData);
-
             try {
-                const response = await fetch('http://localhost:8000/api/password/reset', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(requestData), 
-                });
-
-                const data = await response.json();
-                if (!response.ok) {
-                    console.log('Error:', data);
-                    this.error = data.message || 'Hubo un error al restablecer la contraseña.';
-                } else {
-                    this.message = 'Contraseña restablecida con éxito.';
-                    this.$router.push('/login');
-                }
+                await resetPassword(this.token, this.password, this.password_confirmation);
+                this.error = null;
+                this.$router.push('/login');
             } catch (error) {
-                console.error('Error al enviar solicitud', error);
-                this.error = 'Hubo un error al restablecer la contraseña.';
+                this.error = error.message || 'Hubo un error al restablecer la contraseña.';
             }
-        }
+        },
     },
 };
 </script>

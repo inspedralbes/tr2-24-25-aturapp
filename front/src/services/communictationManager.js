@@ -161,3 +161,47 @@ export const publicarRespostas = async (data) => {
         return { success: false, message: 'Error de conexión' };
     }
 };
+
+// === SOLICITAR CAMBIAR PASSWORD =========
+export const sendPasswordResetEmail = async (email) => {
+    try {
+        const response = await fetch(`${laravel.URL}/password/reset/email`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error al enviar el correo');
+        }
+
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
+
+// === CAMBIAR PASSWORD ===================
+export const resetPassword = async (token, password, password_confirmation) => {
+    try {
+        const response = await fetch(`${laravel.URL}/password/reset`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ token, password, password_confirmation }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error al restablecer la contraseña');
+        }
+
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
