@@ -25,6 +25,7 @@ body {
   margin: 0;
   box-sizing: border-box;
   font-family: Arial, Helvetica, sans-serif;
+  background: #eff2f5;
 }
 
 /* ------------------------------------------ */
@@ -97,7 +98,7 @@ body {
   margin-top: 60px;
 }
 
-.p-15{
+.p-15 {
   padding: 15px;
 }
 
@@ -187,7 +188,7 @@ body {
   margin: auto;
 }
 
-.containCabezal{
+.containCabezal {
   position: fixed;
   top: 0;
   width: 100%;
@@ -217,5 +218,11 @@ body {
   left: 0;
   right: 0;
   margin: auto;
+}
+
+.box {
+  box-shadow: -5px -5px 9px rgba(255, 255, 255, 0.45), 5px 5px 9px rgba(94, 104, 121, 0.3);
+  padding: 10px;
+  border-radius: 10px
 }
 </style>

@@ -157,7 +157,6 @@ form {
     max-width: 400px;
     margin: 50px auto;
     padding: 20px;
-    background-color: #fff;
     width: 100%;
 }
 
