@@ -131,6 +131,7 @@ const router = createRouter({
       path: '/password/solicitar',
       name: 'Solicitar reset password',
       component: () => import('../components/SolicitarResetComp.vue'),
+      meta: { public: true },
     },
     {
       path: '/password/reset/:token',
