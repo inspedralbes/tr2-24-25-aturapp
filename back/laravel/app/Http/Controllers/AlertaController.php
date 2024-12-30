@@ -10,18 +10,14 @@ use Illuminate\Support\Facades\DB;
 
 class AlertaController extends Controller {
 
-    public function index() {
+    public function index()
+    {
         $alertas = Alerta::with('sector', 'estado')
             ->get()
-            ->groupBy('sector.id') // Agrupar por el nombre del sector
-            ->map(function ($alertas, $sector_id) {
-                $sector = $alertas->first()->sector;
-            ->groupBy('sector.id') // Agrupar por el nombre del sector
+            ->groupBy('sector.id')
             ->map(function ($alertas, $sector_id) {
                 $sector = $alertas->first()->sector;
                 return [
-                    'id_sector' => $sector_id,
-                    'nombre' => $sector->sector,
                     'id_sector' => $sector_id,
                     'nombre' => $sector->sector,
                     'total' => $alertas->count(),
@@ -35,31 +31,22 @@ class AlertaController extends Controller {
                     //         'created_at' => $alerta->created_at
                     //     ];
                     // })
-                    // 'detalles' => $alertas->map(function ($alerta) {
-                    //     return [
-                    //         'id' => $alerta->id,
-                    //         'sector_id' => $alerta->sector->id,
-                    //         'planta' => $alerta->sector->planta->name,
-                    //         'descripcion' => $alerta->descripcion,
-                    //         'estado' => $alerta->estado->name,
-                    //         'created_at' => $alerta->created_at
-                    //     ];
-                    // })
                 ];
             })
+            ->sortByDesc('total')
             ->values();
         return response()->json($alertas, 200);
     }
 
     public function getAlertsFilter(Request $request)
     {
-        if ($request->has('month')) {
+        if ($request->time === 'mes') {
             $query = Alerta::whereDate('created_at', '>=', now()->startOfMonth())->get();
-        } else if ($request->has('week')) {
+        } else if ($request->time ==='semana') {
             $query = Alerta::whereDate('created_at', '>=', now()->startOfWeek())->get();
-        } else if ($request->has('days')) {
-            $query = Alerta::whereDate('created_at', '>=', now()->subDays($request->days))->get();
-        } else {
+        } else if ($request->time ==='dia') {
+            $query = Alerta::whereDate('created_at', '>=', now()->subDays($request->quant))->get();
+        } else if ($request->time === 'total'){
             $query = Alerta::all();
         }
         // dd($query);
@@ -89,28 +76,8 @@ class AlertaController extends Controller {
         return response()->json($alertas, 200);
     }
 
-    public function getAlertsSector(Request $request) {
-        $alertas = Alerta::with('sector', 'estado', 'user')
-                ->where('sector_id', $request->sector_id)
-                ->get()
-                ->map(function ($alerta) {
-                    return [
-                        'id' => $alerta->id,
-                        'alumne_id' => $alerta->alumno_id,
-                        'alumne_name' => $alerta->user->nom.' '.$alerta->user->cognoms,
-                        'sector_id' => $alerta->sector->id,
-                        'sector_name' => $alerta->sector->sector,
-                        'planta' => $alerta->sector->planta->name,
-                        'descripcion' => $alerta->descripcion,
-                        'estado' => $alerta->estado->name,
-                        'fecha' => $alerta->created_at->toDateTimeString(),
-                    ];
-                });
-
-        return response()->json($alertas, 200);
-    }
-
-    public function myAlerts(Request $request) {
+    public function myAlerts(Request $request)
+    {
         $request->validate([
             'id' => 'required|integer',
         ]);
@@ -140,7 +107,8 @@ class AlertaController extends Controller {
         //
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'alumno_id' => 'required|integer',
             'sectorName' => 'required|string',
@@ -175,7 +143,8 @@ class AlertaController extends Controller {
         return response()->json($alerta, 201);
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $alerta = Alerta::with('sector.planta', 'estado')
             ->where('id', $id)
             ->first();
@@ -205,7 +174,8 @@ class AlertaController extends Controller {
         //
     }
 
-    public function update(Request $request, Alerta $alerta) {
+    public function update(Request $request, Alerta $alerta)
+    {
         $validated = $request->validate([
             'alerta_id' => 'required|integer',
             'alumne_id' => 'required|integer',
