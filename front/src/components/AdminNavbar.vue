@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex j-center">
-        <ul class="d-flex no-style j-around no-margin" style="color: red; width: 600px;">
+        <ul class="d-flex no-style j-around no-margin" style="color: red; width: 700px;">
             <li style="cursor: pointer;" @click="navigateTo('')">INICI</li>
             <li style="cursor: pointer;" @click="navigateTo('/alertes')">ALERTES</li>
             <li style="cursor: pointer;" @click="navigateTo('/heatmap')">HEATMAP</li>
