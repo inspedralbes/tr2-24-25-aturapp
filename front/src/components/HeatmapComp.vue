@@ -1,7 +1,6 @@
 <template>
     <div class="d-flex align-center j-between mx-20" style="height: 140px;position: relative">
         <h2>Heatmap</h2>
-        <div id="filtros">[[FILTROS]]</div>
         <div id="leyenda">
             <p>Llegenda</p>
             <ul class="no-style">
@@ -20,7 +19,8 @@
     </div>
     <div class="planoContainer">
         <div id="heatmap-planta0">
-            <svg width="90%" height="405" viewBox="0 0 1864 405" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <p>Planta Baixa</p>
+            <svg width="90%" viewBox="0 0 1864 405" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path v-for="(sector, index) in sectors0" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
                     :fill="sector.color" :stroke-width="5" @click="navigateToSector(sector.idbd)"
                     :style="{ cursor: sector.hasAlerts ? 'pointer' : 'not-allowed', pointerEvents: sector.hasAlerts ? 'auto' : 'none' }" />
@@ -29,7 +29,8 @@
 
         </div>
         <div id="heatmap-planta1">
-            <svg width="90%" height="407" viewBox="0 0 1864 407" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <p>Planta 1</p>
+            <svg width="90%" viewBox="0 0 1864 407" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path v-for="(sector, index) in sectors1" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
                     :fill="sector.color" :stroke-width="5" @click="navigateToSector(sector.idbd)"
                     :style="{ cursor: sector.hasAlerts ? 'pointer' : 'not-allowed', pointerEvents: sector.hasAlerts ? 'auto' : 'none' }" />
@@ -38,7 +39,8 @@
 
         </div>
         <div id="heatmap-planta2">
-            <svg width="90%" height="404" viewBox="0 0 1864 414" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <p>Planta 2</p>
+            <svg width="90%" viewBox="0 0 1864 414" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path v-for="(sector, index) in sectors2" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
                     :fill="sector.color" :stroke-width="5" @click="navigateToSector(sector.idbd)"
                     :style="{ cursor: sector.hasAlerts ? 'pointer' : 'not-allowed', pointerEvents: sector.hasAlerts ? 'auto' : 'none' }" />
@@ -46,6 +48,7 @@
             </svg>
         </div>
         <div id="heatmap-planta3">
+            <p>Planta 3</p>
             <svg width="90%" viewBox="0 0 1864 414" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path v-for="(sector, index) in sectors3" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
                     :fill="sector.color" :stroke-width="5" @click="navigateToSector(sector.idbd)"
@@ -202,7 +205,6 @@ async function getAllAlertes() {
 
 async function paintAlerts() {
     const allAlerts = await getAllAlertes();
-    // sectors3.value[1].color = 'red';
 
     allAlerts.forEach((alerta) => {
         sectors3.value.forEach(sector => {
@@ -242,40 +244,12 @@ function navigateToSector(id) {
     router.push(`/admin/heatmap/sector?id=${id}`);
 }
 
-// function transformaValors(arrayContador) {
-//     function normalize(value, min, max) {
-//         return max === min ? 0.5 : (value - min) / (max - min);
-//     }
-
-//     function getColor(valueNormalized) {
-//         const r = Math.floor(255 * valueNormalized);
-//         const g = 0;
-//         const b = 0;
-//         return `rgb(${r}, ${g}, ${b})`;
-//     }
-
-//     const nonZeroValues = arrayContador.filter(value => value > 0);
-//     const minValue = nonZeroValues.length ? Math.min(...nonZeroValues) : 0;
-//     const maxValue = nonZeroValues.length ? Math.max(...nonZeroValues) : 0;
-
-//     return arrayContador.map(value => {
-//         if (value === 0) {
-//             return `rgb(255, 255, 255)`;
-//         }
-//         const normalized = normalize(value, minValue, maxValue);
-//         return getColor(normalized);
-//     });
-
-//     return arrayColors;
-// }
-
 onMounted(async () => {
-    // arrayColors.value = transformaValors([0, 10, 100, 100, 0]);
     console.log(await paintAlerts());
 
     setInterval(async () => {
         // await paintAlerts();
-    }, 5000);
+    }, 8000);
 });
 
 </script>
@@ -289,13 +263,25 @@ onMounted(async () => {
 
 .planoContainer {
     overflow: hidden;
-    padding-bottom: 70px;
-    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
 }
 
 .planoContainer div {
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
+    border: 1px solid black;
+    padding: 20px;
+    /* height: 250px; */
+}
+
+.planoContainer div p{
+    font-weight: bold;
+    margin: 0 0 20px 0;
 }
 
 .heatmap-layer {
@@ -326,12 +312,5 @@ ul>li {
     display: flex;
     align-items: center;
     /* Centra los elementos dentro de cada item */
-}
-
-#filtros {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }
 </style>
