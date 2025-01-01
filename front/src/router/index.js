@@ -118,7 +118,7 @@ const router = createRouter({
     {
       path: '/admin/sociograma',
       name: 'sociograma',
-      //component: () => import('../components/HeatmapComp.vue'),
+      component: () => import('../components/sociograma.vue'),
       meta: { requiresAuth: true, rol: 2 },
     },
     {
