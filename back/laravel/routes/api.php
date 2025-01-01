@@ -89,3 +89,6 @@
     Route::post('/password/reset/email', [PasswordResetController::class, 'sendEmail']);
 
     Route::post('/password/reset', [PasswordResetController::class, 'reset']);
+
+    //====== VER ANALISIS =========================
+    Route::get('/analisis', [RespostasController::class, 'get']);
