@@ -5,6 +5,7 @@ import * as d3 from 'd3';
 const data = ref([]);
 const clases = ref([]);
 const selectedClass = ref('');
+const nombresNoMencionados = ref([]);
 
 fetch('http://localhost:8000/api/analisis')
     .then(response => response.json())
@@ -125,10 +126,36 @@ const crearSociograma = () => {
     }
 };
 
-const actualizarSociograma = () => {
+const obtenerNombresNoMencionados = async () => {
+    if (!selectedClass.value) {
+        nombresNoMencionados.value = [];
+        return;
+    }
+
+    const response = await fetch(`http://localhost:8000/api/companys-clase/${selectedClass.value}`);
+    const json = await response.json();
+    const todosNombres = json.companys.map(company => `${company.nom} ${company.cognoms}`);
+    
+    const mencionados = new Set(
+        data.value
+            .filter(item => item['Curs alumne emisor'].relacion === selectedClass.value)
+            .flatMap(item => [
+                item['Alumne emisor'].relacion,
+                item['resposta 1'].relacion,
+                item['resposta 2'].relacion,
+                item['resposta 3'].relacion,
+            ])
+    );
+
+    nombresNoMencionados.value = todosNombres.filter(nombre => !mencionados.has(nombre));
+};
+
+const actualizarSociograma = async () => {
     crearSociograma();
+    await obtenerNombresNoMencionados();
 };
 </script>
+
 
 <template>
     <div>
@@ -142,6 +169,13 @@ const actualizarSociograma = () => {
 
         <p v-if="!data || !data.length">Cargando datos...</p>
         <svg id="sociograma"></svg>
+
+        <div v-if="nombresNoMencionados.length">
+            <h3>Nombres no mencionados</h3>
+            <ul>
+                <li v-for="nombre in nombresNoMencionados" :key="nombre">{{ nombre }}</li>
+            </ul>
+        </div>
     </div>
 </template>
 
