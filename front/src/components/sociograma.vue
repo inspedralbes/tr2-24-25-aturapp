@@ -175,18 +175,19 @@
 <template>
     <div>
         <div>
+            <p>Per veure els noms no mencionats a una classe utilitza el filtre</p>
             <label for="clase">Selecciona una clase:</label>
             <select id="clase" v-model="selectedClass" @change="actualizarSociograma">
-                <option value="">Todas las clases</option>
+                <option value="">Todas les clases</option>
                 <option v-for="clase in clases" :key="clase" :value="clase">{{ clase }}</option>
             </select>
         </div>
 
-        <p v-if="!data || !data.length">Cargando datos...</p>
+        <p v-if="!data || !data.length">Carregant dades...</p>
         <svg id="sociograma"></svg>
 
         <div v-if="nombresNoMencionados.length">
-            <h3>Nombres no mencionados</h3>
+            <h3>Noms no mencionats</h3>
             <ul>
                 <li v-for="nombre in nombresNoMencionados" :key="nombre">{{ nombre }}</li>
             </ul>
