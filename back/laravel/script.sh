@@ -10,6 +10,10 @@ set -e
 # cp .env.example .env
 php artisan key:generate
 
+php artisan migrate:reset
+php artisan migrate
+php artisan db:seed
+
 # Generar APP_KEY si no existe
 # if ! grep -q "APP_KEY=" .env || [ -z "$(grep 'APP_KEY=' .env | cut -d '=' -f 2)" ]; then
 #     echo "Creant la key del env"
