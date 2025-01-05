@@ -205,3 +205,27 @@ export const resetPassword = async (token, password, password_confirmation) => {
         throw error;
     }
 };
+
+
+
+// === GET DADES SOCIOGRAMA ===============
+export const getAnalisisData = async () => {
+    try {
+        const response = await fetch('http://localhost:8000/api/analisis');
+        return await response.json();
+    } catch (error) {
+        console.error('Error al obtener los datos de análisis:', error);
+        throw error;
+    }
+};
+
+// === ANALISIS SOCIOGRAMA ================
+export const getCompanysClaseSociograma = async (selectedClass) => {
+    try {
+        const response = await fetch(`http://localhost:8000/api/companys-clase/${selectedClass}`);
+        return await response.json();
+    } catch (error) {
+        console.error('Error al obtener las compañías de clase:', error);
+        throw error;
+    }
+};

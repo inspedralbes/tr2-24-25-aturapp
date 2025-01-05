@@ -116,6 +116,12 @@ const router = createRouter({
       meta: { requiresAuth: true, rol: 2 },
     },
     {
+      path: '/admin/sociograma',
+      name: 'sociograma',
+      component: () => import('../components/sociograma.vue'),
+      meta: { requiresAuth: true, rol: 2 },
+    },
+    {
       path: '/admin/heatmap/sector',
       name: 'sector',
       component: () => import('../components/SectorAlertasComp.vue'),

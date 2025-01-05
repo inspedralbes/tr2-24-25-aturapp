@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => '11/12/2024',
             'password' => '123456',
             'rol' => 1,
-            'curs' => 2,
+            'curs' => 1,
             'torn' => 1
         ]);
         User::updateOrCreate([
@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => '11/12/2024',
             'password' => '123456',
             'rol' => 2,
-            'curs' => 4,
+            'curs' => 1,
             'torn' => 2
         ]);
         User::updateOrCreate([
@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => '11/12/2024',
             'password' => '123456',
             'rol' => 2,
-            'curs' => 3,
+            'curs' => 1,
             'torn' => 1
         ]);
         User::updateOrCreate([
@@ -61,8 +61,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'a23arnbarsor@inspedralbes.cat',
             'email_verified_at' => '11/12/2024',
             'password' => 'Arnau_2004',
-            'rol' => 1,
-            'curs' => 3,
+            'rol' => 2,
+            'curs' => 1,
             'torn' => 1
         ]);
 
