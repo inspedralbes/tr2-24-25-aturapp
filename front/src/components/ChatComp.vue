@@ -35,7 +35,7 @@ import { ref, reactive, onMounted, onUnmounted } from 'vue';
 import { guardarMissatgeBBDD } from '@/services/communictationManager.js';
 import socket from '@/services/socket.js';
 
-const msjAutomaticos = reactive(['¿En que curso has visto el incidente?', '¿Como definirias el incidente?', '¿Donde ha ocurrido el incidente?', '¿Cuando ha ocurrido el incidente?', 'Proporciona informacion sobre las personas involucradas(relaciones)','Redacta la informacion que quieras compartir:']);
+const msjAutomaticos = reactive(['¿En que curso has visto el incidente?', '¿Como definirias el incidente?', '¿Donde ha ocurrido el incidente?', '¿Cuando ha ocurrido el incidente?', 'Proporciona informacion sobre las personas involucradas(relaciones, cursos)','Redacta la informacion que quieras compartir:']);
 const messages = reactive([]);
 const input = ref('');
 
