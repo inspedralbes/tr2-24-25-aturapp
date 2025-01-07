@@ -1,5 +1,34 @@
 const laravel = { URL: "http://localhost:8000/api" };
 
+export async function editarPerfil(id, nom, cognom, telefon, dni) {
+    try {
+        const URL = `${laravel.URL}/editaruser`;
+        const response = await fetch(URL, {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                alumne_id: id,
+                nom: nom,
+                cognom: cognom,
+                telefon: telefon,
+                dni: dni
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Error en la solicitud");
+        }
+
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 export async function guardarMissatgeBBDD(msg) {
     try {
         const URL = `${laravel.URL}/missatge`;

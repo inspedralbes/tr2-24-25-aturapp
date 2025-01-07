@@ -4,7 +4,6 @@ import { useRoute, useRouter } from 'vue-router';
 import { useCounterStore } from '@/stores/counter';
 import { getAlert, editarAlerta } from '@/services/communictationManager.js'
 
-const BASE_URL = "http://localhost:8000";
 const store = useCounterStore();
 const route = useRoute();
 const router = useRouter();

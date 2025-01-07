@@ -2,7 +2,7 @@
     <nav class="navbar">
         <ul id="items" class="no-style d-flex align-center h-full no-margin j-around">
             <li v-for="icon in icons" :key="icon.alt" :class="{ active: route.path.includes(icon.alt) }"
-                @click="navigateTo(icon.alt)">
+                @click="router.push(`/${icon.alt}`)">
                 <img :src="icon.src" :width="icon.width" />
             </li>
         </ul>
@@ -24,9 +24,6 @@ const icons = [
     { src: "/assets/svg/user.svg", alt: "perfil", width: "35px" },
 ];
 
-function navigateTo(nameIcon) {
-    router.push(`/${nameIcon}`);
-}
 </script>
 
 <style scoped></style>

@@ -131,6 +131,7 @@
 <script setup>
     import { onMounted, ref } from 'vue';
     import { useCounterStore } from '@/stores/counter';
+    import { getAllAlertes } from '@/services/communictationManager.js';
 
     const store = useCounterStore();
     const BASE_URL = 'http://localhost:8000';
