@@ -379,3 +379,42 @@ export const getAlertsSector = async (sector_id) => {
         throw error;
     }
 };
+
+
+export const fetchCursos = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/cursos`);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error en fetchCursos:", errorText);
+            throw new Error(`Error al obtener los cursos: ${errorText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error en fetchCursos:", error);
+        throw error;
+    }
+};
+
+export const registerUser = async (userData) => {
+    try {
+        const response = await fetch(`${BASE_URL}/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(userData),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error en registerUser:", errorText);
+            throw new Error(`Error al registrar el usuario: ${errorText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error en registerUser:", error);
+        throw error;
+    }
+};
