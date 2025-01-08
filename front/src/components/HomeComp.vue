@@ -409,10 +409,10 @@ async function enviarAlerta() {
     }
 }
 
-function sosAlert() {
-    sosActive.value = !sosActive.value;
-    resetSector();
-}
+// function sosAlert() {
+//     sosActive.value = !sosActive.value;
+//     resetSector();
+// }
 
 onMounted(() => {
     paintAlerts();
