@@ -42,7 +42,6 @@ class AlertaController extends Controller
             'id' => 'required|integer',
         ]);
 
-        // $alumne_id = Auth::id();
         $alumne_id = $request->id;
 
         $alertas = Alerta::with('sector', 'estado')
@@ -117,9 +116,6 @@ class AlertaController extends Controller
         $alerta = Alerta::with('sector.planta', 'estado')
             ->where('id', $id)
             ->first();
-
-        // $user = 
-        // dd(Auth::user());
 
         if (!$alerta) {
             return response()->json(['error' => 'Alerta no encontrada'], 404);
