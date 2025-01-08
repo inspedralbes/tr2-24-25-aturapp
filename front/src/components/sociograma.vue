@@ -190,13 +190,16 @@ fetchData();
         </div>
 
         <p v-if="!data || !data.length">Carregant dades...</p>
-        <svg id="sociograma"></svg>
 
-        <div v-if="nombresNoMencionados.length">
-            <h3>Noms no mencionats</h3>
-            <ul>
-                <li v-for="nombre in nombresNoMencionados" :key="nombre">{{ nombre }}</li>
-            </ul>
+        <div class="container">
+            <svg id="sociograma"></svg>
+
+            <div v-if="nombresNoMencionados.length" class="nombres-no-mencionados">
+                <h3>Noms no mencionats</h3>
+                <ul>
+                    <li v-for="nombre in nombresNoMencionados" :key="nombre">{{ nombre }}</li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -204,5 +207,47 @@ fetchData();
 <style scoped>
 svg {
     background: rgb(183, 182, 182);
+}
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+#sociograma {
+    background: rgb(183, 182, 182);
+    flex: 2;
+}
+
+.nombres-no-mencionados {
+    flex: 1; 
+    max-height: 400px;
+    overflow-y: auto;
+    background: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nombres-no-mencionados h3 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.nombres-no-mencionados ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nombres-no-mencionados li {
+    padding: 5px 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.nombres-no-mencionados li:last-child {
+    border-bottom: none;
 }
 </style>
