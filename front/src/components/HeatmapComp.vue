@@ -40,14 +40,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { paths3 } from '@/assets/planos/paths3h';
+import { useRouter } from 'vue-router';
+import { getAllAlerts } from '../services/communicationManager';
 
-const BASE_URL = 'http://localhost:8000';
 const router = useRouter();
 
 const plantaInput = ref('planta3');
-
 const arrayColors = ref([]);
 
 const sectors0 = [];
@@ -84,99 +82,48 @@ const sectors3 = ref([
     { id: "fin-ala-ausias", idbd: 28, d: "M1787.5 397.5L1860.5 404.5L1863 227L1729 213V260L1787.5 266V397.5Z", color: "white", hasAlerts: false, alerts: [] },
 ]);
 
-async function getAllAlertes() {
-    try {
-        const response = await fetch(`${BASE_URL}/api/getAllAlerts`);
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-
-        const result = await response.json();
-        return result;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
 async function paintAlerts() {
-    const allAlerts = await getAllAlertes();
-    // sectors3.value[1].color = 'red';
+    const allAlerts = await getAllAlerts(); 
 
     allAlerts.forEach((alerta) => {
         sectors3.value.forEach(sector => {
-            if (sector.id == alerta.nombre) {
+            if (sector.id === alerta.nombre) {
                 sector.hasAlerts = true;
                 sector.alerts = alerta.detalles;
 
-                // LOGICA DEL COLOR --------------------
                 if (alerta.total < 2) {
-                    return sector.color = '#ffdfdf'
+                    sector.color = '#ffdfdf';
                 } else if (alerta.total < 4) {
-                    return sector.color = '#ff8686'
+                    sector.color = '#ff8686';
                 } else {
-                    return sector.color = '#ff4545'
+                    sector.color = '#ff4545';
                 }
-                // -------------------------------------
             }
         });
     });
 
-    const alertsColors = allAlerts.map(alerta => {
+    // Crear un array con información de colores por sector
+    return allAlerts.map(alerta => {
         const sector = sectors3.value.find(sector => sector.id === alerta.nombre);
         return {
             id_sector: alerta.id_sector,
             sector: alerta.nombre,
             total: alerta.total,
-            color: sector ? sector.color : white,
-            // detalles: alerta.detalles,
+            color: sector ? sector.color : 'white',
         };
     });
-
-    return alertsColors;
 }
 
 function navigateToSector(id) {
-    // PASAR EL ID DEL SECTOR Y FILTROS CON PARAMS
     router.push(`/admin/heatmap/sector?id=${id}`);
 }
 
-// function transformaValors(arrayContador) {
-//     function normalize(value, min, max) {
-//         return max === min ? 0.5 : (value - min) / (max - min);
-//     }
-
-//     function getColor(valueNormalized) {
-//         const r = Math.floor(255 * valueNormalized);
-//         const g = 0;
-//         const b = 0;
-//         return `rgb(${r}, ${g}, ${b})`;
-//     }
-
-//     const nonZeroValues = arrayContador.filter(value => value > 0);
-//     const minValue = nonZeroValues.length ? Math.min(...nonZeroValues) : 0;
-//     const maxValue = nonZeroValues.length ? Math.max(...nonZeroValues) : 0;
-
-//     return arrayContador.map(value => {
-//         if (value === 0) {
-//             return `rgb(255, 255, 255)`;
-//         }
-//         const normalized = normalize(value, minValue, maxValue);
-//         return getColor(normalized);
-//     });
-
-//     return arrayColors;
-// }
-
 onMounted(async () => {
-    // arrayColors.value = transformaValors([0, 10, 100, 100, 0]);
     console.log(await paintAlerts());
-
     setInterval(async () => {
-        // await paintAlerts();
+        await paintAlerts();
     }, 5000);
 });
-
 </script>
 
 <style scoped>
