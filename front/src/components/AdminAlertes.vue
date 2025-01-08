@@ -7,7 +7,6 @@
             <li v-for="alerta in alertas" :key="alerta.id">
                 <div class="alerta-header">
                     <strong>{{ alerta.titulo || 'Sin título' }}</strong>
-                    <button class="alerta-btn" @click="redireccionarFormulario(alerta.id)">Incidencia</button>
                 </div>
                 <div class="alerta-content">
                     Descripció: {{ alerta.descripcion || 'Sin descripción' }}<br />
@@ -31,23 +30,18 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
 
 const alertas = ref([]);
 const cargando = ref(true);
 const error = ref(null);
 const pollingInterval = ref(null);
-const router = useRouter();
-
-const redireccionarFormulario = (id) => {
-    router.push({ name: 'Formulario', params: { id } }); 
-};
 
 const fetchAlertas = async (showNotification = false) => {
     try {
         const respuesta = await fetch('http://localhost:8000/api/getAllAlerts');
+
         if (!respuesta.ok) {
-            throw new Error(`Error en la solicitud: ${respuesta.status}`);
+            throw new Error(`Error en la respuesta del servidor: ${respuesta.status}`);
         }
 
         const datos = await respuesta.json();
@@ -61,12 +55,12 @@ const fetchAlertas = async (showNotification = false) => {
 
         alertas.value = datos;
     } catch (err) {
-        error.value = err.message;
-        mostrarNotificacion('Error', err.message);
+        console.error('Error al cargar alertas:', err); 
     } finally {
         cargando.value = false;
     }
 };
+
 
 const iniciarPolling = () => {
     pollingInterval.value = setInterval(() => fetchAlertas(true), 5000); 
