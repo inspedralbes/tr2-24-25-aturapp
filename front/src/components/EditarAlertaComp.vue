@@ -8,9 +8,11 @@
     const route = useRoute();
     const id = route.query.id;
     const router = useRouter();
+    
+    const store = useCounterStore(); 
     const data = store.userData;
     const user_id = data.user.id;
-    const store = useCounterStore();
+
     const alertaDescripcio = ref('');
 
     function navigateTo(nameIcon) {
@@ -70,6 +72,7 @@
         getAlert();
     });
 </script>
+
 
 
 <template>
