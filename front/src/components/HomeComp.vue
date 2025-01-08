@@ -131,25 +131,14 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useCounterStore } from '@/stores/counter';
+import { getAllAlerts, sendAlert } from '../services/communictationManager';
 
 const store = useCounterStore();
-const BASE_URL = 'http://localhost:8000';
 const sosActive = ref(false);
 const sectorInput = ref('');
-const plantaInput = ref('planta3');
 const dataUser = store.userData;
 const alumno_id = dataUser.user.id;
 
-function resetSector() {
-    sectors3.value.forEach((sector, i) => {
-        sector.color = "white";
-    });
-}
-
-function sosAlert() {
-    sosActive.value = !sosActive.value;
-    resetSector();
-}
 
 const sectors3 = ref([
     { id: "lavabo-alumnat", d: "M201.5 81L195 0.5H322.5L328.5 81H201.5Z", color: "white" },
@@ -182,6 +171,14 @@ const sectors3 = ref([
     { id: "fin-ala-ausias", d: "M16.5 1787.5L9.5 1860.5L187 1863L201 1729H154L148 1787.5H16.5Z", color: "white" },
 ]);
 
+function resetSector() {
+    sectors3.value.forEach((sector) => {
+        sector.color = "white";
+        sector.hasAlerts = false;
+        sector.alerts = [];
+    });
+}
+
 function toggleSectorColor(index) {
     sectors3.value.forEach((sector, i) => {
         sector.color = i === index ? "red" : "white";
@@ -189,30 +186,57 @@ function toggleSectorColor(index) {
     sectorInput.value = sectors3.value[index].id;
 }
 
-async function enviarAlerta() {
+async function paintAlerts() {
     try {
-        const response = await fetch(`${BASE_URL}/api/alert`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                alumno_id: alumno_id,
-                sectorName: sectorInput.value
-            })
+        const allAlerts = await getAllAlerts();
+
+        allAlerts.forEach((alerta) => {
+            sectors3.value.forEach((sector) => {
+                if (sector.id === alerta.nombre) {
+                    sector.hasAlerts = true;
+                    sector.alerts = alerta.detalles;
+
+                    if (alerta.total < 2) {
+                        sector.color = '#ffdfdf';
+                    } else if (alerta.total < 4) {
+                        sector.color = '#ff8686';
+                    } else {
+                        sector.color = '#ff4545';
+                    }
+                }
+            });
         });
 
-        if (!response.ok) {
-            throw new Error("Error al crear la alerta");
-        }
+        console.log("Alertas pintadas:", allAlerts);
+    } catch (error) {
+        console.error("Error al pintar alertas:", error);
+    }
+}
 
-        const result = await response.json();
+async function enviarAlerta() {
+    try {
+        const alertData = {
+            alumno_id,
+            sectorName: sectorInput.value,
+        };
+
+        const result = await sendAlert(alertData);
         alert(`Alerta enviada con éxito. ID: ${result.id}`);
         resetSector();
     } catch (error) {
-        console.log("Error: ", error);
+        console.error("Error al enviar la alerta:", error);
     }
 }
+
+function sosAlert() {
+    sosActive.value = !sosActive.value;
+    resetSector();
+}
+
+onMounted(() => {
+    paintAlerts();
+    setInterval(paintAlerts, 5000);
+});
 </script>
 
 <style scoped>

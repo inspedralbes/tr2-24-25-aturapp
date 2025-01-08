@@ -41,7 +41,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { getAllAlerts } from '../services/communicationManager';
+import { getAllAlerts } from '../services/communictationManager';
 
 const router = useRouter();
 

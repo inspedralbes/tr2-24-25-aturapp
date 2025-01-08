@@ -71,6 +71,8 @@ async function handleSubmit() {
         return;
     }
 
+    if (!dni.value.trim()){ dni.value = "00000000Z" }
+
     const userData = {
         name: name.value,
         surname: surname.value,

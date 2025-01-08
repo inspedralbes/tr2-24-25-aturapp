@@ -339,7 +339,7 @@ export const getAllAlerts = async () => {
 // Obtener información de un usuario por ID
 export const getUser = async (alumne_id) => {
     try {
-        const response = await fetch(`${BASE_URL}/getUser`, {
+        const response = await fetch(`${laravel.URL}/getUser`, {
             method: 'POST',
             headers: { "Content-type": "application/json" },
             body: JSON.stringify({ alumne_id }),
@@ -361,7 +361,7 @@ export const getUser = async (alumne_id) => {
 // Obtener alertas por sector
 export const getAlertsSector = async (sector_id) => {
     try {
-        const response = await fetch(`${BASE_URL}/getAlertsSector`, {
+        const response = await fetch(`${laravel.URL}/getAlertsSector`, {
             method: 'POST',
             headers: { "Content-type": "application/json" },
             body: JSON.stringify({ sector_id }),
@@ -383,7 +383,7 @@ export const getAlertsSector = async (sector_id) => {
 
 export const fetchCursos = async () => {
     try {
-        const response = await fetch(`${BASE_URL}/cursos`);
+        const response = await fetch(`${laravel.URL}/cursos`);
 
         if (!response.ok) {
             const errorText = await response.text();
@@ -400,7 +400,7 @@ export const fetchCursos = async () => {
 
 export const registerUser = async (userData) => {
     try {
-        const response = await fetch(`${BASE_URL}/register`, {
+        const response = await fetch(`${laravel.URL}/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(userData),
@@ -422,7 +422,7 @@ export const registerUser = async (userData) => {
 
 export const fetchAlertes = async (usuari_id) => {
     try {
-        const response = await fetch(`${BASE_URL}/api/alertes`, {
+        const response = await fetch(`${laravel.URL}/alertes`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -445,7 +445,7 @@ export const fetchAlertes = async (usuari_id) => {
 
 export const loginUser = async (loginData) => {
     try {
-        const response = await fetch(`${BASE_URL}/api/login`, {
+        const response = await fetch(`${laravel.URL}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -465,3 +465,24 @@ export const loginUser = async (loginData) => {
         throw error;
     }
 };
+
+export async function sendAlert(alertData) {
+    try {
+        const response = await fetch(`${laravel.URL}/alert`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(alertData),
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al enviar la alerta');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error en sendAlert:', error);
+        throw error;
+    }
+}
