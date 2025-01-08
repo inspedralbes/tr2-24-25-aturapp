@@ -206,8 +206,6 @@ export const resetPassword = async (token, password, password_confirmation) => {
     }
 };
 
-
-
 // === GET DADES SOCIOGRAMA ===============
 export const getAnalisisData = async () => {
     try {
@@ -226,6 +224,32 @@ export const getCompanysClaseSociograma = async (selectedClass) => {
         return await response.json();
     } catch (error) {
         console.error('Error al obtener las compañías de clase:', error);
+        throw error;
+    }
+};
+
+// === PERFIL DADES ALUMNE ================
+// === DadesUserComp.vue ==================
+export const editarPerfilUser = async (payload) => {
+    const URL = `${laravel.URL}/editaruser`;
+    try {
+        const response = await fetch(URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Error al editar el perfil:', errorText);
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error a l\'hora d\'actualitzar l\'usuari: ', error);
         throw error;
     }
 };
