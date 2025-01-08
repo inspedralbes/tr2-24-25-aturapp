@@ -10,7 +10,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { guardarMissatgeBBDD } from '@/services/communictationManager.js';
+import { guardarMissatgeBBDD } from '../services/communictationManager';
 import socket from '@/services/socket.js';
 
 const messages = ref([]);
