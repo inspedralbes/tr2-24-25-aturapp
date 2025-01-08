@@ -418,3 +418,27 @@ export const registerUser = async (userData) => {
         throw error;
     }
 };
+
+
+export const fetchAlertes = async (usuari_id) => {
+    try {
+        const response = await fetch(`${BASE_URL}/api/alertes`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: usuari_id }),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error en fetchAlertes:", errorText);
+            throw new Error(`Error al obtener las alertas: ${errorText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error en fetchAlertes:", error);
+        throw error;
+    }
+};

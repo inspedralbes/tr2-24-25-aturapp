@@ -1,65 +1,51 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useCounterStore } from '@/stores/counter';
+    import { ref, onMounted } from 'vue';
+    import { useRouter } from 'vue-router';
+    import { useCounterStore } from '@/stores/counter';
+    import { fetchAlertes } from '../services/communictationManager';
 
-const BASE_URL = "http://localhost:8000";
-const store = useCounterStore();
-const data = store.userData;
-const usuari_id = data.user.id;
-const router = useRouter();
-const alertes = ref([]);
+    const store = useCounterStore();
+    const data = store.userData;
+    const usuari_id = data.user.id;
+    const router = useRouter();
+    const alertes = ref([]);
 
-async function getAlertas() {
-    try {
-        const response = await fetch(`${BASE_URL}/api/alertes`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ id: usuari_id }),
-        });
+    async function loadAlertes() {
+        try {
+            alertes.value = await fetchAlertes(usuari_id);
+        } catch (error) {
+            console.error("Error al cargar las alertas:", error);
+        }
+    }
 
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
+    function formatFecha(isoDate) {
+        const date = new Date(isoDate);
+        return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
+    }
+
+    function formatText(text) {
+        text = text || '';
+        if (text.includes("-inf")) {
+            return text.toUpperCase();
         }
 
-        const result = await response.json();
-        
-        alertes.value = result;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-function formatFecha(isoDate) {
-    const date = new Date(isoDate);
-    return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
-}
-
-function formatText(text) {
-    text = text || '';
-    if (text.includes("-inf")) {
-        return text.toUpperCase();
+        return text
+            .split('-') // Divide el texto en palabras separadas por "-"
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitaliza la primera letra de cada palabra
+            .join(' '); // Une las palabras con un espacio
     }
 
-    return text
-        .split('-') // Divide el texto en palabras separadas por "-"
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitaliza la primera letra de cada palabra
-        .join(' '); // Une las palabras con un espacio
-}
-
-function navigateTo(nameIcon) {
-  router.push(`/${nameIcon}`)
-};
-
-onMounted(() => {
-    if(usuari_id != undefined){
-        getAlertas();
+    function navigateTo(nameIcon) {
+        router.push(`/${nameIcon}`);
     }
-})
 
+    onMounted(() => {
+        if (usuari_id !== undefined) {
+            loadAlertes();
+        }
+    });
 </script>
+
 
 <template>
     <div class="containCabezal">
