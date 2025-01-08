@@ -24,7 +24,7 @@
                 <path v-for="(sector, index) in sectors0" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
                     :fill="sector.color" :stroke-width="5" @click="navigateToSector(sector.idbd)"
                     :style="{ cursor: sector.hasAlerts ? 'pointer' : 'not-allowed', pointerEvents: sector.hasAlerts ? 'auto' : 'none' }" />
-                <g v-html="paths0"></g>
+                <g v-html="planta0h"></g>
             </svg>
 
         </div>
@@ -34,7 +34,7 @@
                 <path v-for="(sector, index) in sectors1" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
                     :fill="sector.color" :stroke-width="5" @click="navigateToSector(sector.idbd)"
                     :style="{ cursor: sector.hasAlerts ? 'pointer' : 'not-allowed', pointerEvents: sector.hasAlerts ? 'auto' : 'none' }" />
-                <g v-html="paths1"></g>
+                <g v-html="planta1h"></g>
             </svg>
 
         </div>
@@ -44,7 +44,7 @@
                 <path v-for="(sector, index) in sectors2" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
                     :fill="sector.color" :stroke-width="5" @click="navigateToSector(sector.idbd)"
                     :style="{ cursor: sector.hasAlerts ? 'pointer' : 'not-allowed', pointerEvents: sector.hasAlerts ? 'auto' : 'none' }" />
-                <g v-html="paths2"></g>
+                <g v-html="planta2h"></g>
             </svg>
         </div>
         <div id="heatmap-planta3">
@@ -53,7 +53,7 @@
                 <path v-for="(sector, index) in sectors3" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
                     :fill="sector.color" :stroke-width="5" @click="navigateToSector(sector.idbd)"
                     :style="{ cursor: sector.hasAlerts ? 'pointer' : 'not-allowed', pointerEvents: sector.hasAlerts ? 'auto' : 'none' }" />
-                <g v-html="paths3"></g>
+                <g v-html="planta3h"></g>
             </svg>
 
             <div v-for="(color, index) in arrayColors" :key="index"
@@ -65,7 +65,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { paths0, paths1, paths2, paths3 } from '@/assets/planos/paths';
+import { planta0h, planta1h, planta2h, planta3h } from '@/assets/planos/paths';
 
 const BASE_URL = 'http://localhost:8000';
 const router = useRouter();
