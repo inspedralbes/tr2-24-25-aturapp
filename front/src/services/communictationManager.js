@@ -288,3 +288,44 @@ export const updateAlert = async (data) => {
         throw error;
     }
 };
+
+
+
+// === EstadisticasComp.vue ==========================
+// === OBTENER ALERTAS FILTRADAS =====================
+export const getAlertsFilter = async (tiempo, cantidad) => {
+    const URL = `${laravel.URL}/getAlertsFilter`;
+    try {
+        const response = await fetch(URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ time: tiempo, quant: cantidad }),
+        });
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error en getAlertsFilter:", errorText);
+            throw new Error(`Error al obtener alertas filtradas: ${errorText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en getAlertsFilter:", error);
+        throw error;
+    }
+};
+
+// === OBTENER TODAS LAS ALERTAS =====================
+export const getAllAlerts = async () => {
+    const URL = `${laravel.URL}/getAllAlerts`;
+    try {
+        const response = await fetch(URL, { method: 'GET' });
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error en getAllAlerts:", errorText);
+            throw new Error(`Error al obtener todas las alertas: ${errorText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en getAllAlerts:", error);
+        throw error;
+    }
+};

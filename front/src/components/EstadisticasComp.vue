@@ -38,205 +38,161 @@
 </template>
 
 <script setup>
-import { Chart, registerables } from "chart.js";
-import { ref, onMounted } from 'vue';
-const BASE_URL = 'http://localhost:8000';
-const time = ref('total');
-const quant = ref('0');
-const alertas_recibidas = ref();
-const rankingSectores = ref([]);
+    import { Chart, registerables } from "chart.js";
+    import { ref, onMounted } from 'vue';
+    import { getAlertsFilter, getAllAlerts } from './path/to/CommunicationManager';
 
-const tipo = ref('pie');
-const etiquetas = ref();
-const datos = ref([12, 19, 3, 5, 2]);
+    const time = ref('total');
+    const quant = ref('0');
+    const alertas_recibidas = ref([]);
+    const rankingSectores = ref([]);
 
-const chartCanvas = ref();
-Chart.register(...registerables);
-let grafico = null;
+    const tipo = ref('pie');
+    const etiquetas = ref([]);
+    const datos = ref([12, 19, 3, 5, 2]);
 
-async function getAlerts(tiempo, cantidad) {
-    time.value = tiempo;
-    quant.value = cantidad;
-    try {
-        const response = await fetch(`${BASE_URL}/api/getAlertsFilter`, {
-            method: 'POST',
-            headers: {
-                "Content-type": "application/json",
+    const chartCanvas = ref();
+    Chart.register(...registerables);
+    let grafico = null;
+
+    const fetchAlerts = async (tiempo, cantidad) => {
+        try {
+            alertas_recibidas.value = await getAlertsFilter(tiempo, cantidad);
+        } catch (error) {
+            console.error('Error al obtener alertas filtradas:', error);
+        }
+    };
+
+    const fetchAllAlerts = async () => {
+        try {
+            rankingSectores.value = await getAllAlerts();
+        } catch (error) {
+            console.error('Error al obtener todas las alertas:', error);
+        }
+    };
+
+    function getQuantitat(caso, alertas) {
+        const datos = ref([]);
+        switch (caso) {
+            case 'horario':
+                datos.value = [0, 0, 0, 0, 0, 0, 0, 0];
+                etiquetas.value = ['8:00-9:00', '9:00-10:00', '10:00-11:00', '11:00-12:00', '12:00-13:00', '13:00-14:00', '14:00-15:00', "Fora d'horari"];
+                tipo.value = 'pie';
+                const horaris = [];
+                for (let index = 8; index <= 15; index++) {
+                    const horario = new Date();
+                    horario.setHours(index, 0, 0, 0);
+                    horaris.push(horario);
+                }
+                alertas.forEach(alerta => {
+                    const alertaHora = new Date(alerta.created_at);
+                    const alertaTotalMinutos = alertaHora.getHours() * 60 + alertaHora.getMinutes();
+
+                    for (let i = 0; i < horaris.length - 1; i++) {
+                        const inicioRango = horaris[i].getHours() * 60;
+                        const finRango = horaris[i + 1].getHours() * 60;
+
+                        if (alertaTotalMinutos >= inicioRango && alertaTotalMinutos < finRango) {
+                            datos.value[i] += 1;
+                            return;
+                        }
+                    }
+
+                    datos.value[7] += 1;
+                });
+                break;
+            case 'dia':
+                datos.value = [0, 0, 0, 0, 0];
+                etiquetas.value = ['Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres'];
+                tipo.value = 'bar';
+                alertas.forEach((alerta) => {
+                    const dia = new Date(alerta.created_at).getDay();
+                    if (dia >= 1 && dia <= etiquetas.value.length) {
+                        datos.value[dia - 1] += 1;
+                    }
+                });
+                break;
+            case 'total':
+                datos.value = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                etiquetas.value = ['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol', 'Agost', 'Setembre', 'Octubre', 'Novembre', 'Desembre'];
+                tipo.value = 'line';
+                alertas.forEach((alerta) => {
+                    const mes = new Date(alerta.created_at).getMonth();
+                    datos.value[mes] += 1;
+                });
+                break;
+        }
+        return datos.value;
+    }
+
+    function createChart(tipo, etiquetas, datos) {
+        if (grafico) {
+            grafico.destroy();
+        }
+        grafico = new Chart(chartCanvas.value, {
+            type: tipo,
+            data: {
+                labels: etiquetas,
+                datasets: [{
+                    label: "# of alerts",
+                    data: datos,
+                    borderWidth: 1
+                }]
             },
-            body: JSON.stringify({
-                time: time.value,
-                quant: quant.value
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-
-        const result = await response.json();
-        alertas_recibidas.value = result;
-    } catch (error) {
-
-    }
-}
-
-async function getAllAlertes() {
-    try {
-        const response = await fetch(`${BASE_URL}/api/getAllAlerts`);
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-
-        const result = await response.json();
-        return result;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-function getQuantitat(caso, alertas) {
-    const datos = ref();
-    switch (caso) {
-        case 'horario':
-            datos.value = [0, 0, 0, 0, 0, 0, 0, 0];
-            etiquetas.value = ['8:00-9:00', '9:00-10:00', '10:00-11:00', '11:00-12:00', '12:00-13:00', '13:00-14:00', '14:00-15:00', "Fora d'horari"];
-            tipo.value = 'pie';
-            const horaris = [];
-            for (let index = 8; index <= 15; index++) {
-                const horario = new Date();
-                horario.setHours(index, 0, 0, 0);
-                horaris.push(horario);
-            }
-            alertas.forEach(alerta => {
-                const alertaHora = new Date(alerta.created_at);
-                const alertaTotalMinutos = alertaHora.getHours() * 60 + alertaHora.getMinutes();
-
-                for (let i = 0; i < horaris.length - 1; i++) {
-                    const inicioRango = horaris[i].getHours() * 60;
-                    const finRango = horaris[i + 1].getHours() * 60;
-
-                    if (alertaTotalMinutos >= inicioRango && alertaTotalMinutos < finRango) {
-                        datos.value[i] += 1;
-                        return;
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
                 }
-
-                datos.value[7] += 1;
-            });
-            break;
-        case 'dia':
-            datos.value = [0, 0, 0, 0, 0];
-            etiquetas.value = ['Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres'];
-            tipo.value = 'bar';
-            alertas.forEach((alerta) => {
-                const dia = new Date(alerta.created_at).getDay();
-                if (dia >= 1 && dia <= etiquetas.value.length) {
-                    datos.value[dia] += 1;
-                }
-            })
-            break;
-        case 'total':
-            datos.value = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-            etiquetas.value = ['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol', 'Agost', 'Setembre', 'Octubre', 'Novembre', 'Desembre'];
-            tipo.value = 'line';
-            alertas.forEach((alerta) => {
-                const mes = new Date(alerta.created_at).getMonth();
-                datos.value[mes] += 1;
-            })
-            break;
-        // default:
-        //     break;
-    }
-
-    return datos.value;
-}
-
-function formatHora(isoDate) {
-    const date = new Date(isoDate);
-    return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-}
-
-function formatText(text) {
-    text = text || "";
-
-    if (text.includes("-inf")) {
-        return text.toUpperCase();
-    }
-
-    return text
-        .split('-') // Divide el texto en palabras separadas por "-"
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitaliza la primera letra de cada palabra
-        .join(' '); // Une las palabras con un espacio
-}
-
-function count(array) {
-    return array ? array.length : 0; // Verifica que el array no sea null o undefined
-}
-
-function createChart(tipo, etiquetas, datos) {
-    if (grafico) {
-        grafico.destroy();
-    }
-    grafico = new Chart(chartCanvas.value, {
-        type: tipo,
-        data: {
-            labels: etiquetas,
-            datasets: [{
-                label: "# of alerts",
-                data: datos,
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
             }
-        }
+        });
+    }
+
+    function choiseChart(type) {
+        datos.value = getQuantitat(type, alertas_recibidas.value);
+        createChart(tipo.value, etiquetas.value, datos.value);
+    }
+
+    onMounted(async () => {     
+        await fetchAlerts(time.value, quant.value);
+        await fetchAllAlerts();
+        datos.value = getQuantitat('total', alertas_recibidas.value);
+        createChart(tipo.value, etiquetas.value, datos.value);
     });
-}
-
-function choiseChart(type) {
-    datos.value = getQuantitat(type, alertas_recibidas.value);
-    createChart(tipo.value, etiquetas.value, datos.value);
-}
-
-onMounted(async () => {
-    await getAlerts(time.value, quant.value);
-    rankingSectores.value = await getAllAlertes();
-    datos.value = getQuantitat('total', alertas_recibidas.value);
-    createChart(tipo.value, etiquetas.value, datos.value);
-});
 </script>
+
 
 <style scoped>
 #containAll {
-  box-sizing: border-box;
-  padding: 20px; /* Márgenes laterales */
+    box-sizing: border-box;
+    padding: 20px;
+    /* Márgenes laterales */
 }
 
 .button-group {
-  gap: 10px;
-  margin-bottom: 20px;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 #statsContain {
-  display: grid;
-  grid-template-areas:
-    "a a b b c"
-    "a a b b c"
-    "d d d d c"
-    "d d d d e"
-    "d d d d e";
-  grid-template-columns: repeat(4, 1fr) 1fr; /* 4 columnas iguales y una más pequeña */
-  gap: 20px;
-  max-width: 1200px; /* Máximo ancho para grandes pantallas */
-  margin: auto; /* Centrado horizontal */
+    display: grid;
+    grid-template-areas:
+        "a a b b c"
+        "a a b b c"
+        "d d d d c"
+        "d d d d e"
+        "d d d d e";
+    grid-template-columns: repeat(4, 1fr) 1fr;
+    /* 4 columnas iguales y una más pequeña */
+    gap: 20px;
+    max-width: 1200px;
+    /* Máximo ancho para grandes pantallas */
+    margin: auto;
+    /* Centrado horizontal */
 }
 
-.resultado{
+.resultado {
     font-weight: bolder;
     font-size: 40px
 }
@@ -288,49 +244,49 @@ button {
 }
 
 .ranking-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  max-width: 400px;
-  margin: 20px auto;
-  font-family: Arial, sans-serif;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 400px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
 }
 
 /* Estilo de cada ítem de la lista */
 .ranking-item {
-  background-color: #f4f4f4;
-  margin: 8px 0;
-  padding: 5px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
+    background-color: #f4f4f4;
+    margin: 8px 0;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
 }
 
-.ranking-item>p{
-  margin: 0;
-  font-size: 20px;
+.ranking-item>p {
+    margin: 0;
+    font-size: 20px;
 }
 
 @media (max-width: 768px) {
-  #statsContain {
-    grid-template-areas:
-      "a"
-      "b"
-      "c"
-      "d";
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-  }
+    #statsContain {
+        grid-template-areas:
+            "a"
+            "b"
+            "c"
+            "d";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
 
-  .button-group {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+    .button-group {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 
-  button {
-    width: 100%;
-    margin-bottom: 10px;
-  }
+    button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
 }
 </style>
