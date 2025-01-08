@@ -40,7 +40,7 @@
 <script setup>
     import { Chart, registerables } from "chart.js";
     import { ref, onMounted } from 'vue';
-    import { getAlertsFilter, getAllAlerts } from './path/to/CommunicationManager';
+    import { getAlertsFilter, getAllAlerts } from '../services/communictationManager';
 
     const time = ref('total');
     const quant = ref('0');
