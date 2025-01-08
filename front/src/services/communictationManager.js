@@ -290,7 +290,6 @@ export const updateAlert = async (data) => {
 };
 
 
-
 // === EstadisticasComp.vue ==========================
 // === OBTENER ALERTAS FILTRADAS =====================
 export const getAlertsFilter = async (tiempo, cantidad) => {
@@ -326,6 +325,57 @@ export const getAllAlerts = async () => {
         return await response.json();
     } catch (error) {
         console.error("Error en getAllAlerts:", error);
+        throw error;
+    }
+};
+
+
+
+
+
+
+// === SectorAlertasComp.vue ========================
+
+// Obtener información de un usuario por ID
+export const getUser = async (alumne_id) => {
+    try {
+        const response = await fetch(`${BASE_URL}/getUser`, {
+            method: 'POST',
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({ alumne_id }),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error en getUser:", errorText);
+            throw new Error(`Error al obtener usuario: ${errorText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error en getUser:", error);
+        throw error;
+    }
+};
+
+// Obtener alertas por sector
+export const getAlertsSector = async (sector_id) => {
+    try {
+        const response = await fetch(`${BASE_URL}/getAlertsSector`, {
+            method: 'POST',
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({ sector_id }),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error en getAlertsSector:", errorText);
+            throw new Error(`Error al obtener alertas del sector: ${errorText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error en getAlertsSector:", error);
         throw error;
     }
 };

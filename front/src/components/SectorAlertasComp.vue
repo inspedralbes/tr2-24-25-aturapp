@@ -55,68 +55,19 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { getUser, getAlertsSector } from './path/to/CommunicationManager';
 
-const BASE_URL = 'http://localhost:8000';
 const router = useRouter();
 const route = useRoute();
 const id_sector = route.query.id;
-const alertes = ref();
-const sector = ref();
+const alertes = ref([]);
+const sector = ref('');
 const alertVisible = ref(false);
 const infoAlerta = ref();
 const infoAlumne = ref();
 
 function navigateTo(path) {
-    router.push(`/admin/${path}`)
-}
-
-async function getUser(){
-    try {
-        const response = await fetch(`${BASE_URL}/api/getUser`, {
-            method: 'POST',
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                alumne_id: infoAlerta.value.alumne_id,
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-
-        const result = await response.json();
-        console.log(result)
-        return result;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-async function getAlertsSector() {
-    try {
-        const response = await fetch(`${BASE_URL}/api/getAlertsSector`, {
-            method: 'POST',
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                sector_id: id_sector,
-                // Meter otros valores (Fechas, Horarios)
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-
-        const result = await response.json();
-        // console.log(result)
-        return result;
-    } catch (error) {
-        console.error(error);
-    }
+    router.push(`/admin/${path}`);
 }
 
 function formatText(text) {
@@ -135,15 +86,16 @@ function formatText(text) {
 async function verAlerta(id) {
     alertVisible.value = true;
     infoAlerta.value = alertes.value.find((alerta) => alerta.id === id);
-    infoAlumne.value = await getUser();
+    infoAlumne.value = await getUser(infoAlerta.value.alumne_id);
     console.log(infoAlumne.value.user);
 }
 
 onMounted(async () => {
-    alertes.value = await getAlertsSector();
-    sector.value = formatText(alertes.value[0].sector_name);
+    alertes.value = await getAlertsSector(id_sector);
+    if (alertes.value.length > 0) {
+        sector.value = formatText(alertes.value[0].sector_name);
+    }
 });
-
 </script>
 
 <style scoped>
