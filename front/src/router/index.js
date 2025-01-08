@@ -100,12 +100,6 @@ const router = createRouter({
       component: () => import('../components/AdminAlertes.vue'),
       meta: { requiresAuth: true, rol: 2 },
     },
-    {
-      path: '/formulario/:id',
-      name: 'Formulario',
-      component: () => import('../components/Formulario.vue'),
-      meta: { requiresAuth: true, rol: 2 },
-    }
   ],
 });
 
