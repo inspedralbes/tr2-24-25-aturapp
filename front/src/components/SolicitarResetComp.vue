@@ -1,7 +1,7 @@
 <template>
     <div class="container">
-        <div>
-            <h2>Solicitar restablecimiento de contraseña</h2>
+        <div class="d-flex f-column align-center j-center">
+            <h2 class="no-margin">Solicitar restablecimiento de contraseña</h2>
             <input v-model="email" type="email" placeholder="Introduce tu correo" />
             <button @click="sendRequest">Enviar solicitud</button>
             <p v-if="message">{{ message }}</p>
@@ -48,10 +48,14 @@
 
 .container div {
     width: 300px;
-    padding: 20px;
+    padding: 20px 30px;
     text-align: center;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.container div h2{
+    margin-bottom: 15px;
 }
 
 input {

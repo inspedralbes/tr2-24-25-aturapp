@@ -1,11 +1,11 @@
 <template>
-    <h1>REGISTER</h1>
+    <h1>REGISTRA'T</h1>
 
     <div id="containForm" class="d-flex f-column align-center j-center">
         <form @submit.prevent="handleSubmit">
             <input type="text" v-model="name" placeholder="Nom" />
             <input type="text" v-model="surname" placeholder="Cognom" />
-            <input type="text" v-model="email" placeholder="Correu Electrònic" />
+            <input type="text" v-model="email" placeholder="Correu electrònic" />
             <p>Selecciona el teu curs</p>
             <select v-model="grade">
                 <option v-for="curso in cursos" :key="curso.id" :value="curso.id">
@@ -18,13 +18,13 @@
                 <i :class="passwordIcon" @click="togglePassword"></i>
             </div>
             <div class="password-container">
-                <input :type="confirmPasswordType" v-model="confirmPassword" placeholder="Confirma la Contrasenya" />
+                <input :type="confirmPasswordType" v-model="confirmPassword" placeholder="Confirmar contrasenya" />
                 <i :class="confirmPasswordIcon" @click="toggleConfirmPassword"></i>
             </div>
-            <button type="submit">Registrarse</button>
+            <button class="btn-register" type="submit">Registrar-se</button>
         </form>
         <div class="d-flex j-center align-center no-margin">
-            <button class="btn-login" @click="navigateTo('login')">Iniciar sesión</button>
+            <button class="btn-login" @click="navigateTo('login')">Iniciar sessió</button>
         </div>
     </div>
 </template>
@@ -177,12 +177,8 @@ button {
     transition: background-color 0.3s ease;
 }
 
-button:hover {
+.btn-register:hover {
     background-color: #e60000;
-}
-
-button:focus {
-    outline: none;
 }
 
 .password-container {
@@ -244,6 +240,12 @@ button:focus {
     margin-top: 10px;
     width: 320px;
     background-color: white;
+    border: 1px solid #ff4d4d;
+    color: #ff4d4d;
+    transition: all 0.3s ease;
+}
+
+.btn-login:hover {
     border: 1px solid #e60000;
     color: #e60000;
 }

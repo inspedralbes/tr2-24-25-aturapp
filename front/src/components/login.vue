@@ -1,25 +1,23 @@
 <template>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <h1>LOGIN</h1>
+  <h1>INICIAR SESSIÓ</h1>
   <div id="containLogin" class="d-flex f-column align-center j-center">
     <form @submit.prevent="handleSubmit">
-      <input type="text" required v-model="email" placeholder="Correu Electrònic" />
+      <input type="text" required v-model="email" placeholder="Correu electrònic" />
 
       <div class="password-container">
         <input :type="passwordType" class="input-field" required v-model="password" placeholder="Contrasenya" />
         <i :class="passwordIcon" @click="togglePassword"></i>
       </div>
 
-      <button type="submit" class="submit-button">Iniciar Sesión</button>
+      <button type="submit" class="submit-button">Iniciar Sessió</button>
     </form>
-    <div class="d-flex j-center align-center no-margin">
-      <button class="btn-register" @click="navigateTo('register')">Registrarse</button>
+    <div class="d-flex j-center align-center f-column no-margin">
+      <button class="btn-register" @click="navigateTo('register')">Registrar-se</button>
+      <p id="btn-resetPass" @click="navigateTo('password/solicitar')">Has oblidat la teva contrasenya?</p>
     </div>
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
-    <div v-if="Iniciado">
-      <p><strong>Bienvenido, {{ userData.name }}</strong></p>
-    </div>
   </div>
 </template>
 
@@ -174,6 +172,19 @@ button:focus {
   background-color: #f9f9f9;
 }
 
+#btn-resetPass{
+  font-size: 16px;
+  margin-top: 10px;
+  /* color: #e60000; */
+  font-weight: 300;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#btn-resetPass:hover{
+  color: #e60000;
+}
+
 @media (max-width: 600px) {
   form {
     width: 90%;
@@ -206,6 +217,11 @@ button:focus {
   margin-top: 10px;
   width: 320px;
   background-color: white;
+  border: 1px solid #ff4d4d;
+  color: #ff4d4d;
+}
+
+.btn-register:hover{
   border: 1px solid #e60000;
   color: #e60000;
 }
