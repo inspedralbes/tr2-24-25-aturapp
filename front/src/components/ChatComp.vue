@@ -34,6 +34,7 @@ onUnmounted(() => {
   socket.off();
 });
 </script>
+
 <style scoped>
 #missatges {
   list-style-type: none;
