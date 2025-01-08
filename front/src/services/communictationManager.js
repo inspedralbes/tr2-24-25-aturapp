@@ -253,3 +253,38 @@ export const editarPerfilUser = async (payload) => {
         throw error;
     }
 };
+
+
+// === EditarAlertaComp.vue ===============
+// === OBTENER ALERTA POR ID ===============
+export const getAlertById = async (id) => {
+    const URL = `${laravel.URL}/show/${id}`;
+    try {
+        const response = await fetch(URL, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        if (!response.ok) throw new Error('Error al obtener la alerta');
+        return await response.json();
+    } catch (error) {
+        console.error('Error al obtener la alerta:', error);
+        throw error;
+    }
+};
+
+// === ACTUALIZAR ALERTA ====================
+export const updateAlert = async (data) => {
+    const URL = `${laravel.URL}/update`;
+    try {
+        const response = await fetch(URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) throw new Error('Error al actualizar la alerta');
+        return await response.json();
+    } catch (error) {
+        console.error('Error al actualizar la alerta:', error);
+        throw error;
+    }
+};
