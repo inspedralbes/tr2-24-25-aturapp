@@ -11,39 +11,27 @@ use Illuminate\Support\Facades\DB;
 class AlertaController extends Controller {
 
     public function index()
-{
+    {
     try {
         $alertas = Alerta::with('sector.planta', 'estado')
             ->get()
-            ->groupBy('sector.id')
-            ->map(function ($alertas, $sector_id) {
-                $sector = $alertas->first()->sector;
+            ->map(function ($alerta) {
                 return [
-                    'id_sector' => $sector_id,
-                    'nombre' => $sector->sector,
-                    'total' => $alertas->count(),
-                    // 'detalles' => $alertas->map(function ($alerta) {
-                    //     return [
-                    //         'id' => $alerta->id,
-                    //         'sector_id' => $alerta->sector->id,
-                    //         'planta' => $alerta->sector->planta->name,
-                    //         'descripcion' => $alerta->descripcion,
-                    //         'estado' => $alerta->estado->name,
-                    //         'created_at' => $alerta->created_at
-                    //     ];
-                    // })
+                    'id' => $alerta->id,
+                    'titulo' => 'Alerta en ' . $alerta->sector->sector,
+                    'sector' => $alerta->sector->sector,
+                    'planta' => $alerta->sector->planta->name,
+                    'descripcion' => $alerta->descripcion,
+                    'estado' => $alerta->estado->name,
+                    'created_at' => $alerta->created_at,
                 ];
-            })
-            ->sortByDesc('total')
-            ->values();
+            });
+
         return response()->json($alertas, 200);
     } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Error al obtener alertas',
-            'error' => $e->getMessage(),
-        ], 500);
+        return response()->json(['error' => 'Error al obtener alertas', 'message' => $e->getMessage()], 500);
     }
-}
+    }
 
 
     public function getAlertsFilter(Request $request)
@@ -177,7 +165,7 @@ class AlertaController extends Controller {
         //
     }
 
-    public function update(Request $request, Alerta $alerta)
+    public function update(Request $request, $id)
     {
     $validated = $request->validate([
         'estado' => 'required|string'
@@ -189,14 +177,24 @@ class AlertaController extends Controller {
         return response()->json(['success' => false, 'message' => 'Alerta no encontrada'], 404);
     }
 
-        if ($alerta->alumno_id != $validated['alumne_id']) {
-            return response()->json(['success' => false, 'message' => 'No pots editar aquesta alerta']);
-        }
+    $alerta->estado_id = $this->getEstadoId($validated['estado']); 
+    $alerta->save();
 
-        $alerta->descripcion = $validated['descripcio'];
-        $alerta->save();
+    return response()->json(['success' => true, 'message' => 'Alerta actualizada correctamente'], 200);
+    }
 
-        return response()->json(['success' => true, 'message' => 'Alerta editada amb èxit'], 201);
+    private function getEstadoId($estado)
+    {
+
+    $estadoId = DB::table('estados')
+        ->where('name', $estado)
+        ->value('id');
+
+    if (!$estadoId) {
+        throw new \Exception("Estado inválido: $estado");
+    }
+
+    return $estadoId;
     }
 
     public function getAlertsByUser($id)    {
