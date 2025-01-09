@@ -17,6 +17,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Providers
+    |--------------------------------------------------------------------------
+    |
+    | Here are the service providers for your application. Service providers
+    | provide the means to bind and resolve various components in the Laravel
+    | service container.
+    |
+    */
+
+    'aliases' => [
+        'PDF' => Barryvdh\DomPDF\Facade::class, 
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

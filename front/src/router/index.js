@@ -144,6 +144,12 @@ const router = createRouter({
       name: 'Reiniciar password',
       component: () => import('../components/ResetPasswordComp.vue'),
     },
+    {
+      path: '/admin/alertes',
+      name: 'alertes',
+      component: () => import('../components/AdminAlertes.vue'),
+      meta: { requiresAuth: true, rol: 2 },
+    },
   ],
 });
 

@@ -15,3 +15,9 @@
     Route::get('/password/reset/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
 
     Route::post('/password/reset', [PasswordResetController::class, 'reset']);
+
+
+    //====== RESTABLECER PASSWORD =================
+    Route::get('/password/reset/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+
+    Route::post('/password/reset', [PasswordResetController::class, 'reset']);

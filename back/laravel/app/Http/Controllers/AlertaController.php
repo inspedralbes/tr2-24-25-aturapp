@@ -12,7 +12,8 @@ class AlertaController extends Controller {
 
     public function index()
     {
-        $alertas = Alerta::with('sector', 'estado')
+    try {
+        $alertas = Alerta::with('sector.planta', 'estado')
             ->get()
             ->groupBy('sector.id')
             ->map(function ($alertas, $sector_id) {
@@ -82,7 +83,6 @@ class AlertaController extends Controller {
             'id' => 'required|integer',
         ]);
 
-        // $alumne_id = Auth::id();
         $alumne_id = $request->id;
 
         $alertas = Alerta::with('sector', 'estado')
@@ -149,10 +149,6 @@ class AlertaController extends Controller {
             ->where('id', $id)
             ->first();
 
-        // $user = 
-        // dd(Auth::user());
-
-
         if (!$alerta) {
             return response()->json(['error' => 'Alerta no encontrada'], 404);
         }
@@ -176,17 +172,15 @@ class AlertaController extends Controller {
 
     public function update(Request $request, Alerta $alerta)
     {
-        $validated = $request->validate([
-            'alerta_id' => 'required|integer',
-            'alumne_id' => 'required|integer',
-            'descripcio' => 'required|string'
-        ]);
+    $validated = $request->validate([
+        'estado' => 'required|string'
+    ]);
 
-        $alerta = Alerta::find($validated['alerta_id']);
+    $alerta = Alerta::find($id);
 
-        if (!$alerta) {
-            return response()->json(['success' => false, 'message' => 'Alerta no trobada'], 404);
-        }
+    if (!$alerta) {
+        return response()->json(['success' => false, 'message' => 'Alerta no encontrada'], 404);
+    }
 
         if ($alerta->alumno_id != $validated['alumne_id']) {
             return response()->json(['success' => false, 'message' => 'No pots editar aquesta alerta']);
