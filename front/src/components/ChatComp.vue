@@ -9,10 +9,10 @@
     <!-- <input v-model="input" autocomplete="off" />
     <button @click="sendMessage">Enviar</button> -->
     <div class="input-container">
-      <textarea v-model="input" rows="1" placeholder="Jo no soc complice..."></textarea>
+      <textarea v-model="input" rows="1" placeholder="Jo no soc complice..." @keyup.enter="agregarMensajeUsuario"></textarea>
       <!-- <input v-model="input" autocomplete="off" placeholder="Jo no soc complice..." /> -->
       <!-- <svg @click="sendMessage" width="35px" height="35px" viewBox="-3 0 32 32" version="1.1" -->
-      <svg @click="()=>{agregarMensaje(input, 'usuario');input='';}" width="35px" height="35px" viewBox="-3 0 32 32" version="1.1"
+      <svg @click="agregarMensajeUsuario" width="35px" height="35px" viewBox="-3 0 32 32" version="1.1"
         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g id="icomoon-ignore">
         </g>
@@ -39,17 +39,18 @@ const msjAutomaticos = reactive(['¿En que curso has visto el incidente?', '¿Co
 const messages = reactive([]);
 const input = ref('');
 
-const agregarMensaje = (texto, emisor) => {
-  messages.push({ texto, emisor });
+const agregarMensajeUsuario = (event) => {
+  event.preventDefault();
+  alert(`${input.value}`);
+  if(input.value.length > 0){
+    messages.push({ texto: input.value, emisor: 'usuario' });
+    input.value = '';
+  }
 };
 
-const handleEnterPress = (event) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      agregarMensaje(input.value, 'usuario');
-      input.value = '';
-    }
-  };
+const agregarMensajeBot = (texto) => {
+  messages.push({ texto, emisor: 'bot' });
+};
 
 function sendMessage() {
   if (input.value) {
@@ -60,9 +61,8 @@ function sendMessage() {
 };
 
 onMounted(() => {
-  agregarMensaje('¿Estás seguro de que deseas publicar una alerta? En caso de uso indebido, se podrá bloquear el acceso al sistema. Para continuar, contesta las siguientes preguntas: ', 'bot');
+  agregarMensajeBot('¿Estás seguro de que deseas publicar una alerta? En caso de uso indebido, se podrá bloquear el acceso al sistema. Para continuar, contesta las siguientes preguntas: ');
 
-  document.addEventListener('keyup', handleEnterPress);
   socket.on('storeMessage', (msg) => {
     messages.value.push(msg);
   });
