@@ -39,13 +39,13 @@
     import { useCounterStore } from '../stores/counter';
     import { editarPerfilUser } from '../services/communictationManager';
 
-    const router = useRouter();
     const store = useCounterStore();
-    let user = store.userData.user;
+    const user = store.userData.user;
     const nom = ref(user.nom);
     const cognom = ref(user.cognom);
     const telefon = ref(user.telefon);
     const dni = ref(user.dni);
+    const router = useRouter();
 
     function navigateTo(nameRoute) {
         router.push(`/${nameRoute}`);
@@ -65,8 +65,7 @@
             
             if (response.success) {
                 alert('Usuari editat amb èxit');
-                user = JSON.stringify(response.user);
-                console.log(user);
+                Object.assign(user, response.user);
             } else {
                 alert(`Ha ocorregut un error (${response.message || 'Error desconegut'})`);
             }
@@ -75,6 +74,7 @@
         }
     }
 </script>
+
 
 
 <style>
