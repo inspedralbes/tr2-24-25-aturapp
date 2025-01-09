@@ -12,7 +12,6 @@
             </div>
             <div id="item-b" class="box">
                 <p class="no-margin">Porcentaje de éxito (test)</p><span class="resultado">87%</span>
-                <!-- {{ porcentajeExito() }} -->
             </div>
             <div id="item-c" class="box">
                 <p class="no-margin">Ranking sectores</p>
@@ -34,69 +33,36 @@
             </div>
         </div>
     </div>
-
 </template>
 
 <script setup>
 import { Chart, registerables } from "chart.js";
 import { ref, onMounted } from 'vue';
-const BASE_URL = 'http://localhost:8000';
+import { getAlerts, getAllAlerts } from '../services/communictationManager';
+
 const time = ref('total');
 const quant = ref('0');
-const alertas_recibidas = ref();
+const alertas_recibidas = ref([]);
 const rankingSectores = ref([]);
 
 const tipo = ref('pie');
-const etiquetas = ref();
+const etiquetas = ref([]);
 const datos = ref([12, 19, 3, 5, 2]);
 
 const chartCanvas = ref();
 Chart.register(...registerables);
 let grafico = null;
 
-async function getAlerts(tiempo, cantidad) {
-    time.value = tiempo;
-    quant.value = cantidad;
-    try {
-        const response = await fetch(`${BASE_URL}/api/getAlertsFilter`, {
-            method: 'POST',
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                time: time.value,
-                quant: quant.value
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-
-        const result = await response.json();
-        alertas_recibidas.value = result;
-    } catch (error) {
-
-    }
+async function fetchAlerts() {
+    alertas_recibidas.value = await getAlerts(time.value, quant.value);
 }
 
-async function getAllAlertes() {
-    try {
-        const response = await fetch(`${BASE_URL}/api/getAllAlerts`);
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-
-        const result = await response.json();
-        return result;
-    } catch (error) {
-        console.error(error);
-    }
+async function fetchRanking() {
+    rankingSectores.value = await getAllAlerts();
 }
 
 function getQuantitat(caso, alertas) {
-    const datos = ref();
+    const datos = ref([]);
     switch (caso) {
         case 'horario':
             datos.value = [0, 0, 0, 0, 0, 0, 0, 0];
@@ -145,8 +111,6 @@ function getQuantitat(caso, alertas) {
                 datos.value[mes] += 1;
             })
             break;
-        // default:
-        //     break;
     }
 
     return datos.value;
@@ -204,12 +168,13 @@ function choiseChart(type) {
 }
 
 onMounted(async () => {
-    await getAlerts(time.value, quant.value);
-    rankingSectores.value = await getAllAlertes();
+    await fetchAlerts();
+    await fetchRanking();
     datos.value = getQuantitat('total', alertas_recibidas.value);
     createChart(tipo.value, etiquetas.value, datos.value);
 });
 </script>
+
 
 <style scoped>
 #containAll {

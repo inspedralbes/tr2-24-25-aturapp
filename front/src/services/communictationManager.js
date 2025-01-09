@@ -329,6 +329,31 @@ export const getAllAlerts = async () => {
     }
 };
 
+export async function getAlerts(tiempo, cantidad) {
+    try {
+        const response = await fetch(`${laravel.URL}/getAlertsFilter`, {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                time: tiempo,
+                quant: cantidad
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Error en la solicitud");
+        }
+
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error("Error fetching alerts: ", error);
+        return [];
+    }
+}
+
 
 
 
