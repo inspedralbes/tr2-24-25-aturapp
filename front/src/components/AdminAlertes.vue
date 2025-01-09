@@ -62,11 +62,11 @@ const fetchAlertas = async (showNotification = false) => {
 };
 
 
-const iniciarPolling = () => {
+const bucleFetch = () => {
     pollingInterval.value = setInterval(() => fetchAlertas(true), 5000); 
 };
 
-const detenerPolling = () => {
+const detenerFetch = () => {
     if (pollingInterval.value) {
         clearInterval(pollingInterval.value);
     }
@@ -124,11 +124,11 @@ const formatearFecha = (fechaISO) => {
 
 onMounted(() => {
     fetchAlertas();
-    iniciarPolling();
+    bucleFetch();
 });
 
 onUnmounted(() => {
-    detenerPolling(); 
+    detenerFetch(); 
 });
 </script>
 
