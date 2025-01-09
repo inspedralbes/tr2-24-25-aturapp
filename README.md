@@ -1,3 +1,8 @@
+# PRODUCIÓ - DESENVOLUPAMENT
+Cambiar la ruta de la variant encarregada de fer els fetch a:
+* front\src\services\communictationManager.js
+* front\src\components\HeatmapComp.vue
+
 # transversals
 Esquema mínim de carpetes pels projectes transversals
 

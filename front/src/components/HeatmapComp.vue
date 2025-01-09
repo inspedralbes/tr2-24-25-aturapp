@@ -67,6 +67,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { planta0h, planta1h, planta2h, planta3h } from '@/assets/planos/paths';
 
+const BASE_URL = 'http://localhost:8000';
 const router = useRouter();
 
 // const plantaInput = ref('planta3');
@@ -187,48 +188,70 @@ const sectors3 = ref([
     { id: "fin-ala-ausias", idbd: 28, d: "M1787.5 397.5L1860.5 404.5L1863 227L1729 213V260L1787.5 266V397.5Z", color: "white", hasAlerts: false, alerts: [] },
 ]);
 
+async function getAllAlertes() {
+    try {
+        const response = await fetch(`${BASE_URL}/api/getAllAlerts`);
+
+        if (!response.ok) {
+            throw new Error("Error en la solicitud");
+        }
+
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 async function paintAlerts() {
     const allAlerts = await getAllAlertes();
 
     allAlerts.forEach((alerta) => {
         sectors3.value.forEach(sector => {
-            if (sector.id === alerta.nombre) {
+            if (sector.id == alerta.nombre) {
                 sector.hasAlerts = true;
                 sector.alerts = alerta.detalles;
 
+                // LOGICA DEL COLOR --------------------
                 if (alerta.total < 2) {
-                    sector.color = '#ffdfdf';
+                    return sector.color = '#ffdfdf'
                 } else if (alerta.total < 4) {
-                    sector.color = '#ff8686';
+                    return sector.color = '#ff8686'
                 } else {
-                    sector.color = '#ff4545';
+                    return sector.color = '#ff4545'
                 }
+                // -------------------------------------
             }
         });
     });
 
-    // Crear un array con información de colores por sector
-    return allAlerts.map(alerta => {
+    const alertsColors = allAlerts.map(alerta => {
         const sector = sectors3.value.find(sector => sector.id === alerta.nombre);
         return {
             id_sector: alerta.id_sector,
             sector: alerta.nombre,
             total: alerta.total,
-            color: sector ? sector.color : 'white',
+            color: sector ? sector.color : white,
+            // detalles: alerta.detalles,
         };
     });
+
+    return alertsColors;
 }
 
 function navigateToSector(id) {
+    // PASAR EL ID DEL SECTOR Y FILTROS CON PARAMS
     router.push(`/admin/heatmap/sector?id=${id}`);
 }
 
 onMounted(async () => {
     console.log(await paintAlerts());
+
     setInterval(async () => {
         // await paintAlerts();
     }, 8000);
 });
+
 </script>
 
 <style scoped>
@@ -256,7 +279,7 @@ onMounted(async () => {
     /* height: 250px; */
 }
 
-.planoContainer div p{
+.planoContainer div p {
     font-weight: bold;
     margin: 0 0 20px 0;
 }

@@ -494,8 +494,7 @@ export const loginUser = async (loginData) => {
 
 // === ENVIAR ALERTA ===========
 export async function EnviarAlerta(metodo, cuerpo) {
-    const url = `${laravel.URL}/alert`;  // Agregar la ruta de la API directamente aquí
-
+    const url = `${laravel.URL}/alert`;
     try {
         const response = await fetch(url, {
             method: metodo,
@@ -509,9 +508,74 @@ export async function EnviarAlerta(metodo, cuerpo) {
             throw new Error("Error al realizar la solicitud");
         }
 
-        return await response.json(); // Retorna la respuesta en formato JSON
+        return await response.json();
     } catch (error) {
         console.error("Error en la solicitud:", error);
-        throw error; // Propaga el error para manejarlo en el lugar que llame a esta función
+        throw error;
     }
 }
+
+
+
+
+
+
+export async function GetUserSectorAlertas(alumne_id) {
+    try {
+        const response = await fetch(`${laravel.URL}/getUser`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ alumne_id }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al obtener el usuario');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error en la solicitud de usuario:', error);
+        throw error;
+    }
+}
+
+export async function GetAlertasSectorAlertas(sector_id) {
+    try {
+        const response = await fetch(`${laravel.URL}/getAlertsSector`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                sector_id,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al obtener las alertas del sector');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error en la solicitud de alertas:', error);
+        throw error;
+    }
+}
+
+
+
+// === HeatmapComp.vue ==================
+export const HeatmapGetAllAlert = async () => {
+    try {
+        const response = await fetch(`${laravel.URL}/getAllAlerts`);
+        if (!response.ok) {
+            console.log("Error a la hora de obtener los datos");
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching alerts:", error);
+        throw error;
+    }
+};
