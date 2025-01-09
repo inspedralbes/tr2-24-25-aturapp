@@ -55,7 +55,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getUser, getAlertsSector } from './path/to/CommunicationManager';
+import { getUser, getAlertsSector } from '../services/communictationManager';
 
 const router = useRouter();
 const route = useRoute();
