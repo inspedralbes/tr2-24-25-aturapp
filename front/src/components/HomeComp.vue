@@ -483,6 +483,10 @@ function tornarInici() {
         left: 50%;
         transform: translate(-50%, -50%);
     }
+
+    #containButtons {
+        width: 30%;
+    }
 }
 
 #containButtons {
@@ -491,6 +495,7 @@ function tornarInici() {
     left: 0;
     right: 0;
     margin: auto;
+    /* width: 50%; */
 }
 
 .btn-sos {

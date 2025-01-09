@@ -24,9 +24,8 @@ async function getAlertas() {
             throw new Error("Error en la solicitud");
         }
 
-        const result = await response.json();
+        alertes.value = await response.json();
         
-        alertes.value = result;
     } catch (error) {
         console.error(error);
     }

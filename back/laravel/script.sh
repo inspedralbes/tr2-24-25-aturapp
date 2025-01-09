@@ -15,7 +15,10 @@ php artisan key:generate
 #     echo "Creant la key del env"
 # fi
 
-# php artisan migrate:fresh --seed
+# Espera a que MySQL esté listo
+sleep 5
+
+php artisan migrate:fresh --seed
 # Ejecutar migraciones y seed solo si es la primera vez
 # if [ ! -f /var/www/html/.migrated ]; then
 #     # php artisan migrate:fresh --seed
