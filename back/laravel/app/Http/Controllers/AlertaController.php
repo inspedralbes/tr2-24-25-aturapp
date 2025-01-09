@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class AlertaController extends Controller {
 
     public function index()
-    {
+{
     try {
         $alertas = Alerta::with('sector.planta', 'estado')
             ->get()
@@ -37,7 +37,14 @@ class AlertaController extends Controller {
             ->sortByDesc('total')
             ->values();
         return response()->json($alertas, 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Error al obtener alertas',
+            'error' => $e->getMessage(),
+        ], 500);
     }
+}
+
 
     public function getAlertsFilter(Request $request)
     {
