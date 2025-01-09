@@ -179,7 +179,7 @@ class AlertaController extends Controller {
         $validated = $request->validate([
             'alerta_id' => 'required|integer',
             'alumne_id' => 'required|integer',
-            'descripcio' => 'required|string'
+            'descripcio' => 'sometimes|nullable|string'
         ]);
 
         $alerta = Alerta::find($validated['alerta_id']);
@@ -189,13 +189,13 @@ class AlertaController extends Controller {
         }
 
         if ($alerta->alumno_id != $validated['alumne_id']) {
-            return response()->json(['success' => false, 'message' => 'No pots editar aquesta alerta']);
+            return response()->json(['success' => false, 'message' => 'No pots editar aquesta alerta'], 403);
         }
 
         $alerta->descripcion = $validated['descripcio'];
         $alerta->save();
 
-        return response()->json(['success' => true, 'message' => 'Alerta editada amb èxit'], 201);
+        return response()->json(['success' => true, 'message' => 'Alerta editada amb èxit'], 200);
     }
 
     public function getAlertsByUser($id)    {

@@ -8,13 +8,15 @@
         </div>
         <input class="sectorInput" type="text" name="sector" id="sec" v-model="sectorInput"
             placeholder="Seleccioni un sector" readonly>
-        <div v-if="!edificiActive" class="d-flex j-center align-center">
-            <svg width="70%" viewBox="0 0 613 396" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path v-for="(sector, index) in exteriorh" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
-                    :fill="sector.color" :stroke-width="3" @click="toggleSectorColor(index, exteriorh)"
-                    class="sector" />
-                <g v-html="exterior"></g>
-            </svg>
+        <div v-if="!edificiActive" class="planoContainer">
+            <div class="d-flex j-center align-center">
+                <svg width="60%" viewBox="0 0 613 396" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path v-for="(sector, index) in exteriorh" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
+                        :fill="sector.color" :stroke-width="3" @click="toggleSectorColor(index, exteriorh)"
+                        class="sector" />
+                    <g v-html="exterior"></g>
+                </svg>
+            </div>
         </div>
         <div v-if="edificiActive">
             <div class="d-flex j-center align-center plantaSelector">
@@ -102,6 +104,22 @@
             <input class="btn-cancel" type="button" value="Cancelar" @click="sosAlert">
             <input class="btn-confirm" type="button" value="Confirmar" @click="enviarAlerta">
         </div>
+        <div v-if="alertaEnviada" class="popup-overlay">
+            <div class="popup-content">
+                <h2>L'alerta ha sigut enviada</h2>
+                <p>Podries donar-nos més informació?</p>
+                <textarea rows="5" placeholder="Escriu aquí qualsevol informació addicional sobre l'alerta..."
+                    class="textarea-info" v-model="alertaDescripcio"></textarea>
+                <button class="popup-button" @click="editarAlerta">Enviar</button>
+            </div>
+        </div>
+        <div v-if="alertaEditada" class="popup-overlay">
+            <div class="popup-content">
+                <h2>Gràcies per avisar-nos</h2>
+                <p>Estem de camí, mantén la calma.</p>
+                <button class="popup-button" @click="tornarInici">Acceptar</button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -114,10 +132,14 @@ const store = useCounterStore();
 const BASE_URL = 'http://localhost:8000';
 const edificiActive = ref(false);
 const sosActive = ref(false);
+const alertaEnviada = ref(false);
 const sectorInput = ref('');
 const plantaInput = ref('planta0');
 const dataUser = store.userData;
 const alumno_id = dataUser.user.id;
+const alerta = ref(null);
+const alertaDescripcio = ref("");
+const alertaEditada = ref(false);
 
 function resetSector() {
     arraySectores.forEach((sectores) => {
@@ -384,7 +406,8 @@ async function enviarAlerta() {
             },
             body: JSON.stringify({
                 alumno_id: alumno_id,
-                sectorName: sectorInput.value
+                sectorName: sectorInput.value,
+                descripcion: alertaDescripcio.value
             })
         });
 
@@ -392,12 +415,47 @@ async function enviarAlerta() {
             throw new Error("Error al crear la alerta");
         }
 
-        const result = await response.json();
-        alert(`Alerta enviada con éxito. ID: ${result.id}`);
-        resetSector();
+        alerta.value = await response.json();
+        alertaEnviada.value = !alertaEnviada.value;
+
     } catch (error) {
         console.log("Error: ", error);
     }
+}
+
+async function editarAlerta() {
+    try {
+        const response = await fetch(`${BASE_URL}/api/update`, {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                alerta_id: alerta.value.id,
+                alumne_id: alumno_id,
+                descripcio: alertaDescripcio.value,
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Error en la solicitud");
+        }
+
+        const result = await response.json();
+        if (result.success) {
+            alertaEnviada.value = !alertaEnviada.value;
+            alertaEditada.value = true;
+        } else {
+            alert(`Ha ocorregut un error (${result.message || 'Error desconegut'})`)
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+function tornarInici() {
+    alertaEditada.value = !alertaEditada.value;
+    sosAlert();
 }
 </script>
 
@@ -419,7 +477,7 @@ async function enviarAlerta() {
         display: block;
     }
 
-    .planoContainer div {
+    .planoContainer div{
         position: relative;
         top: 50%;
         left: 50%;
@@ -510,5 +568,53 @@ select:focus {
     left: 0;
     right: 0;
     margin: auto;
+}
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+}
+
+.textarea-info {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+    margin-bottom: 20px;
+}
+
+.popup-button {
+    background: #ff4b45;
+    box-shadow: -5px -5px 9px rgba(255, 114, 114, 0.45), 5px 5px 9px rgba(255, 25, 25, 0.438);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pop .popup-button:hover {
+    background-color: #0056b3;
 }
 </style>

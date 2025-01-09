@@ -194,6 +194,7 @@ body {
   width: 100%;
   padding: 10px;
   box-sizing: border-box;
+  z-index: 10;
 }
 
 .cabezal {

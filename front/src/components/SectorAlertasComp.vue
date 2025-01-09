@@ -141,7 +141,7 @@ async function verAlerta(id) {
 
 onMounted(async () => {
     alertes.value = await getAlertsSector();
-    sector.value = formatText(alertes.value[0].sector_name);
+    // sector.value = formatText(alertes.value[0].sector_name);
 });
 
 </script>
