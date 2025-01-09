@@ -79,26 +79,26 @@
 
 <style>
     #contain-edit-btn {
-        position: absolute;
         bottom: 0px;
         right: -10px;
+        position: absolute;
     }
 
     #edit-btn {
-        background-color: white;
-        height: 40px;
-        width: 40px;
-        padding: 0;
         margin: 0;
+        padding: 0;
+        width: 40px;
+        height: 40px;
         border-radius: 40px;
         border: 1px solid grey;
+        background-color: white;
     }
 
     #edit-btn img {
-        padding: 0;
         margin: 0;
-        height: 35px;
+        padding: 0;
         width: 35px;
+        height: 35px;
     }
 
     .contentProfile {
@@ -106,8 +106,8 @@
     }
 
     .contentProfile img {
-        height: 120px;
         width: 120px;
+        height: 120px;
         object-fit: cover;
         border-radius: 50%;
     }
@@ -122,7 +122,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        /* overflow: hidden; */
         margin-top: 20px;
     }
 
