@@ -3,28 +3,32 @@
         <input class="btn-sos" type="button" value="SOS" @click="sosAlert">
     </div>
     <div v-if="sosActive">
+        <div v-if="!edificiActive" class="d-flex j-center align-center plantaSelector">
+            <p class="container-planta no-margin" style="font-weight: bold; padding: 10px 20px;">Zona exterior</p>
+        </div>
+        <input class="sectorInput" type="text" name="sector" id="sec" v-model="sectorInput"
+            placeholder="Seleccioni un sector" readonly>
         <div v-if="!edificiActive" class="d-flex j-center align-center">
             <svg width="70%" viewBox="0 0 613 396" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path v-for="(sector, index) in exteriorh" :key="index" :id="sector.id" :d="sector.d"
-                    :stroke="'black'" :fill="sector.color" :stroke-width="3"
-                    @click="toggleSectorColor(index, exteriorh)" class="sector" />
+                <path v-for="(sector, index) in exteriorh" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
+                    :fill="sector.color" :stroke-width="3" @click="toggleSectorColor(index, exteriorh)"
+                    class="sector" />
                 <g v-html="exterior"></g>
             </svg>
         </div>
         <div v-if="edificiActive">
             <div class="d-flex j-center align-center plantaSelector">
-                <select v-model="plantaInput" name="planta" id="planta">
+                <select v-model="plantaInput" name="planta" id="planta" class="container-planta">
                     <option value="planta0">Planta baja</option>
                     <option value="planta1">Planta 1</option>
                     <option value="planta2">Planta 2</option>
                     <option value="planta3">Planta 3</option>
                 </select>
             </div>
-            <input class="sectorInput" type="text" name="sector" id="sec" v-model="sectorInput"
-                placeholder="Seleccioni un sector" readonly>
             <div class="planoContainer mobile-view">
                 <div v-if="plantaInput == 'planta0'">
-                    <svg width="407" height="1865" viewBox="0 0 407 1865" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="407" height="1865" viewBox="0 0 407 1865" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
                         <path v-for="(sector, index) in sectors0v" :key="index" :id="sector.id" :d="sector.d"
                             :stroke="'black'" :fill="sector.color" :stroke-width="5"
                             @click="toggleSectorColor(index, sectors0v)" class="sector" />
@@ -32,7 +36,8 @@
                     </svg>
                 </div>
                 <div v-if="plantaInput == 'planta1'">
-                    <svg width="407" height="1865" viewBox="0 0 407 1865" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="407" height="1865" viewBox="0 0 407 1865" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
                         <path v-for="(sector, index) in sectors1v" :key="index" :id="sector.id" :d="sector.d"
                             :stroke="'black'" :fill="sector.color" :stroke-width="5"
                             @click="toggleSectorColor(index, sectors1v)" class="sector" />
@@ -40,7 +45,8 @@
                     </svg>
                 </div>
                 <div v-if="plantaInput == 'planta2'">
-                    <svg width="404" height="1866" viewBox="0 0 404 1866" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="404" height="1866" viewBox="0 0 404 1866" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
                         <path v-for="(sector, index) in sectors2v" :key="index" :id="sector.id" :d="sector.d"
                             :stroke="'black'" :fill="sector.color" :stroke-width="5"
                             @click="toggleSectorColor(index, sectors2v)" class="sector" />
@@ -48,7 +54,8 @@
                     </svg>
                 </div>
                 <div v-if="plantaInput == 'planta3'">
-                    <svg width="414" height="1864" viewBox="0 0 414 1864" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="414" height="1864" viewBox="0 0 414 1864" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
                         <path v-for="(sector, index) in sectors3v" :key="index" :id="sector.id" :d="sector.d"
                             :stroke="'black'" :fill="sector.color" :stroke-width="5"
                             @click="toggleSectorColor(index, sectors3v)" class="sector" />
@@ -95,6 +102,11 @@
             <input class="btn-cancel" type="button" value="Cancelar" @click="sosAlert">
             <input class="btn-confirm" type="button" value="Confirmar" @click="enviarAlerta">
         </div>
+        <div v-if="alertaEnviada">
+            <div>
+                L'alerta ha sigut enviada
+            </div>
+        </div>
     </div>
 </template>
 
@@ -106,7 +118,8 @@ import { exterior, planta0h, planta0v, planta1h, planta1v, planta2h, planta2v, p
 const store = useCounterStore();
 const BASE_URL = 'http://localhost:8000';
 const edificiActive = ref(false);
-const sosActive = ref(true);
+const sosActive = ref(false);
+const alertaEnviada = ref(true);
 const sectorInput = ref('');
 const plantaInput = ref('planta0');
 const dataUser = store.userData;
@@ -118,6 +131,7 @@ function resetSector() {
             sector.color = "white";
         });
     });
+    sectorInput.value = null;
 }
 
 function sosAlert() {
@@ -357,67 +371,34 @@ const arraySectores = [exteriorh, sectors0v, sectors0h, sectors1v, sectors1h, se
 
 function toggleSectorColor(index, sectores) {
     sectores.forEach((sector, i) => {
-        if(sectores[index].id != "edifici"){
+        if (sectores[index].id != "edifici") {
             sector.color = i === index ? "red" : "white";
-            console.log(sectores[index].id)
-        }else{
+            sectorInput.value = sectores[index].id;
+        } else {
             edificiActive.value = true;
+            sectorInput.value = null;
         }
     });
-    sectorInput.value = sectores[index].id;
 }
 
-async function paintAlerts() {
-    try {
-        const allAlerts = await getAllAlerts();
-
-        allAlerts.forEach((alerta) => {
-            sectors3.value.forEach((sector) => {
-                if (sector.id === alerta.nombre) {
-                    sector.hasAlerts = true;
-                    sector.alerts = alerta.detalles;
-
-                    if (alerta.total < 2) {
-                        sector.color = '#ffdfdf';
-                    } else if (alerta.total < 4) {
-                        sector.color = '#ff8686';
-                    } else {
-                        sector.color = '#ff4545';
-                    }
-                }
-            });
-        });
-
-        console.log("Alertas pintadas:", allAlerts);
-    } catch (error) {
-        console.error("Error al pintar alertas:", error);
-    }
-}
+import { EnviarAlerta } from '../services/communictationManager';
 
 async function enviarAlerta() {
     try {
-        const alertData = {
-            alumno_id,
-            sectorName: sectorInput.value,
+        const cuerpo = {
+            alumno_id: alumno_id,
+            sectorName: sectorInput.value
         };
 
-        const result = await sendAlert(alertData);
+        const result = await EnviarAlerta('POST', cuerpo);
+
         alert(`Alerta enviada con éxito. ID: ${result.id}`);
+        // alertaEnviada.value = true;
         resetSector();
     } catch (error) {
-        console.error("Error al enviar la alerta:", error);
+        console.log("Error: ", error);
     }
 }
-
-// function sosAlert() {
-//     sosActive.value = !sosActive.value;
-//     resetSector();
-// }
-
-onMounted(() => {
-    paintAlerts();
-    setInterval(paintAlerts, 5000);
-});
 </script>
 
 <style scoped>
@@ -436,6 +417,13 @@ onMounted(() => {
 
     .desktop-view {
         display: block;
+    }
+
+    .planoContainer div {
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 }
 
@@ -480,7 +468,7 @@ select:focus {
     outline: none;
 }
 
-#planta {
+.container-planta {
     border: 1px solid grey;
     background-color: white;
     border-radius: 10px;
@@ -506,11 +494,14 @@ select:focus {
     padding-bottom: 70px;
     margin: 100px 0 60px 0;
     border: 1px solid black;
+    height: 78vh;
+    overflow-y: auto;
 }
 
 .planoContainer div {
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .plantaSelector {

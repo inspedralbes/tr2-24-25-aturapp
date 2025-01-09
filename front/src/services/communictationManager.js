@@ -491,23 +491,27 @@ export const loginUser = async (loginData) => {
     }
 };
 
-export async function sendAlert(alertData) {
+
+// === ENVIAR ALERTA ===========
+export async function EnviarAlerta(metodo, cuerpo) {
+    const url = `${laravel.URL}/alert`;  // Agregar la ruta de la API directamente aquí
+
     try {
-        const response = await fetch(`${laravel.URL}/alert`, {
-            method: 'POST',
+        const response = await fetch(url, {
+            method: metodo,
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(alertData),
+            body: JSON.stringify(cuerpo),
         });
 
         if (!response.ok) {
-            throw new Error('Error al enviar la alerta');
+            throw new Error("Error al realizar la solicitud");
         }
 
-        return await response.json();
+        return await response.json(); // Retorna la respuesta en formato JSON
     } catch (error) {
-        console.error('Error en sendAlert:', error);
-        throw error;
+        console.error("Error en la solicitud:", error);
+        throw error; // Propaga el error para manejarlo en el lugar que llame a esta función
     }
 }
