@@ -3,13 +3,17 @@
     <div id="encabezado">
       <h2>Jo no soc complice</h2>
     </div>
-    <ul id="missatges" class="mostrar">
-      <li v-for="(msg, index) in messages" :key="index" :class="msg.emisor">{{ msg.texto }}</li>
-    </ul>
+    <div id="contenidor-missatges">
+      <ul id="missatges" class="mostrar">
+        <li v-for="(msg, index) in messages" :key="index" :class="{ propio: msg.emisor === user.id }">{{ msg.texto }}
+        </li>
+      </ul>
+    </div>
     <!-- <input v-model="input" autocomplete="off" />
     <button @click="sendMessage">Enviar</button> -->
     <div class="input-container">
-      <textarea v-model="input" rows="1" placeholder="Jo no soc complice..." @keyup.enter="agregarMensajeUsuario"></textarea>
+      <textarea v-model="input" rows="1" placeholder="Jo no soc complice..."
+        @keydown.enter="agregarMensajeUsuario"></textarea>
       <!-- <input v-model="input" autocomplete="off" placeholder="Jo no soc complice..." /> -->
       <!-- <svg @click="sendMessage" width="35px" height="35px" viewBox="-3 0 32 32" version="1.1" -->
       <svg @click="agregarMensajeUsuario" width="35px" height="35px" viewBox="-3 0 32 32" version="1.1"
@@ -32,24 +36,51 @@
 
 <script setup>
 import { ref, reactive, onMounted, onUnmounted } from 'vue';
+import { useCounterStore } from '../stores/counter';
 import { guardarMissatgeBBDD } from '@/services/communictationManager.js';
 import socket from '@/services/socket.js';
 
-const msjAutomaticos = reactive(['¿En que curso has visto el incidente?', '¿Como definirias el incidente?', '¿Donde ha ocurrido el incidente?', '¿Cuando ha ocurrido el incidente?', 'Proporciona informacion sobre las personas involucradas(relaciones, cursos)','Redacta la informacion que quieras compartir:']);
+const store = useCounterStore();
+let user = store.userData.user;
+
+const msjAutomaticos = reactive(['¿En que curso has visto el incidente?', '¿Como definirias el incidente?', '¿Donde ha ocurrido el incidente?', '¿Cuando ha ocurrido el incidente?', 'Proporciona informacion sobre las personas involucradas(relaciones, cursos)', 'Redacta la informacion que quieras compartir:']);
 const messages = reactive([]);
 const input = ref('');
+let pausaMensaje = ref(false);
+let escribiendo = ref(false);
 
 const agregarMensajeUsuario = (event) => {
   event.preventDefault();
-  alert(`${input.value}`);
-  if(input.value.length > 0){
-    messages.push({ texto: input.value, emisor: 'usuario' });
+  if (input.value.trim().length > 0 && !pausaMensaje.value) {
+    alert(pausaMensaje.value);
+    messages.push({ texto: input.value, emisor: user.id });
     input.value = '';
+    deslizarHastaAbajo();
+    if (msjAutomaticos.length > 0) {
+      enviarMensajeAutomatico();
+    } else {
+      agregarMensajeBot('En el menor tiempo posible, un miembro del equipo se pondrá en contacto contigo para solucionar la situacion. Gracias por tu colaboración.');
+    }
   }
 };
 
+const deslizarHastaAbajo = () => {
+  const contenedor = document.getElementById('contenidor-missatges');
+  contenedor.scrollTop = contenedor.scrollHeight;
+};
+
 const agregarMensajeBot = (texto) => {
-  messages.push({ texto, emisor: 'bot' });
+  messages.push({ texto, emisor: 0 });
+};
+
+const enviarMensajeAutomatico = () => {
+  pausaMensaje.value = true;
+  escribiendo.value = true;
+  setTimeout(() => {
+    agregarMensajeBot(msjAutomaticos.shift());
+    pausaMensaje.value = false;
+    escribiendo.value = false;  
+  }, 1000);
 };
 
 function sendMessage() {
@@ -62,9 +93,10 @@ function sendMessage() {
 
 onMounted(() => {
   agregarMensajeBot('¿Estás seguro de que deseas publicar una alerta? En caso de uso indebido, se podrá bloquear el acceso al sistema. Para continuar, contesta las siguientes preguntas: ');
+  enviarMensajeAutomatico();
 
   socket.on('storeMessage', (msg) => {
-    messages.value.push(msg);
+    messages.push(msg);
   });
 });
 
@@ -73,7 +105,6 @@ onUnmounted(() => {
 });
 </script>
 <style scoped>
-
 #encabezado {
   background-color: #c24513;
   color: white;
@@ -84,44 +115,43 @@ onUnmounted(() => {
 #missatges {
   list-style-type: none;
   margin: 0;
-  padding: 0;
+  padding: 0 10px 0 0;
   display: flex;
   flex-direction: column;
 }
 
-#missatges .bot {
-  align-self: flex-start;
-  background-color: #e0e0e0;
-  color: #333;
-  padding: 10px;
-  border-radius: 5px;
-  max-width: 70%;    
-}
-
-#missatges .usuario {
+#missatges .propio {
   align-self: flex-end;
   background-color: #4caf50;
   color: white;
   padding: 10px;
   border-radius: 5px;
-  max-width: 70%;    
+  max-width: 70%;
 }
 
 #missatges li {
-  background: #f4f4f4;
-  margin: 5px 0;
+  align-self: flex-start;
+  background-color: #e0e0e0;
+  color: #333;
   padding: 10px;
-  border-radius: 4px;
+  border-radius: 5px;
+  max-width: 70%;
+  margin: 5px 0;
 }
 
 #chat-container {
   margin: 20px;
   padding: 10px;
-  width: 40vw;
+  width: 96vw;
   height: 85vh;
   background-color: white;
   border: 1px solid black;
   position: relative;
+}
+
+#contenidor-missatges {
+  max-height: 65vh;
+  overflow-y: auto
 }
 
 .input-container {
@@ -147,5 +177,4 @@ onUnmounted(() => {
   transform: translateY(-50%);
   cursor: pointer;
 }
-
 </style>
