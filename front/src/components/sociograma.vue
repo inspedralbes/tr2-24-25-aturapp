@@ -6,7 +6,9 @@ import { getAnalisisData, getCompanysClaseSociograma } from '../services/communi
 const data = ref([]);
 const clases = ref([]);
 const selectedClass = ref('');
+const nombresVictimes = ref([]);
 const nombresNoMencionados = ref([]);
+const nombresBullies = ref([]); // Nueva lista para los responsables de bullying
 
 const fetchData = async () => {
     try {
@@ -142,6 +144,46 @@ const crearSociograma = () => {
     }
 };
 
+const obtenerBullies = () => {
+    if (!selectedClass.value) {
+        nombresBullies.value = [];
+        return;
+    }
+
+    const filteredData = data.value.filter(item =>
+        item['Curs alumne emisor'].relacion === selectedClass.value &&
+        [3, 5, 6, 8].includes(item['pregunta'].id)
+    );
+
+    const nombres = new Set(
+        filteredData.map(item => item['Alumne emisor'].relacion)
+    );
+
+    nombresBullies.value = Array.from(nombres);
+};
+
+const obtenerVictimes = () => {
+    if (!selectedClass.value) {
+        nombresVictimes.value = [];
+        return;
+    }
+
+    const filteredData = data.value.filter(item =>
+        item['Curs alumne emisor'].relacion === selectedClass.value &&
+        [9, 10].includes(item['pregunta'].id)
+    );
+
+    const nombres = new Set(
+        filteredData.flatMap(item => [
+            item['resposta 1'].relacion,
+            item['resposta 2'].relacion,
+            item['resposta 3'].relacion
+        ])
+    );
+
+    nombresVictimes.value = Array.from(nombres);
+};
+
 const obtenerNombresNoMencionados = async () => {
     if (!selectedClass.value) {
         nombresNoMencionados.value = [];
@@ -172,11 +214,12 @@ const obtenerNombresNoMencionados = async () => {
 const actualizarSociograma = async () => {
     crearSociograma();
     await obtenerNombresNoMencionados();
+    obtenerVictimes();
+    obtenerBullies(); // Actualizar la lista de bullies
 };
 
 fetchData();
 </script>
-
 
 <template>
     <div>
@@ -200,6 +243,20 @@ fetchData();
                     <li v-for="nombre in nombresNoMencionados" :key="nombre">{{ nombre }}</li>
                 </ul>
             </div>
+
+            <div v-if="nombresVictimes.length" class="nombres-victimes">
+                <h3>Víctimes</h3>
+                <ul>
+                    <li v-for="nombre in nombresVictimes" :key="nombre">{{ nombre }}</li>
+                </ul>
+            </div>
+
+            <div v-if="nombresBullies.length" class="nombres-bullies">
+                <h3>Responsables de Bullying</h3>
+                <ul>
+                    <li v-for="nombre in nombresBullies" :key="nombre">{{ nombre }}</li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -208,6 +265,7 @@ fetchData();
 svg {
     background: rgb(183, 182, 182);
 }
+
 .container {
     display: flex;
     justify-content: space-between;
@@ -221,7 +279,7 @@ svg {
 }
 
 .nombres-no-mencionados {
-    flex: 1; 
+    flex: 1;
     max-height: 400px;
     overflow-y: auto;
     background: #f5f5f5;
@@ -248,6 +306,70 @@ svg {
 }
 
 .nombres-no-mencionados li:last-child {
+    border-bottom: none;
+}
+
+.nombres-victimes {
+    flex: 1;
+    max-height: 400px;
+    overflow-y: auto;
+    background: #fce4e4;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nombres-victimes h3 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    text-align: center;
+    color: red;
+}
+
+.nombres-victimes ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nombres-victimes li {
+    padding: 5px 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.nombres-victimes li:last-child {
+    border-bottom: none;
+}
+
+.nombres-bullies {
+    flex: 1;
+    max-height: 400px;
+    overflow-y: auto;
+    background: #ffe4b2;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nombres-bullies h3 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    text-align: center;
+    color: orange;
+}
+
+.nombres-bullies ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nombres-bullies li {
+    padding: 5px 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.nombres-bullies li:last-child {
     border-bottom: none;
 }
 </style>
