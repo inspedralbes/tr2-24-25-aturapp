@@ -8,7 +8,7 @@ const clases = ref([]);
 const selectedClass = ref('');
 const nombresVictimes = ref([]);
 const nombresNoMencionados = ref([]);
-const nombresBullies = ref([]); // Nueva lista para los responsables de bullying
+const nombresBullies = ref([]);
 
 const fetchData = async () => {
     try {
@@ -215,7 +215,7 @@ const actualizarSociograma = async () => {
     crearSociograma();
     await obtenerNombresNoMencionados();
     obtenerVictimes();
-    obtenerBullies(); // Actualizar la lista de bullies
+    obtenerBullies();
 };
 
 fetchData();
@@ -224,7 +224,7 @@ fetchData();
 <template>
     <div>
         <div>
-            <p>Per veure els noms no mencionats a una classe utilitza el filtre</p>
+            <p>Per veure més informació de la clase selecciona la teva</p>
             <label for="clase">Selecciona una clase:</label>
             <select id="clase" v-model="selectedClass" @change="actualizarSociograma">
                 <option value="">Todas les clases</option>
@@ -237,139 +237,148 @@ fetchData();
         <div class="container">
             <svg id="sociograma"></svg>
 
-            <div v-if="nombresNoMencionados.length" class="nombres-no-mencionados">
-                <h3>Noms no mencionats</h3>
-                <ul>
-                    <li v-for="nombre in nombresNoMencionados" :key="nombre">{{ nombre }}</li>
-                </ul>
-            </div>
+            <div id="infoAdicional">
+                <div v-if="nombresNoMencionados.length" class="nombres-no-mencionados">
+                    <h3>Noms no mencionats</h3>
+                    <ul>
+                        <li v-for="nombre in nombresNoMencionados" :key="nombre">{{ nombre }}</li>
+                    </ul>
+                </div>
 
-            <div v-if="nombresVictimes.length" class="nombres-victimes">
-                <h3>Víctimes</h3>
-                <ul>
-                    <li v-for="nombre in nombresVictimes" :key="nombre">{{ nombre }}</li>
-                </ul>
-            </div>
+                <div v-if="nombresVictimes.length" class="nombres-victimes">
+                    <h3>Víctimes</h3>
+                    <ul>
+                        <li v-for="nombre in nombresVictimes" :key="nombre">{{ nombre }}</li>
+                    </ul>
+                </div>
 
-            <div v-if="nombresBullies.length" class="nombres-bullies">
-                <h3>Responsables de Bullying</h3>
-                <ul>
-                    <li v-for="nombre in nombresBullies" :key="nombre">{{ nombre }}</li>
-                </ul>
+                <div v-if="nombresBullies.length" class="nombres-bullies">
+                    <h3>Responsables de Bullying</h3>
+                    <ul>
+                        <li v-for="nombre in nombresBullies" :key="nombre">{{ nombre }}</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped>
-svg {
-    background: rgb(183, 182, 182);
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
 }
 
 .container {
     display: flex;
-    justify-content: space-between;
     align-items: flex-start;
     gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+    margin-top: 50px;
+    background-color: #fff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-#sociograma {
-    background: rgb(183, 182, 182);
-    flex: 2;
+svg {
+    border: 1px solid red;
+    background-color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.nombres-no-mencionados {
-    flex: 1;
-    max-height: 400px;
-    overflow-y: auto;
-    background: #f5f5f5;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+#infoAdicional {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 15px;
+    background-color: #ffe5e5;
+    border: 2px solid red;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.nombres-no-mencionados h3 {
-    margin-top: 0;
-    font-size: 1.2rem;
-    text-align: center;
-}
-
-.nombres-no-mencionados ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.nombres-no-mencionados li {
-    padding: 5px 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.nombres-no-mencionados li:last-child {
-    border-bottom: none;
-}
-
-.nombres-victimes {
-    flex: 1;
-    max-height: 400px;
-    overflow-y: auto;
-    background: #fce4e4;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.nombres-victimes h3 {
-    margin-top: 0;
-    font-size: 1.2rem;
-    text-align: center;
-    color: red;
-}
-
-.nombres-victimes ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.nombres-victimes li {
-    padding: 5px 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.nombres-victimes li:last-child {
-    border-bottom: none;
-}
-
+.nombres-no-mencionados,
+.nombres-victimes,
 .nombres-bullies {
-    flex: 1;
-    max-height: 400px;
-    overflow-y: auto;
-    background: #ffe4b2;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid red;
+    padding: 15px;
+    background-color: #ffcccc;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.nombres-bullies h3 {
-    margin-top: 0;
-    font-size: 1.2rem;
-    text-align: center;
-    color: orange;
+h3 {
+    color: red;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    border-bottom: 1px solid red;
+    padding-bottom: 5px;
 }
 
-.nombres-bullies ul {
-    list-style: none;
-    padding: 0;
+ul {
     margin: 0;
+    padding: 0;
+    list-style-type: none;
 }
 
-.nombres-bullies li {
+li {
+    color: #000;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+}
+
+label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+select {
     padding: 5px 10px;
-    border-bottom: 1px solid #ddd;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    color: #333;
+    font-size: 0.9em;
 }
 
-.nombres-bullies li:last-child {
-    border-bottom: none;
+select:focus {
+    border-color: red;
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(255, 0, 0, 0.5);
+}
+
+p {
+    font-style: italic;
+    color: #666;
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    background-color: red;
+    color: white;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: darkred;
+}
+
+.node {
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
+
+.link {
+    stroke-opacity: 0.6;
+}
+
+.label {
+    font-size: 0.8em;
+    fill: #333;
 }
 </style>
