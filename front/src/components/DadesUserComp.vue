@@ -34,136 +34,125 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useCounterStore } from '../stores/counter';
-import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
+    import { ref } from 'vue';
+    import { useRouter } from 'vue-router';
+    import { useCounterStore } from '../stores/counter';
+    import { editarPerfilUser } from '../services/communictationManager';
 
-const BASE_URL = "http://localhost:8000";
-const router = useRouter();
-const store = useCounterStore();
-let user = store.userData.user;
-const nom = ref(user.nom);
-const cognom = ref(user.cognom);
-const telefon = ref(user.telefon);
-const dni = ref(user.dni);
+    const store = useCounterStore();
+    const user = store.userData.user;
+    const nom = ref(user.nom);
+    const cognom = ref(user.cognom);
+    const telefon = ref(user.telefon);
+    const dni = ref(user.dni);
+    const router = useRouter();
 
-function navigateTo(nameRoute) {
-    router.push(`/${nameRoute}`)
-};
+    function navigateTo(nameRoute) {
+        router.push(`/${nameRoute}`);
+    }
 
-async function editarPerfil() {
-    try {
-        const response = await fetch(`${BASE_URL}/api/editaruser`, {
-            method: "POST",
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
+    async function editarPerfil() {
+        try {
+            const payload = {
                 alumne_id: user.id,
                 nom: nom.value,
                 cognom: cognom.value,
                 telefon: telefon.value,
-                dni: dni.value
-            })
-        });
+                dni: dni.value,
+            };
 
-        if(!response.ok){
-            throw new Error("Error en la solicitud");
+            const response = await editarPerfilUser(payload);
+            
+            if (response.success) {
+                alert('Usuari editat amb èxit');
+                Object.assign(user, response.user);
+            } else {
+                alert(`Ha ocorregut un error (${response.message || 'Error desconegut'})`);
+            }
+        } catch (error) {
+            console.error('Error en editarPerfil:', error);
         }
-
-        const result = await response.json();
-
-        if (result.success) {
-            alert('Usuari editat amb èxit');
-            user = JSON.stringify(result.user);
-            console.log(user);
-        } else {
-            alert(`Ha ocorregut un error (${result.message || 'Error desconegut'})`)
-        }
-
-    } catch (error) {
-        console.error(error);
     }
-}
 </script>
 
+
+
 <style>
-#contain-edit-btn {
-    position: absolute;
-    bottom: 0px;
-    right: -10px;
-}
+    #contain-edit-btn {
+        bottom: 0px;
+        right: -10px;
+        position: absolute;
+    }
 
-#edit-btn {
-    background-color: white;
-    height: 40px;
-    width: 40px;
-    padding: 0;
-    margin: 0;
-    border-radius: 40px;
-    border: 1px solid grey;
-}
+    #edit-btn {
+        margin: 0;
+        padding: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 40px;
+        border: 1px solid grey;
+        background-color: white;
+    }
 
-#edit-btn img {
-    padding: 0;
-    margin: 0;
-    height: 35px;
-    width: 35px;
-}
+    #edit-btn img {
+        margin: 0;
+        padding: 0;
+        width: 35px;
+        height: 35px;
+    }
 
-.contentProfile {
-    margin-top: 60px;
-}
+    .contentProfile {
+        margin-top: 60px;
+    }
 
-.contentProfile img {
-    height: 120px;
-    width: 120px;
-    object-fit: cover;
-    border-radius: 50%;
-}
+    .contentProfile img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
 
-.contentProfile #profileImage {
-    position: relative;
-    width: 120px;
-    height: 120px;
-    background-color: white;
-    border: 1px solid grey;
-    border-radius: 90px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* overflow: hidden; */
-    margin-top: 20px;
-}
+    .contentProfile #profileImage {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        background-color: white;
+        border: 1px solid grey;
+        border-radius: 90px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
 
-#infoProfile{
-    width: 300px;
-}
+    #infoProfile{
+        width: 300px;
+    }
 
-#infoProfile p{
-    font-weight: bold;
-    margin-bottom: 5px;
-}
+    #infoProfile p{
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
 
-input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    box-sizing: border-box;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-    transition: all 0.3s ease;
-}
+    input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+        transition: all 0.3s ease;
+    }
 
-input[type="text"]:focus,
-input[type="number"]:focus {
-    outline: none;
-    border-color: #ff4d4d;
-    background-color: #fff;
-}
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+        outline: none;
+        border-color: #ff4d4d;
+        background-color: #fff;
+    }
 
-input::placeholder {
-    color: #aaa;
-}
+    input::placeholder {
+        color: #aaa;
+    }
 </style>

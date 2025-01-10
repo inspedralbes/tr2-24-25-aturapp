@@ -279,7 +279,7 @@ onMounted(async () => {
     /* height: 250px; */
 }
 
-.planoContainer div p{
+.planoContainer div p {
     font-weight: bold;
     margin: 0 0 20px 0;
 }

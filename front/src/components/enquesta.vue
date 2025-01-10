@@ -6,9 +6,8 @@ import { getCompanysClase, getPreguntas, publicarRespostas } from '../services/c
 const preguntas = ref([]);
 const PaginaActual = ref(0);
 const asignaciones = ref({});
-const counterStore = useCounterStore();
 const companysClase = ref([]);
-const BASE_URL = "http://localhost:8000";
+const counterStore = useCounterStore();
 
 const userData = computed(() => counterStore.userData || {});
 
@@ -71,9 +70,10 @@ const handlePublicarRespostas = async () => {
     }
 
     const idAlumnoEmisor = parseInt(userData.value.user.id, 10);
+    const idCursoAlumno = parseInt(userData.value?.course?.id, 10);
 
-    if (isNaN(idAlumnoEmisor)) {
-        alert('El ID del alumno emisor no es válido.');
+    if (isNaN(idAlumnoEmisor) || isNaN(idCursoAlumno)) {
+        alert('El ID del alumno o del curso no es válido.');
         return;
     }
 
@@ -83,16 +83,22 @@ const handlePublicarRespostas = async () => {
         resposta2: parseInt(asignaciones.value[preguntaId][2], 10),
         resposta3: parseInt(asignaciones.value[preguntaId][3], 10),
         id_alumno_emisor: idAlumnoEmisor,
+        id_curs_alumno_emisor: idCursoAlumno,
     }));
+
+    console.log('Datos enviados al backend:', data);
 
     const result = await publicarRespostas(data);
 
     if (result.success) {
         alert('Respuestas enviadas correctamente.');
     } else {
-        alert(result.message || 'Hubo un error al enviar las respuestas. Intenta nuevamente.');
+        console.error('Error al publicar respuestas:', result.message);
+        alert(result.message || 'Hubo un error al enviar las respuestas.');
     }
 };
+
+
 
 const SiguientePagina = () => {
     if (PaginaActual.value < preguntas.value.length - 1) PaginaActual.value++;

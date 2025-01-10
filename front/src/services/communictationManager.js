@@ -206,8 +206,6 @@ export const resetPassword = async (token, password, password_confirmation) => {
     }
 };
 
-
-
 // === GET DADES SOCIOGRAMA ===============
 export const getAnalisisData = async () => {
     try {
@@ -226,6 +224,358 @@ export const getCompanysClaseSociograma = async (selectedClass) => {
         return await response.json();
     } catch (error) {
         console.error('Error al obtener las compañías de clase:', error);
+        throw error;
+    }
+};
+
+// === PERFIL DADES ALUMNE ================
+// === DadesUserComp.vue ==================
+export const editarPerfilUser = async (payload) => {
+    const URL = `${laravel.URL}/editaruser`;
+    try {
+        const response = await fetch(URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Error al editar el perfil:', errorText);
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error a l\'hora d\'actualitzar l\'usuari: ', error);
+        throw error;
+    }
+};
+
+
+// === EditarAlertaComp.vue ===============
+// === OBTENER ALERTA POR ID ===============
+export const getAlertById = async (id) => {
+    const URL = `${laravel.URL}/show/${id}`;
+    try {
+        const response = await fetch(URL, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        if (!response.ok) throw new Error('Error al obtener la alerta');
+        return await response.json();
+    } catch (error) {
+        console.error('Error al obtener la alerta:', error);
+        throw error;
+    }
+};
+
+// === ACTUALIZAR ALERTA ====================
+export const updateAlert = async (data) => {
+    const URL = `${laravel.URL}/update`;
+    try {
+        const response = await fetch(URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+        if (!response.ok) throw new Error('Error al actualizar la alerta');
+        return await response.json();
+    } catch (error) {
+        console.error('Error al actualizar la alerta:', error);
+        throw error;
+    }
+};
+
+
+// === EstadisticasComp.vue ==========================
+// === OBTENER ALERTAS FILTRADAS =====================
+export const getAlertsFilter = async (tiempo, cantidad) => {
+    const URL = `${laravel.URL}/getAlertsFilter`;
+    try {
+        const response = await fetch(URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ time: tiempo, quant: cantidad }),
+        });
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error en getAlertsFilter:", errorText);
+            throw new Error(`Error al obtener alertas filtradas: ${errorText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en getAlertsFilter:", error);
+        throw error;
+    }
+};
+
+// === OBTENER TODAS LAS ALERTAS =====================
+export const getAllAlerts = async () => {
+    const URL = `${laravel.URL}/getAllAlerts`;
+    try {
+        const response = await fetch(URL, { method: 'GET' });
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error en getAllAlerts:", errorText);
+            throw new Error(`Error al obtener todas las alertas: ${errorText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en getAllAlerts:", error);
+        throw error;
+    }
+};
+
+export async function getAlerts(tiempo, cantidad) {
+    try {
+        const response = await fetch(`${laravel.URL}/getAlertsFilter`, {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                time: tiempo,
+                quant: cantidad
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Error en la solicitud");
+        }
+
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error("Error fetching alerts: ", error);
+        return [];
+    }
+}
+
+
+
+
+
+
+// === SectorAlertasComp.vue ========================
+
+// Obtener información de un usuario por ID
+export const getUser = async (alumne_id) => {
+    try {
+        const response = await fetch(`${laravel.URL}/getUser`, {
+            method: 'POST',
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({ alumne_id }),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error en getUser:", errorText);
+            throw new Error(`Error al obtener usuario: ${errorText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error en getUser:", error);
+        throw error;
+    }
+};
+
+// Obtener alertas por sector
+export const getAlertsSector = async (sector_id) => {
+    try {
+        const response = await fetch(`${laravel.URL}/getAlertsSector`, {
+            method: 'POST',
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({ sector_id }),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error en getAlertsSector:", errorText);
+            throw new Error(`Error al obtener alertas del sector: ${errorText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error en getAlertsSector:", error);
+        throw error;
+    }
+};
+
+
+export const fetchCursos = async () => {
+    try {
+        const response = await fetch(`${laravel.URL}/cursos`);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error en fetchCursos:", errorText);
+            throw new Error(`Error al obtener los cursos: ${errorText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error en fetchCursos:", error);
+        throw error;
+    }
+};
+
+export const registerUser = async (userData) => {
+    try {
+        const response = await fetch(`${laravel.URL}/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(userData),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error en registerUser:", errorText);
+            throw new Error(`Error al registrar el usuario: ${errorText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error en registerUser:", error);
+        throw error;
+    }
+};
+
+
+export const fetchAlertes = async (usuari_id) => {
+    try {
+        const response = await fetch(`${laravel.URL}/alertes`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: usuari_id }),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Error en fetchAlertes:", errorText);
+            throw new Error(`Error al obtener las alertas: ${errorText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error en fetchAlertes:", error);
+        throw error;
+    }
+};
+
+export const loginUser = async (loginData) => {
+    try {
+        const response = await fetch(`${laravel.URL}/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify(loginData),
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.message || 'Credenciales incorrectas');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error en loginUser:", error.message);
+        throw error;
+    }
+};
+
+
+// === ENVIAR ALERTA ===========
+export async function EnviarAlerta(metodo, cuerpo) {
+    const url = `${laravel.URL}/alert`;
+    try {
+        const response = await fetch(url, {
+            method: metodo,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(cuerpo),
+        });
+
+        if (!response.ok) {
+            throw new Error("Error al realizar la solicitud");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error en la solicitud:", error);
+        throw error;
+    }
+}
+
+
+
+
+
+
+export async function GetUserSectorAlertas(alumne_id) {
+    try {
+        const response = await fetch(`${laravel.URL}/getUser`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ alumne_id }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al obtener el usuario');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error en la solicitud de usuario:', error);
+        throw error;
+    }
+}
+
+export async function GetAlertasSectorAlertas(sector_id) {
+    try {
+        const response = await fetch(`${laravel.URL}/getAlertsSector`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                sector_id,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al obtener las alertas del sector');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error en la solicitud de alertas:', error);
+        throw error;
+    }
+}
+
+
+
+// === HeatmapComp.vue ==================
+export const HeatmapGetAllAlert = async () => {
+    try {
+        const response = await fetch(`${laravel.URL}/getAllAlerts`);
+        if (!response.ok) {
+            console.log("Error a la hora de obtener los datos");
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching alerts:", error);
         throw error;
     }
 };

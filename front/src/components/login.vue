@@ -25,12 +25,12 @@
 import { ref, computed, nextTick } from 'vue';
 import { useCounterStore } from '../stores/counter';
 import { useRouter } from 'vue-router';
+import { loginUser } from '../services/communictationManager';
 
 const email = ref('');
 const password = ref('');
 const passwordType = ref("password");
 const passwordIcon = ref("fa fa-eye");
-// const passwordVisible = false;
 const errorMessage = ref('');
 
 const router = useRouter();
@@ -40,50 +40,34 @@ const Iniciado = computed(() => counterStore.Iniciado);
 const userData = computed(() => counterStore.userData);
 
 function togglePassword() {
-  passwordType.value = passwordType.value === 'password' ? 'text' : 'password';
-  passwordIcon.value = passwordType.value === 'password' ? 'fa fa-eye' : 'fa fa-eye-slash';
+    passwordType.value = passwordType.value === 'password' ? 'text' : 'password';
+    passwordIcon.value = passwordType.value === 'password' ? 'fa fa-eye' : 'fa fa-eye-slash';
 }
 
 async function handleSubmit() {
-  const loginData = {
-    email: email.value,
-    password: password.value
-  };
-  const counterStore = useCounterStore();
+    const loginData = {
+        email: email.value,
+        password: password.value,
+    };
 
-  try {
-    const response = await fetch('http://localhost:8000/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify(loginData)
-    });
+    try {
+        const data = await loginUser(loginData);
+        counterStore.setUserData(data);
 
-    if (response.ok) {
-      const data = await response.json();
-      counterStore.setUserData(data);
+        await nextTick();
 
-      await nextTick();
-
-      location.href = data.redirect_to;
-    } else {
-      const data = await response.json();
-      errorMessage.value = data.message || 'Credenciales incorrectas';
-      counterStore.clearUserData();
+        location.href = data.redirect_to;
+    } catch (error) {
+        errorMessage.value = error.message;
+        counterStore.clearUserData();
     }
-  } catch (error) {
-    errorMessage.value = 'Hubo un problema al conectar con el servidor';
-    console.error(error);
-    counterStore.clearUserData();
-  }
 }
 
 function navigateTo(namePath) {
-  router.push(`/${namePath}`)
+    router.push(`/${namePath}`);
 }
 </script>
+
 
 <style scoped>
 * {

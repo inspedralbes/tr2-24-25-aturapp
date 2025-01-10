@@ -55,8 +55,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { GetUserSectorAlertas, GetAlertasSectorAlertas } from '../services/communictationManager';
 
-const BASE_URL = 'http://localhost:8000';
 const router = useRouter();
 const route = useRoute();
 const id_sector = route.query.id;
@@ -70,24 +70,11 @@ function navigateTo(path) {
     router.push(`/admin/${path}`)
 }
 
-async function getUser(){
+async function getUser() {
     try {
-        const response = await fetch(`${BASE_URL}/api/getUser`, {
-            method: 'POST',
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                alumne_id: infoAlerta.value.alumne_id,
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-
-        const result = await response.json();
-        console.log(result)
+        // Llamamos a la función del communicationManager
+        const result = await GetUserSectorAlertas(infoAlerta.value.alumne_id);
+        console.log(result);
         return result;
     } catch (error) {
         console.error(error);
@@ -96,23 +83,8 @@ async function getUser(){
 
 async function getAlertsSector() {
     try {
-        const response = await fetch(`${BASE_URL}/api/getAlertsSector`, {
-            method: 'POST',
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                sector_id: id_sector,
-                // Meter otros valores (Fechas, Horarios)
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-
-        const result = await response.json();
-        // console.log(result)
+        // Llamamos a la función del communicationManager
+        const result = await GetAlertasSectorAlertas(id_sector);
         return result;
     } catch (error) {
         console.error(error);
@@ -135,16 +107,16 @@ function formatText(text) {
 async function verAlerta(id) {
     alertVisible.value = true;
     infoAlerta.value = alertes.value.find((alerta) => alerta.id === id);
-    infoAlumne.value = await getUser();
+    infoAlumne.value = await getUser(); // Llamamos a la función getUser para obtener la información del usuario
     console.log(infoAlumne.value.user);
 }
 
 onMounted(async () => {
-    alertes.value = await getAlertsSector();
-    sector.value = formatText(alertes.value[0].sector_name);
+    alertes.value = await getAlertsSector(); // Llamamos a la función getAlertsSector para obtener las alertas
+    sector.value = formatText(alertes.value[0].sector_name); // Formateamos el nombre del sector
 });
-
 </script>
+
 
 <style scoped>
 /* Contenedor principal */

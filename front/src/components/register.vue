@@ -30,13 +30,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useCounterStore } from '../stores/counter';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { fetchCursos, registerUser } from '../services/communictationManager';
 
-const BASE_URL = "http://localhost:8000";
 const router = useRouter();
-// name: "Register",
+
 const name = ref('');
 const surname = ref('');
 const email = ref('');
@@ -50,18 +49,12 @@ const confirmPasswordType = ref("password");
 const passwordIcon = ref("fa fa-eye");
 const confirmPasswordIcon = ref("fa fa-eye");
 
-async function fetchCursos() {
+async function loadCursos() {
     try {
-        const response = await fetch(`${BASE_URL}/api/cursos`);
-
-        if (!response.ok) {
-            throw new Error("Error al obtener los cursos");
-        }
-
-        const data = await response.json();
-        cursos.value = data;
+        cursos.value = await fetchCursos();
     } catch (error) {
-        console.error("Error al obtener los cursos:", error);
+        console.error("Error al cargar los cursos:", error);
+        alert("No se pudieron cargar los cursos.");
     }
 }
 
@@ -78,6 +71,8 @@ async function handleSubmit() {
         return;
     }
 
+    if (!dni.value.trim()){ dni.value = "00000000Z" }
+
     const userData = {
         name: name.value,
         surname: surname.value,
@@ -89,22 +84,10 @@ async function handleSubmit() {
     };
 
     try {
-        const response = await fetch(`${BASE_URL}/api/register`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(userData),
-        });
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-
-        const result = await response.json();
+        const result = await registerUser(userData);
         alert("Usuari registrat amb èxit: " + result.message);
     } catch (error) {
-        console.error(error);
+        console.error("Error al registrar l'usuari:", error);
         alert("Error al registrar l'usuari");
     }
 }
@@ -120,13 +103,14 @@ function toggleConfirmPassword() {
 }
 
 function navigateTo(namePath) {
-  router.push(`/${namePath}`)
+    router.push(`/${namePath}`);
 }
 
 onMounted(() => {
-    fetchCursos();
+    loadCursos();
 });
 </script>
+
 
 <style scoped>
 * {

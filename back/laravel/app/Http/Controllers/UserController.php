@@ -216,4 +216,37 @@
         
             return response()->json(['success' => true, 'alumne' => $alumne], 200);
         }   
+
+        public function update(Request $request) {
+            try {
+                $validated = $request->validate([
+                    'alumne_id' => 'required|exists:users,id',
+                    'nom' => 'required|string|max:255',
+                    'cognom' => 'required|string|max:255',
+                    'dni' => 'nullable|string|max:20',
+                    'telefon' => 'nullable|integer',
+                ]);
+    
+                $user = User::findOrFail($validated['alumne_id']);
+    
+                $user->nom = $validated['nom'];
+                $user->cognoms = $validated['cognom'];
+                $user->dni = $validated['dni'];
+                $user->telefon = $validated['telefon'];
+                $user->save();
+    
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Usuario actualizado con éxito.',
+                    'user' => $user,
+                ], 200);
+    
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al actualizar el usuario.',
+                    'error' => $e->getMessage(),
+                ], 500);
+            }
+        }
     }
