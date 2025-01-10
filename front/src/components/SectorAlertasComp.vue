@@ -122,8 +122,14 @@ async function getAlertsSector() {
 function formatText(text) {
     text = text || "";
 
-    if (text.includes("-inf")) {
+    if (text.includes("-inf") || text.includes("pb") || text.includes("p1") || text.includes("p2") || text.includes("p3")) {
         return text.toUpperCase();
+    }
+
+    // Verifica si el texto termina con una palabra y un número junto (ej. bosca0)
+    const match = text.match(/([a-zA-Z]+)(\d+)$/);
+    if (match) {
+        text = text.replace(/\d+$/, ""); // Elimina el número al final
     }
 
     return text

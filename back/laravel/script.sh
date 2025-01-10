@@ -18,7 +18,7 @@ php artisan key:generate
 # Espera a que MySQL esté listo
 sleep 5
 
-php artisan migrate:fresh --seed
+# php artisan migrate:fresh --seed
 # Ejecutar migraciones y seed solo si es la primera vez
 # if [ ! -f /var/www/html/.migrated ]; then
 #     # php artisan migrate:fresh --seed

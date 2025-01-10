@@ -20,17 +20,8 @@ class AlertaController extends Controller {
                 return [
                     'id_sector' => $sector_id,
                     'nombre' => $sector->sector,
+                    'planta' => $sector->planta->name,
                     'total' => $alertas->count(),
-                    // 'detalles' => $alertas->map(function ($alerta) {
-                    //     return [
-                    //         'id' => $alerta->id,
-                    //         'sector_id' => $alerta->sector->id,
-                    //         'planta' => $alerta->sector->planta->name,
-                    //         'descripcion' => $alerta->descripcion,
-                    //         'estado' => $alerta->estado->name,
-                    //         'created_at' => $alerta->created_at
-                    //     ];
-                    // })
                 ];
             })
             ->sortByDesc('total')

@@ -17,8 +17,8 @@
             <div id="item-c" class="box">
                 <p class="no-margin">Ranking sectores</p>
                 <ul>
-                    <li v-for="index in 3" class="ranking-item">
-                        <p class="ranking-text">{{ index }} - {{ formatText(rankingSectores[index - 1]?.nombre) }}</p>
+                    <li v-for="index in 4" class="ranking-item">
+                        <p class="ranking-text">{{ index }} - {{ formatText(rankingSectores[index - 1]?.nombre) }} ({{ rankingSectores[index - 1].planta }})</p>
                     </li>
                 </ul>
             </div>
@@ -160,8 +160,14 @@ function formatHora(isoDate) {
 function formatText(text) {
     text = text || "";
 
-    if (text.includes("-inf")) {
+    if (text.includes("-inf") || text.includes("pb") || text.includes("p1") || text.includes("p2") || text.includes("p3")) {
         return text.toUpperCase();
+    }
+
+    // Verifica si el texto termina con una palabra y un número junto (ej. bosca0)
+    const match = text.match(/([a-zA-Z]+)(\d+)$/);
+    if (match) {
+        text = text.replace(/\d+$/, ""); // Elimina el número al final
     }
 
     return text
