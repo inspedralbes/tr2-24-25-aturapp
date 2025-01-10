@@ -18,49 +18,13 @@
         </div>
     </div>
     <div class="planoContainer">
-        <div id="heatmap-exterior" class="d-flex j-center align-center f-column">
-            <p>Zona exterior</p>
-            <svg width="50%" viewBox="0 0 613 396" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path v-for="(sector, index) in exteriorh" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
-                    :fill="sector.color" :stroke-width="3" @click="navigateToSector(sector.idbd)"
-                    :style="{ cursor: sector.hasAlerts ? 'pointer' : 'not-allowed', pointerEvents: sector.hasAlerts ? 'auto' : 'none' }" />
-                <g v-html="exterior"></g>
-            </svg>
-        </div>
-        <div id="heatmap-planta0">
-            <p>Planta Baixa</p>
-            <svg width="90%" viewBox="0 0 1864 405" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path v-for="(sector, index) in sectors0" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
-                    :fill="sector.color" :stroke-width="5" @click="navigateToSector(sector.idbd)"
-                    :style="{ cursor: sector.hasAlerts ? 'pointer' : 'not-allowed', pointerEvents: sector.hasAlerts ? 'auto' : 'none' }" />
-                <g v-html="planta0h"></g>
-            </svg>
-        </div>
-        <div id="heatmap-planta1">
-            <p>Planta 1</p>
-            <svg width="90%" viewBox="0 0 1864 407" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path v-for="(sector, index) in sectors1" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
-                    :fill="sector.color" :stroke-width="5" @click="navigateToSector(sector.idbd)"
-                    :style="{ cursor: sector.hasAlerts ? 'pointer' : 'not-allowed', pointerEvents: sector.hasAlerts ? 'auto' : 'none' }" />
-                <g v-html="planta1h"></g>
-            </svg>
-        </div>
-        <div id="heatmap-planta2">
-            <p>Planta 2</p>
-            <svg width="90%" viewBox="0 0 1864 414" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path v-for="(sector, index) in sectors2" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
-                    :fill="sector.color" :stroke-width="5" @click="navigateToSector(sector.idbd)"
-                    :style="{ cursor: sector.hasAlerts ? 'pointer' : 'not-allowed', pointerEvents: sector.hasAlerts ? 'auto' : 'none' }" />
-                <g v-html="planta2h"></g>
-            </svg>
-        </div>
-        <div id="heatmap-planta3">
-            <p>Planta 3</p>
-            <svg width="90%" viewBox="0 0 1864 414" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path v-for="(sector, index) in sectors3" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
-                    :fill="sector.color" :stroke-width="5" @click="navigateToSector(sector.idbd)"
-                    :style="{ cursor: sector.hasAlerts ? 'pointer' : 'not-allowed', pointerEvents: sector.hasAlerts ? 'auto' : 'none' }" />
-                <g v-html="planta3h"></g>
+        <div v-for="(sector) in sectors" class="d-flex j-center align-center f-column">
+            <p>{{ sector.nom }}</p>
+            <svg :width=sector.ancho :viewBox=sector.viewBox fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path v-for="(area, index) in sector.sector" :key="index" :id="area.id" :d="area.d" :stroke="'black'"
+                    :fill="area.color" :stroke-width="3" @click="navigateToSector(area.idbd)"
+                    :style="{ cursor: area.hasAlerts ? 'pointer' : 'not-allowed', pointerEvents: area.hasAlerts ? 'auto' : 'none' }" />
+                <g v-html="sector.svg"></g>
             </svg>
         </div>
     </div>
@@ -204,6 +168,44 @@ const sectors3 = ref([
     { id: "fin-ala-ausias", d: "M1787.5 397.5L1860.5 404.5L1863 227L1729 213V260L1787.5 266V397.5Z", color: "white", hasAlerts: false, alerts: [] },
 ]);
 
+const sectors = [
+    {
+        nom: 'Zona exterior',
+        svg: exterior,
+        sector: exteriorh.value,
+        ancho: '50%',
+        viewBox: '0 0 613 396',
+    },
+    {
+        nom: 'Planta 0',
+        svg: planta0h,
+        sector: sectors0.value,
+        ancho: '90%',
+        viewBox: '0 0 1864 414',
+    },
+    {
+        nom: 'Planta 1',
+        svg: planta1h,
+        sector: sectors1.value,
+        ancho: '90%',
+        viewBox: '0 0 1864 414',
+    },
+    {
+        nom: 'Planta 2',
+        svg: planta2h,
+        sector: sectors2.value,
+        ancho: '90%',
+        viewBox: '0 0 1864 414',
+    },
+    {
+        nom: 'Planta 3',
+        svg: planta3h,
+        sector: sectors3.value,
+        ancho: '90%',
+        viewBox: '0 0 1864 414',
+    }
+];
+
 async function getAllAlertes() {
     try {
         const response = await fetch(`${BASE_URL}/api/getAllAlerts`);
@@ -221,11 +223,9 @@ async function getAllAlertes() {
 
 async function paintAlerts() {
     const allAlerts = await getAllAlertes();
-
-    const sectors = [exteriorh, sectors0, sectors1, sectors2, sectors3];
     sectors.forEach((planta) => {
         allAlerts.forEach((alerta) => {
-            planta.value.forEach(sector => {
+            planta.sector.forEach((sector) => {
                 if (sector.id == alerta.nombre) {
                     sector.hasAlerts = true;
                     sector.alerts = alerta.detalles;
@@ -244,19 +244,6 @@ async function paintAlerts() {
             });
         });
     })
-
-    // const alertsColors = allAlerts.map(alerta => {
-    //     const sector = exteriorh.value.find(sector => sector.id === alerta.nombre);
-    //     return {
-    //         id_sector: alerta.id_sector,
-    //         sector: alerta.nombre,
-    //         total: alerta.total,
-    //         color: sector ? sector.color : white,
-    //         // detalles: alerta.detalles,
-    //     };
-    // });
-
-    // // return alertsColors;
 }
 
 function navigateToSector(id) {
@@ -267,9 +254,9 @@ function navigateToSector(id) {
 onMounted(async () => {
     await paintAlerts();
 
-    // setInterval(async () => {
-    //     // await paintAlerts();
-    // }, 8000);
+    setInterval(async () => {
+        await paintAlerts();
+    }, 8000);
 });
 
 </script>

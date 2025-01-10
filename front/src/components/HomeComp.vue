@@ -1,5 +1,10 @@
 <template>
-    <div v-if="!sosActive">
+    <div v-if="!sosActive" class="contain-sos w-full d-flex j-center align-center f-column">
+        <h2 class="sos-heading">
+            <span class="static-text">Ets </span>
+            <span class="dynamic-text">{{ victimaTestimoni }}?</span><br>
+            <span class="action">Prem el botó <span style="font-size: 35px;">SOS</span> i avisa'ns!</span>
+        </h2>
         <input class="btn-sos" type="button" value="SOS" @click="sosAlert">
     </div>
     <div v-if="sosActive">
@@ -11,9 +16,9 @@
         <div v-if="!edificiActive" class="planoContainer">
             <div class="d-flex j-center align-center h-full">
                 <svg width="60%" viewBox="0 0 613 396" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path v-for="(sector, index) in exteriorh" :key="index" :id="sector.id" :d="sector.d" :stroke="'black'"
-                        :fill="sector.color" :stroke-width="3" @click="toggleSectorColor(index, exteriorh)"
-                        class="sector" />
+                    <path v-for="(sector, index) in exteriorh" :key="index" :id="sector.id" :d="sector.d"
+                        :stroke="'black'" :fill="sector.color" :stroke-width="3"
+                        @click="toggleSectorColor(index, exteriorh)" class="sector" />
                     <g v-html="exterior"></g>
                 </svg>
             </div>
@@ -141,6 +146,16 @@ const alumno_id = dataUser.user.id;
 const alerta = ref(null);
 const alertaDescripcio = ref("");
 const alertaEditada = ref(false);
+const words = ["víctima", "testimoni"];
+const currentWordIndex = ref(0);
+const victimaTestimoni = ref("testimoni");
+
+function startWordRotation() {
+    setInterval(() => {
+        victimaTestimoni.value = words[currentWordIndex.value];
+        currentWordIndex.value = (currentWordIndex.value + 1) % words.length;
+    }, 2000); // Cambiar palabra cada 2 segundos
+}
 
 function resetSector() {
     arraySectores.forEach((sectores) => {
@@ -183,11 +198,11 @@ const exteriorh = ref([
     { id: "camp-futbol-sala", d: "M1 264.5V179.5H173L173.5 251L1 264.5Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "parquing", d: "M1 395.5V264.5L117 255.5V395.5H1Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "taules-ping-pong", d: "M117 338.5V395.5H242V330.5L117 338.5Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "entrada",  d: "M339 395.5H242V330.5L291 327L339 329.5V395.5Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "entrada-cantina",d: "M339 329.5L458 336V395.5H339V329.5Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "entrada", d: "M339 395.5H242V330.5L291 327L339 329.5V395.5Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "entrada-cantina", d: "M339 329.5L458 336V395.5H339V329.5Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "entrada-cotxe", d: "M611.5 395.5H458V331H611.5V395.5Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "escales-pati",  d: "M489.5 251V331H458V251H489.5Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "picnic",  d: "M610 261L489.5 251V331H611.5L610 261Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "escales-pati", d: "M489.5 251V331H458V251H489.5Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "picnic", d: "M610 261L489.5 251V331H611.5L610 261Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "camp-futbol", d: "M448 161.5V250.5L458 251H489.5L610 261V161.5H448Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "pista-basquet", d: "M610 36V161.5H448V167.5H434.5V71H506L558 1L610 36Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "pati-eso-2", d: "M237.5 179.5H173V251L237.5 245.5V179.5Z", color: "white", hasAlerts: false, alerts: [] },
@@ -204,10 +219,10 @@ const sectors0v = ref([
     { id: "pb-14", d: "M146.541 1729.5L160.5 1579.5L13.5 1573.5L1.5 1727L146.541 1729.5Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "pb-10", d: "M391 1169.5L403.5 1034.5L259.5 1022L247 1158L391 1169.5Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "fin-ala-ausias0", d: "M9 1788L2 1861L179.5 1863.5L194 1729.5H146.5L140.5 1788H9Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "pb-01",d: "M207.5 282.5L193.5 135L340 131L352.5 276.5L207.5 282.5Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "pb-01", d: "M207.5 282.5L193.5 135L340 131L352.5 276.5L207.5 282.5Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "pb-03", d: "M352.5 276.5L366.5 410L220 418L207.5 282.5L352.5 276.5Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "pb-05",d: "M366.5 410L379 545.5L233 557.5L220 418L366.5 410Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "pb-04",d: "M160.5 285L173 419.5L25 429L13.5 291L160.5 285Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "pb-05", d: "M366.5 410L379 545.5L233 557.5L220 418L366.5 410Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "pb-04", d: "M160.5 285L173 419.5L25 429L13.5 291L160.5 285Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "pb-06", d: "M173 419.5L180.5 498.5L33.5 507L25 429L173 419.5Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "pb-07", d: "M180.5 498.5L194 641L47 651L33.5 507L180.5 498.5Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "pb-09", d: "M194 641L208 789L60.5 801.5L47 651L194 641Z", color: "white", hasAlerts: false, alerts: [] },
@@ -221,16 +236,16 @@ const sectors0h = ref([
     { id: "pasillo-ausias0", d: "M1729 211.5V259L1074.5 197.5L1082 151.5L1729 211.5Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "ala-bosca0", d: "M931.5 352.5L802 355.5L788.5 197L781 151.5L843.5 145.5L931.5 137.5V352.5Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "pasillo-bosca0", d: "M134.5 212V259L788.5 197.5L781 151.5L134.5 212Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "pb-13", d:"M1582 198L1729 211.5L1733 65.5L1587.5 53L1582 198Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "pb-11", d:"M1587.5 52.5L1454 39L1446 185L1581.5 198L1587.5 52.5Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "pb-12", d:"M1579 245L1444.5 232.5L1435 380.5L1573 392L1579 245Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "pb-14", d:"M1729 258.959L1579 245L1573 392L1726.5 404L1729 258.959Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "pb-10", d:"M1169 14.5L1034 2L1021.5 146L1157.5 158.5L1169 14.5Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "pb-13", d: "M1582 198L1729 211.5L1733 65.5L1587.5 53L1582 198Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "pb-11", d: "M1587.5 52.5L1454 39L1446 185L1581.5 198L1587.5 52.5Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "pb-12", d: "M1579 245L1444.5 232.5L1435 380.5L1573 392L1579 245Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "pb-14", d: "M1729 258.959L1579 245L1573 392L1726.5 404L1729 258.959Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "pb-10", d: "M1169 14.5L1034 2L1021.5 146L1157.5 158.5L1169 14.5Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "fin-ala-ausias0", d: "M1787.5 396.5L1860.5 403.5L1863 226L1729 211.5V259L1787.5 265V396.5Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "pb-01",d: "M282 198L134.5 212L130.5 65.5L276 53L282 198Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "pb-03",d: "M276 53L409.5 39L417.5 185.5L282 198L276 53Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "pb-05",d: "M409.5 39L545 26.5L557 172.5L417.5 185.5L409.5 39Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "pb-04",d: "M284.5 245L419 232.5L428.5 380.5L290.5 392L284.5 245Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "pb-01", d: "M282 198L134.5 212L130.5 65.5L276 53L282 198Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "pb-03", d: "M276 53L409.5 39L417.5 185.5L282 198L276 53Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "pb-05", d: "M409.5 39L545 26.5L557 172.5L417.5 185.5L409.5 39Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "pb-04", d: "M284.5 245L419 232.5L428.5 380.5L290.5 392L284.5 245Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "pb-06", d: "M419 232.5L498 225L506.5 372L428.5 380.5L419 232.5Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "pb-07", d: "M498 225L640.5 211.5L650.5 358.5L506.5 372L498 225Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "pb-09", d: "M640.5 211.5L788.5 197.5L801 345L650.5 358.5L640.5 211.5Z", color: "white", hasAlerts: false, alerts: [] },
@@ -241,7 +256,7 @@ const sectors0h = ref([
 const sectors1v = ref([
     { id: "ala-ausias1", d: "M259.25 1022.25L267.75 932.25H52.75L49.75 1003.75L259.25 1022.25Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "pasillo-ausias1", d: "M193.75 1729.75H146.25L212.75 1018.75L259.25 1022.75L193.75 1729.75Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "sem-castella-ausias1",d: "M398.12 1109.75L252.25 1097.25L258.946 1022.75L406.25 1036.75L398.12 1109.75Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "sem-castella-ausias1", d: "M398.12 1109.75L252.25 1097.25L258.946 1022.75L406.25 1036.75L398.12 1109.75Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "p1-inf5", d: "M207.25 1582.75L193.75 1729.75L339.75 1733.75L352.25 1588.25L207.25 1582.75Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "p1-09", d: "M352.75 1588.25L366.25 1454.75L220.25 1446.75L207.25 1582.25L352.75 1588.25Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "p1-inf3", d: "M159.75 1579.75L172.75 1445.25L24.75 1435.75L13.25 1573.75L159.75 1579.75Z", color: "white", hasAlerts: false, alerts: [] },
@@ -254,12 +269,12 @@ const sectors1v = ref([
     { id: "ala-bosca1", d: "M259.25 842.75L267.75 932.75H52.75L49.75 861.25L259.25 842.75Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "pasillo-bosca1", d: "M193.75 135.25H146.25L212.75 846.25L259.25 842.25L193.75 135.25Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "sem-castella-bosca1", d: "M398.12 755.25L252.25 767.75L258.946 842.25L406.25 828.25L398.12 755.25Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "p1-01", d:"M207.25 282.25L193.75 135.25L339.75 131.25L352.25 276.75L207.25 282.25Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "p1-03", d:"M352.75 276.75L366.25 410.25L220.25 418.25L207.25 282.75L352.75 276.75Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "p1-04", d:"M159.75 285.25L172.75 419.75L24.75 429.25L13.25 291.25L159.75 285.25Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "p1-06", d:"M185.25 555.75L198.75 698.25L52.25 708.25L38.75 564.25L185.25 555.75Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "p1-07", d:"M198.75 698.25L212.75 846.75L65.75 859.75L52.25 708.25L198.75 698.25Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "p1-02", d:"M146.291 135.25L159.25 285.25L13.25 291.25L1.25 137.75L146.291 135.25Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "p1-01", d: "M207.25 282.25L193.75 135.25L339.75 131.25L352.25 276.75L207.25 282.25Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "p1-03", d: "M352.75 276.75L366.25 410.25L220.25 418.25L207.25 282.75L352.75 276.75Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "p1-04", d: "M159.75 285.25L172.75 419.75L24.75 429.25L13.25 291.25L159.75 285.25Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "p1-06", d: "M185.25 555.75L198.75 698.25L52.25 708.25L38.75 564.25L185.25 555.75Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "p1-07", d: "M198.75 698.25L212.75 846.75L65.75 859.75L52.25 708.25L198.75 698.25Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "p1-02", d: "M146.291 135.25L159.25 285.25L13.25 291.25L1.25 137.75L146.291 135.25Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "biblioteca", d: "M366.25 410.25L385.25 620.25L239.75 631.75L220.25 418.25L366.25 410.25Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "p1-05", d: "M385.25 620.25L397.75 755.25L252.75 767.25L239.75 631.25L385.25 620.25Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "fin-ala-bosca1", d: "M8.75 76.75L1.75 3.75L179.25 1.25L193.25 135.25H146.25L140.25 76.75L8.75 76.75Z", color: "white", hasAlerts: false, alerts: [] },
@@ -300,8 +315,8 @@ const sectors2v = ref([
     { id: "p2-09", d: "M351.75 1588.75L365.75 1455.25L219.25 1447.75L206.75 1582.75L351.75 1588.75Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "p2-10", d: "M159.75 1580.25L172.25 1445.75L24.75 1436.25L12.75 1574.25L159.75 1580.25Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "p2-11", d: "M145.791 1730.25L159.75 1580.25L12.75 1574.25L0.75 1727.75L145.791 1730.25Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "p2-08",  d: "M365.75 1455.25L378.75 1314.75L232.25 1307.25L219.25 1447.75L365.75 1455.25Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "p2-07",  d: "M390.75 1183.25L402.75 1032.92L258.811 1023.25L245.25 1170.25L390.75 1183.25Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "p2-08", d: "M365.75 1455.25L378.75 1314.75L232.25 1307.25L219.25 1447.75L365.75 1455.25Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "p2-07", d: "M390.75 1183.25L402.75 1032.92L258.811 1023.25L245.25 1170.25L390.75 1183.25Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "fin-ala-ausias2", d: "M8.25 1788.75L1.25 1861.75L178.75 1864.25L192.75 1730.25H145.75L139.75 1788.75H8.25Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "wc2", d: "M187.25 81.7501L178.75 1.75006L306.75 1.25006L312.75 81.7501L187.25 81.7501Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "ala-bosca2", d: "M258.75 843.25L267.25 933.25L52.25 933.25L49.25 861.75L258.75 843.25Z", color: "white", hasAlerts: false, alerts: [] },
@@ -401,7 +416,7 @@ const sectors3h = ref([
     { id: "dept-tecnologia", d: "M1313.5 26.5L1244 21L1233.5 167L1306 174L1313.5 26.5Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "p3-inf3", d: "M1244 21L1035.5 3.5L1022 147L1233.5 167L1244 21Z", color: "white", hasAlerts: false, alerts: [] },
     { id: "fin-ala-bosca", d: "M76.5 390L3.5 397L1 219.5L137 206L139 253L76.5 258.5V390Z", color: "white", hasAlerts: false, alerts: [] },
-    { id: "fin-ala-ausias",d: "M1787.5 397.5L1860.5 404.5L1863 227L1729 213V260L1787.5 266V397.5Z", color: "white", hasAlerts: false, alerts: [] },
+    { id: "fin-ala-ausias", d: "M1787.5 397.5L1860.5 404.5L1863 227L1729 213V260L1787.5 266V397.5Z", color: "white", hasAlerts: false, alerts: [] },
 ]);
 const arraySectores = [exteriorh, sectors0v, sectors0h, sectors1v, sectors1h, sectors2v, sectors2h, sectors3v, sectors3h];
 
@@ -410,11 +425,11 @@ function toggleSectorColor(index, sectores) {
         if (sectores[index].id != "edifici") {
             sector.color = i === index ? "red" : "white";
             sectorInput.value = sectores[index].id;
-            sectorName.value = formatText(sectorInput.value);
         } else {
             edificiActive.value = true;
             sectorInput.value = null;
         }
+        sectorName.value = formatText(sectorInput.value);
     });
 }
 
@@ -478,9 +493,43 @@ function tornarInici() {
     alertaEditada.value = !alertaEditada.value;
     sosAlert();
 }
+
+onMounted(() => {
+    startWordRotation();
+});
 </script>
 
 <style scoped>
+.contain-sos {
+    height: 90vh;
+}
+
+.sos-heading {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: normal;
+    color: #333;
+    line-height: 1.4;
+    margin-bottom: 1rem;
+}
+
+.static-text {
+    font-weight: bold;
+    color: #000;
+}
+
+.dynamic-text {
+    font-weight: bold;
+    transition: all 0.5s ease-in-out;
+    /* Animación para un cambio suave */
+}
+
+.action {
+    color: #ff4b5c;
+    font-weight: bold;
+    opacity: 0.9;
+}
+
 .mobile-view {
     display: block;
 }
@@ -498,7 +547,7 @@ function tornarInici() {
         display: block;
     }
 
-    .planoContainer div{
+    .planoContainer div {
         position: relative;
         top: 50%;
         left: 50%;
@@ -527,12 +576,12 @@ function tornarInici() {
     box-shadow: -5px -5px 9px rgba(255, 114, 114, 0.45), 5px 5px 9px rgba(255, 25, 25, 0.438);
 
     border: none;
-    position: absolute;
+    /* position: absolute;
     top: 0;
     bottom: 70px;
     left: 0;
     right: 0;
-    margin: auto;
+    margin: auto; */
     font-family: "Outfit", serif;
     font-size: 60px;
     color: white;

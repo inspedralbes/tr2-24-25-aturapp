@@ -12,6 +12,7 @@ const id = route.query.id;
 const data = store.userData;
 const user_id = data.user.id
 const alertaDescripcio = ref('');
+const alertaEditada = ref(false);
 
 function navigateTo(nameIcon) {
     router.push(`/${nameIcon}`)
@@ -53,13 +54,18 @@ async function editarAlerta() {
         const result = await response.json();
 
         if (result.success) {
-            alert('Alerta editada amb èxit')
+            alertaEditada.value = !alertaEditada.value;
         } else {
             alert(`Ha ocorregut un error (${result.message || 'Error desconegut'})`)
         }
     } catch (error) {
         console.error(error);
     }
+}
+
+function tornarInici() {
+    alertaEditada.value = !alertaEditada.value;
+    navigateTo('perfil/alertes');
 }
 
 function formatFecha(isoDate) {
@@ -91,6 +97,8 @@ function formatText(text) {
         .join(' '); // Une las palabras con un espacio
 }
 
+
+
 onMounted(() => {
     getAlert();
 })
@@ -117,11 +125,56 @@ onMounted(() => {
             <input class="btn-cancel" type="button" value="Cancelar" @click="navigateTo('perfil/alertes')">
             <input class="btn-confirm" type="button" value="Guardar" @click="editarAlerta">
         </div>
-
+    </div>
+    <div v-if="alertaEditada" class="popup-overlay">
+        <div class="popup-content">
+            <h2>Gràcies per donar-nos major informació</h2>
+            <!-- <p>Estem de camí, mantén la calma.</p> -->
+            <button class="popup-button" @click="tornarInici">Acceptar</button>
+        </div>
     </div>
 </template>
 
 <style scoped>
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+}
+
+.popup-button {
+    background: #ff4b45;
+    box-shadow: -5px -5px 9px rgba(255, 114, 114, 0.45), 5px 5px 9px rgba(255, 25, 25, 0.438);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pop .popup-button:hover {
+    background-color: #0056b3;
+}
 
 #textDesc {
     width: 300px;
@@ -138,7 +191,7 @@ textarea:focus {
     outline: none;
 }
 
-#containAlerta{
+#containAlerta {
     margin-top: 70px;
 }
 
@@ -152,7 +205,7 @@ textarea:focus {
     margin-top: 15px;
 }
 
-#containButtons{
+#containButtons {
     margin-bottom: 15px;
 }
 </style>
