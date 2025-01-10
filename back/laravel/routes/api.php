@@ -73,7 +73,7 @@
     Route::post('/alumnes/{id}', [UserController::class, 'updateAlumne']);
 
     //====== MIDDLEWARES ==========================
-    Route::put('/updateAlert/{id}', [AlertaController::class, 'update']);
+    Route::post('/update', [AlertaController::class, 'update']);
 
     Route::get('/show/{id}', [AlertaController::class, 'show']);
 

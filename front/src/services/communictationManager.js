@@ -273,7 +273,7 @@ export const getAlertById = async (id) => {
 };
 
 // === ACTUALIZAR ALERTA ====================
-export const updateAlert = async (data) => {
+export const updateAlert = async (id,data) => {
     const URL = `${laravel.URL}/update`;
     try {
         const response = await fetch(URL, {

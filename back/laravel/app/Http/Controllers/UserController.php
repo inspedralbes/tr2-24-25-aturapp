@@ -226,21 +226,24 @@
                     'dni' => 'nullable|string|max:20',
                     'telefon' => 'nullable|integer',
                 ]);
-    
+        
                 $user = User::findOrFail($validated['alumne_id']);
-    
+        
                 $user->nom = $validated['nom'];
                 $user->cognoms = $validated['cognom'];
                 $user->dni = $validated['dni'];
-                $user->telefon = $validated['telefon'];
+//              Actualitzar telefon si s'ha modificat, del contrari no es modificara
+                if (array_key_exists('telefon', $validated)) {
+                    $user->telefon = $validated['telefon'];
+                }
                 $user->save();
-    
+        
                 return response()->json([
                     'success' => true,
                     'message' => 'Usuario actualizado con éxito.',
                     'user' => $user,
                 ], 200);
-    
+        
             } catch (\Exception $e) {
                 return response()->json([
                     'success' => false,

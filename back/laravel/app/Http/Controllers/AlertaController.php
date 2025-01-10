@@ -165,22 +165,23 @@ class AlertaController extends Controller {
         //
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Alerta $alerta)
     {
-    $validated = $request->validate([
-        'estado' => 'required|string'
-    ]);
-
-    $alerta = Alerta::find($id);
-
-    if (!$alerta) {
-        return response()->json(['success' => false, 'message' => 'Alerta no encontrada'], 404);
-    }
-
-    $alerta->estado_id = $this->getEstadoId($validated['estado']); 
-    $alerta->save();
-
-    return response()->json(['success' => true, 'message' => 'Alerta actualizada correctamente'], 200);
+        $validated = $request->validate([
+            'alerta_id' => 'required|integer',
+            'alumne_id' => 'required|integer',
+            'descripcio' => 'sometimes|nullable|string'
+        ]);
+        $alerta = Alerta::find($validated['alerta_id']);
+        if (!$alerta) {
+            return response()->json(['success' => false, 'message' => 'Alerta no trobada'], 404);
+        }
+        if ($alerta->alumno_id != $validated['alumne_id']) {
+            return response()->json(['success' => false, 'message' => 'No pots editar aquesta alerta'], 403);
+        }
+        $alerta->descripcion = $validated['descripcio'];
+        $alerta->save();
+        return response()->json(['success' => true, 'message' => 'Alerta editada amb èxit'], 200);
     }
 
     private function getEstadoId($estado)

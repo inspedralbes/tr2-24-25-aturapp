@@ -28,7 +28,6 @@
             console.error('Error al cargar la alerta:', error);
         }
     }
-
     async function editarAlerta() {
         try {
             const payload = {
@@ -36,7 +35,8 @@
                 alumne_id: user_id,
                 descripcio: alertaDescripcio.value,
             };
-            const result = await updateAlert(payload);
+            console.log(payload);
+            const result = await updateAlert(id, payload); 
             if (result.success) {
                 alert('Alerta editada amb èxit');
             } else {
@@ -46,6 +46,7 @@
             console.error('Error al editar la alerta:', error);
         }
     }
+
 
     function formatFecha(isoDate) {
         const date = new Date(isoDate);
