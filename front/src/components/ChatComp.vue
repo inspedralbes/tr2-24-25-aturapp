@@ -2,10 +2,15 @@
   <div id="chat-container">
     <div id="encabezado">
       <h2>Jo no soc complice</h2>
+      <!-- <img src="/assets/svg/escribiendo.svg" alt="escribiendo"/> -->
     </div>
     <div id="contenidor-missatges">
       <ul id="missatges" class="mostrar">
-        <li v-for="(msg, index) in messages" :key="index" :class="{ propio: msg.emisor === user.id }">{{ msg.texto }}
+        <li v-for="(msg, index) in messages" :key="index" :class="{ propio: msg.emisor === user.id }">
+          {{ msg.texto }}
+        </li>
+        <li id="escribiendo" :style="{ display: escribiendo.value ? 'block' : 'none' }">
+          <img :src="escribiendoSvg" alt="Escribiendo">
         </li>
       </ul>
     </div>
@@ -38,6 +43,8 @@
 import { ref, reactive, onMounted, onUnmounted } from 'vue';
 import { useCounterStore } from '../stores/counter';
 import { guardarMissatgeBBDD } from '@/services/communictationManager.js';
+import escribiendoSvg from '@/assets/svg/escribiendo.svg';
+
 import socket from '@/services/socket.js';
 
 const store = useCounterStore();
@@ -47,12 +54,12 @@ const msjAutomaticos = reactive(['¿En que curso has visto el incidente?', '¿Co
 const messages = reactive([]);
 const input = ref('');
 let pausaMensaje = ref(false);
-let escribiendo = ref(false);
+let escribiendo = reactive({ value: false, usuarioEscritor: '' });//para cuando escriba professor, falta pensarlo
+let chatEnEspera = ref(false);
 
 const agregarMensajeUsuario = (event) => {
   event.preventDefault();
   if (input.value.trim().length > 0 && !pausaMensaje.value) {
-    alert(pausaMensaje.value);
     messages.push({ texto: input.value, emisor: user.id });
     input.value = '';
     deslizarHastaAbajo();
@@ -60,6 +67,7 @@ const agregarMensajeUsuario = (event) => {
       enviarMensajeAutomatico();
     } else {
       agregarMensajeBot('En el menor tiempo posible, un miembro del equipo se pondrá en contacto contigo para solucionar la situacion. Gracias por tu colaboración.');
+      chatEnEspera.value = true;
     }
   }
 };
@@ -76,11 +84,16 @@ const agregarMensajeBot = (texto) => {
 const enviarMensajeAutomatico = () => {
   pausaMensaje.value = true;
   escribiendo.value = true;
+  
   setTimeout(() => {
     agregarMensajeBot(msjAutomaticos.shift());
     pausaMensaje.value = false;
-    escribiendo.value = false;  
+    escribiendo.value = false;
   }, 1000);
+};
+
+const actualizarMensaje = (msg) => {
+  messages.push(msg);
 };
 
 function sendMessage() {
@@ -176,5 +189,9 @@ onUnmounted(() => {
   right: 15px;
   transform: translateY(-50%);
   cursor: pointer;
+}
+
+#escribiendo {
+  display: none;
 }
 </style>
