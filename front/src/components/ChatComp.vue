@@ -6,8 +6,18 @@
     </div>
     <div id="contenidor-missatges">
       <ul id="missatges" class="mostrar">
-        <li v-for="(msg, index) in messages" :key="index" :class="{ propio: msg.emisor === user.id }">
-          {{ msg.texto }}
+        <li v-for="(msg, index) in messages" :key="msg.id" :id="msg.id" :class="{ propio: msg.emisor === user.id }">
+          <template v-if="msg.editando">
+            <input class="editorMsj" v-model="msjEditado" />
+            <div class="operacionesMsj">
+              <button @click="actualizarMensaje(msg)">Guardar</button>
+              <button @click="cancelarEdicion(msg)">Cancelar</button>
+            </div>
+          </template>
+          <template v-else>
+            {{ msg.texto }}
+          </template>
+          <button class="botonEditar" @click="editarMensaje(msg)"><img :src="botonEditar" alt="editar"></button>
         </li>
         <li id="escribiendo" :style="{ display: escribiendo.value ? 'block' : 'none' }">
           <img :src="escribiendoSvg" alt="Escribiendo">
@@ -44,6 +54,8 @@ import { ref, reactive, onMounted, onUnmounted } from 'vue';
 import { useCounterStore } from '../stores/counter';
 import { guardarMissatgeBBDD } from '@/services/communictationManager.js';
 import escribiendoSvg from '@/assets/svg/escribiendo.svg';
+import botonEditar from '@/assets/svg/botonEditar.svg';
+import { v4 as uuidv4 } from 'uuid';
 
 import socket from '@/services/socket.js';
 
@@ -53,6 +65,7 @@ let user = store.userData.user;
 const msjAutomaticos = reactive(['¿En que curso has visto el incidente?', '¿Como definirias el incidente?', '¿Donde ha ocurrido el incidente?', '¿Cuando ha ocurrido el incidente?', 'Proporciona informacion sobre las personas involucradas(relaciones, cursos)', 'Redacta la informacion que quieras compartir:']);
 const messages = reactive([]);
 const input = ref('');
+let msjEditado = ref('');
 let pausaMensaje = ref(false);
 let escribiendo = reactive({ value: false, usuarioEscritor: '' });//para cuando escriba professor, falta pensarlo
 let chatEnEspera = ref(false);
@@ -60,7 +73,7 @@ let chatEnEspera = ref(false);
 const agregarMensajeUsuario = (event) => {
   event.preventDefault();
   if (input.value.trim().length > 0 && !pausaMensaje.value) {
-    messages.push({ texto: input.value, emisor: user.id });
+    messages.push({ id: uuidv4(), texto: input.value, emisor: user.id, editando: false });
     input.value = '';
     deslizarHastaAbajo();
     if (msjAutomaticos.length > 0) {
@@ -78,13 +91,13 @@ const deslizarHastaAbajo = () => {
 };
 
 const agregarMensajeBot = (texto) => {
-  messages.push({ texto, emisor: 0 });
+  messages.push({ id: uuidv4(), texto, emisor: 0 });
 };
 
 const enviarMensajeAutomatico = () => {
   pausaMensaje.value = true;
   escribiendo.value = true;
-  
+
   setTimeout(() => {
     agregarMensajeBot(msjAutomaticos.shift());
     pausaMensaje.value = false;
@@ -92,8 +105,18 @@ const enviarMensajeAutomatico = () => {
   }, 1000);
 };
 
+const editarMensaje = (msg) => {
+  msg.editando = true;
+  msjEditado.value = msg.texto;
+};
+
 const actualizarMensaje = (msg) => {
-  messages.push(msg);
+  msg.texto = msjEditado.value;
+  msg.editando = false;
+};
+
+const cancelarEdicion = (msg) => {
+  msg.editando = false;
 };
 
 function sendMessage() {
@@ -134,12 +157,34 @@ onUnmounted(() => {
 }
 
 #missatges .propio {
+  position: relative;
   align-self: flex-end;
   background-color: #4caf50;
   color: white;
   padding: 10px;
   border-radius: 5px;
   max-width: 70%;
+}
+
+#missatges .propio .botonEditar {
+  padding: 5px;
+  background-color: white;
+  max-width: 70%;
+}
+
+#missatges .propio:hover .botonEditar {
+  display: block;
+}
+
+#missatges .botonEditar {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: -35px;
+  transform: translateY(-50%);
+  background-color: #f5f5f5;
+  border: 0;
+  cursor: pointer;
 }
 
 #missatges li {
@@ -150,6 +195,18 @@ onUnmounted(() => {
   border-radius: 5px;
   max-width: 70%;
   margin: 5px 0;
+}
+
+.editorMsj {
+  all: unset;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
 #chat-container {
