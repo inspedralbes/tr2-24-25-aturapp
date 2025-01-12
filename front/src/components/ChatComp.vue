@@ -2,7 +2,6 @@
   <div id="chat-container">
     <div id="encabezado">
       <h2>Jo no soc complice</h2>
-      <!-- <img src="/assets/svg/escribiendo.svg" alt="escribiendo"/> -->
     </div>
     <div id="contenidor-missatges">
       <ul id="missatges" class="mostrar">
@@ -17,6 +16,7 @@
           <template v-else>
             {{ msg.texto }}
           </template>
+          <template v-if="msg.editado && !msg.editando"><div class="msjEditado">editado</div></template>
           <button class="botonEditar" @click="editarMensaje(msg)"><img :src="botonEditar" alt="editar"></button>
         </li>
         <li id="escribiendo" :style="{ display: escribiendo.value ? 'block' : 'none' }">
@@ -24,13 +24,9 @@
         </li>
       </ul>
     </div>
-    <!-- <input v-model="input" autocomplete="off" />
-    <button @click="sendMessage">Enviar</button> -->
     <div class="input-container">
       <textarea v-model="input" rows="1" placeholder="Jo no soc complice..."
         @keydown.enter="agregarMensajeUsuario"></textarea>
-      <!-- <input v-model="input" autocomplete="off" placeholder="Jo no soc complice..." /> -->
-      <!-- <svg @click="sendMessage" width="35px" height="35px" viewBox="-3 0 32 32" version="1.1" -->
       <svg @click="agregarMensajeUsuario" width="35px" height="35px" viewBox="-3 0 32 32" version="1.1"
         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g id="icomoon-ignore">
@@ -73,7 +69,7 @@ let chatEnEspera = ref(false);
 const agregarMensajeUsuario = (event) => {
   event.preventDefault();
   if (input.value.trim().length > 0 && !pausaMensaje.value) {
-    messages.push({ id: uuidv4(), texto: input.value, emisor: user.id, editando: false });
+    messages.push({ id: uuidv4(), texto: input.value, emisor: user.id, editando: false, editado: false });
     input.value = '';
     deslizarHastaAbajo();
     if (msjAutomaticos.length > 0) {
@@ -112,6 +108,7 @@ const editarMensaje = (msg) => {
 
 const actualizarMensaje = (msg) => {
   msg.texto = msjEditado.value;
+  msg.editado = true;
   msg.editando = false;
 };
 
@@ -250,5 +247,54 @@ onUnmounted(() => {
 
 #escribiendo {
   display: none;
+}
+
+.operacionesMsj {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.operacionesMsj button {
+  padding: 5px 15px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.operacionesMsj button:hover {
+  opacity: 0.8;
+}
+
+.operacionesMsj button:active {
+  transform: scale(0.98);
+}
+
+.operacionesMsj button:nth-child(1) {
+  background-color: white;
+  color: black;
+}
+
+.operacionesMsj button:nth-child(1):hover {
+  background-color: #e0e0e0;
+}
+
+.operacionesMsj button:nth-child(2) {
+  background-color: black;
+  color: white;
+}
+
+.operacionesMsj button:nth-child(2):hover {
+  background-color: #333;
+}
+
+.msjEditado {
+  font-size: 12px;
+  color: black;
+  font-style: italic;
+  margin-top: 4px;
 }
 </style>
