@@ -3,7 +3,7 @@
     <div id="encabezado">
       <h2>Jo no soc complice</h2>
     </div>
-    <div id="contenidor-missatges">
+    <div id="contenedor-mensajes">
       <ul id="missatges" class="mostrar">
         <li v-for="(msg, index) in messages" :key="msg.id" :id="msg.id" :class="{ propio: msg.emisor === user.id }">
           <template v-if="msg.editando">
@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted } from 'vue';
+import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue';
 import { useCounterStore } from '../stores/counter';
 import { guardarMissatgeBBDD } from '@/services/communictationManager.js';
 import escribiendoSvg from '@/assets/svg/escribiendo.svg';
@@ -58,7 +58,7 @@ import socket from '@/services/socket.js';
 const store = useCounterStore();
 let user = store.userData.user;
 
-const msjAutomaticos = reactive(['¿En que curso has visto el incidente?', '¿Como definirias el incidente?', '¿Donde ha ocurrido el incidente?', '¿Cuando ha ocurrido el incidente?', 'Proporciona informacion sobre las personas involucradas(relaciones, cursos)', 'Redacta la informacion que quieras compartir:']);
+const msjAutomaticos = reactive(['Has visto o has sufrido el incidente?', '¿En que curso ha sucedido el incidente?', '¿Como definirias el incidente?', '¿Donde ha ocurrido el incidente?', '¿Cuando ha ocurrido el incidente?', 'Proporciona informacion sobre las personas involucradas(relaciones, cursos)', 'En el menor tiempo posible, un miembro del equipo se pondrá en contacto contigo para solucionar la situacion. Gracias por tu colaboración. Redacta la informacion que quieras añadir.']);
 const messages = reactive([]);
 const input = ref('');
 let msjEditado = ref('');
@@ -71,19 +71,22 @@ const agregarMensajeUsuario = (event) => {
   if (input.value.trim().length > 0 && !pausaMensaje.value) {
     messages.push({ id: uuidv4(), texto: input.value, emisor: user.id, editando: false, editado: false });
     input.value = '';
-    deslizarHastaAbajo();
-    if (msjAutomaticos.length > 0) {
+    if (msjAutomaticos.length > 1) {
       enviarMensajeAutomatico();
-    } else {
-      agregarMensajeBot('En el menor tiempo posible, un miembro del equipo se pondrá en contacto contigo para solucionar la situacion. Gracias por tu colaboración.');
+    } else if (msjAutomaticos.length === 1) {
+      alert('Chat en espera.');
+      enviarMensajeAutomatico();
       chatEnEspera.value = true;
     }
+    deslizarHastaAbajo();
   }
 };
 
 const deslizarHastaAbajo = () => {
-  const contenedor = document.getElementById('contenidor-missatges');
-  contenedor.scrollTop = contenedor.scrollHeight;
+  nextTick(() => {
+    const contenedor = document.getElementById('contenedor-mensajes');
+    contenedor.scrollTop = contenedor.scrollHeight;
+  });
 };
 
 const agregarMensajeBot = (texto) => {
@@ -216,7 +219,7 @@ onUnmounted(() => {
   position: relative;
 }
 
-#contenidor-missatges {
+#contenedor-mensajes {
   max-height: 65vh;
   overflow-y: auto
 }
