@@ -45,6 +45,8 @@
 
     Route::get('/getAllAlerts', [AlertaController::class, 'index']);
 
+    Route::get('/getAllAlertsAdmin', [AlertaController::class, 'getAdminAlerts']);
+
     Route::post('/getAlertsSector', [AlertaController::class, 'getAlertsSector']);
 
     //====== VER PREGUNTAS ========================

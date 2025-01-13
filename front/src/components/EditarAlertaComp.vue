@@ -1,8 +1,7 @@
 <script setup>
-    import { ref, onMounted } from 'vue';
-    import { useRoute, useRouter } from 'vue-router';
-    import { useCounterStore } from '@/stores/counter';
-    import { getAlertById, updateAlert } from '../services/communictationManager';
+import { ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useCounterStore } from '@/stores/counter';
 
 const BASE_URL = "http://localhost:8000";
 const store = useCounterStore();
@@ -15,20 +14,26 @@ const user_id = data.user.id
 const alertaDescripcio = ref('');
 const alertaEditada = ref(false);
 
-    function navigateTo(nameIcon) {
-        router.push(`/${nameIcon}`);
-    }
+function navigateTo(nameIcon) {
+    router.push(`/${nameIcon}`)
+};
 
-    async function getAlert() {
-        try {
-            const result = await getAlertById(id);
-            alerta.value = result;
-            alertaDescripcio.value = alerta.value.descripcion;
-        } catch (error) {
-            console.error('Error al cargar la alerta:', error);
+async function getAlert() {
+    try {
+        const response = await fetch(`${BASE_URL}/api/show/${id}`);
+
+        if (!response.ok) {
+            throw new Error("Error en la solicitud");
         }
+        const result = await response.json();
+        alerta.value = result;
+        alertaDescripcio.value = alerta.value.descripcion;
+    } catch (error) {
+        console.error(error);
     }
-    async function editarAlerta() {
+}
+
+async function editarAlerta() {
     try {
         const response = await fetch(`${BASE_URL}/api/update`, {
             method: 'POST',
@@ -56,7 +61,6 @@ const alertaEditada = ref(false);
     } catch (error) {
         console.error(error);
     }
-
 }
 
 function tornarInici() {
@@ -64,15 +68,15 @@ function tornarInici() {
     navigateTo('perfil/alertes');
 }
 
-    function formatFecha(isoDate) {
-        const date = new Date(isoDate);
-        return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
-    }
+function formatFecha(isoDate) {
+    const date = new Date(isoDate);
+    return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
+}
 
-    function formatHora(isoDate) {
-        const date = new Date(isoDate);
-        return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    }
+function formatHora(isoDate) {
+    const date = new Date(isoDate);
+    return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+}
 
 function formatText(text) {
     text = text || "";
@@ -95,12 +99,10 @@ function formatText(text) {
 
 
 
-    onMounted(() => {
-        getAlert();
-    });
+onMounted(() => {
+    getAlert();
+})
 </script>
-
-
 
 <template>
     <div class="containCabezal">
@@ -185,23 +187,23 @@ function formatText(text) {
     padding: 10px;
 }
 
-    textarea:focus {
-        outline: none;
-    }
+textarea:focus {
+    outline: none;
+}
 
 #containAlerta {
     margin-top: 70px;
 }
 
-    #containDesc p:first-child {
-        font-size: 18px;
-        margin: 10px 0 5px 0;
-    }
+#containDesc p:first-child {
+    font-size: 18px;
+    margin: 10px 0 5px 0;
+}
 
-    #containAlerta>p:first-child {
-        font-size: 19px;
-        margin-top: 15px;
-    }
+#containAlerta>p:first-child {
+    font-size: 19px;
+    margin-top: 15px;
+}
 
 #containButtons {
     margin-bottom: 15px;

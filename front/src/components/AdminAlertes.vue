@@ -38,7 +38,7 @@ const pollingInterval = ref(null);
 
 const fetchAlertas = async (showNotification = false) => {
     try {
-        const respuesta = await fetch('http://localhost:8000/api/getAllAlerts');
+        const respuesta = await fetch('http://localhost:8000/api/getAllAlertsAdmin');
 
         if (!respuesta.ok) {
             throw new Error(`Error en la respuesta del servidor: ${respuesta.status}`);

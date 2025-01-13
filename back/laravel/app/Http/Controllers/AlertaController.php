@@ -12,29 +12,43 @@ class AlertaController extends Controller {
 
     public function index()
     {
-    try {
-        $alertas = Alerta::with('sector.planta', 'estado')
+        $alertas = Alerta::with('sector', 'estado')
             ->get()
-            ->map(function ($alerta) {
+            ->groupBy('sector.id')
+            ->map(function ($alertas, $sector_id) {
+                $sector = $alertas->first()->sector;
                 return [
-                    'id' => $alerta->id,
-                    'titulo' => 'Alerta en ' . $alerta->sector->sector,
-                    'sector' => $alerta->sector->sector,
                     'id_sector' => $sector_id,
                     'nombre' => $sector->sector,
                     'planta' => $sector->planta->name,
-                    'descripcion' => $alerta->descripcion,
-                    'estado' => $alerta->estado->name,
                     'total' => $alertas->count(),
-                    'created_at' => $alerta->created_at,
                 ];
             })
             ->sortByDesc('total')
             ->values();
         return response()->json($alertas, 200);
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'Error al obtener alertas', 'message' => $e->getMessage()], 500);
     }
+
+    public function getAdminAlerts(){
+        try {
+            $alertas = Alerta::with('sector.planta', 'estado')
+                ->get()
+                ->map(function ($alerta) {
+                    return [
+                        'id' => $alerta->id,
+                        'titulo' => 'Alerta en ' . $alerta->sector->sector,
+                        'sector' => $alerta->sector->sector,
+                        'planta' => $alerta->sector->planta->name,
+                        'descripcion' => $alerta->descripcion,
+                        'estado' => $alerta->estado->name,
+                        'created_at' => $alerta->created_at,
+                    ];
+                });
+    
+            return response()->json($alertas, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener alertas', 'message' => $e->getMessage()], 500);
+        }
     }
 
 

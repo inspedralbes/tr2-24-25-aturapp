@@ -433,8 +433,6 @@ function toggleSectorColor(index, sectores) {
     });
 }
 
-import { EnviarAlerta } from '../services/communictationManager';
-
 async function enviarAlerta() {
     try {
         const response = await fetch(`${BASE_URL}/api/alert`, {
@@ -449,7 +447,9 @@ async function enviarAlerta() {
             })
         });
 
-        const result = await EnviarAlerta('POST', cuerpo);
+        if (!response.ok) {
+            throw new Error("Error al crear la alerta");
+        }
 
         alerta.value = await response.json();
         alertaEnviada.value = !alertaEnviada.value;

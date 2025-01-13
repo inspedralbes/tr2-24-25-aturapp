@@ -12,12 +12,13 @@
             </div>
             <div id="item-b" class="box">
                 <p class="no-margin">Porcentaje de éxito (test)</p><span class="resultado">87%</span>
+                <!-- {{ porcentajeExito() }} -->
             </div>
             <div id="item-c" class="box">
                 <p class="no-margin">Ranking sectores</p>
                 <ul>
-                    <li v-for="index in 4" class="ranking-item">
-                        <p class="ranking-text">{{ index }} - {{ formatText(rankingSectores[index - 1]?.nombre) }} ({{ rankingSectores[index - 1].planta }})</p>
+                    <li v-for="index in 3" class="ranking-item">
+                        <p class="ranking-text">{{ index }} - {{ formatText(rankingSectores[index - 1]?.nombre) }} ({{ rankingSectores[index - 1]?.planta }})</p>
                     </li>
                 </ul>
             </div>
@@ -38,31 +39,64 @@
 <script setup>
 import { Chart, registerables } from "chart.js";
 import { ref, onMounted } from 'vue';
-import { getAlerts, getAllAlerts } from '../services/communictationManager';
-
+const BASE_URL = 'http://localhost:8000';
 const time = ref('total');
 const quant = ref('0');
-const alertas_recibidas = ref([]);
+const alertas_recibidas = ref();
 const rankingSectores = ref([]);
 
 const tipo = ref('pie');
-const etiquetas = ref([]);
+const etiquetas = ref();
 const datos = ref([12, 19, 3, 5, 2]);
 
 const chartCanvas = ref();
 Chart.register(...registerables);
 let grafico = null;
 
-async function fetchAlerts() {
-    alertas_recibidas.value = await getAlerts(time.value, quant.value);
+async function getAlerts(tiempo, cantidad) {
+    time.value = tiempo;
+    quant.value = cantidad;
+    try {
+        const response = await fetch(`${BASE_URL}/api/getAlertsFilter`, {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                time: time.value,
+                quant: quant.value
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Error en la solicitud");
+        }
+
+        const result = await response.json();
+        alertas_recibidas.value = result;
+    } catch (error) {
+        console.error(error);
+    }
 }
 
-async function fetchRanking() {
-    rankingSectores.value = await getAllAlerts();
+async function getAllAlertes() {
+    try {
+        const response = await fetch(`${BASE_URL}/api/getAllAlerts`);
+
+        if (!response.ok) {
+            throw new Error("Error en la solicitud");
+        }
+
+        const result = await response.json();
+        console.log(result);
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 function getQuantitat(caso, alertas) {
-    const datos = ref([]);
+    const datos = ref();
     switch (caso) {
         case 'horario':
             datos.value = [0, 0, 0, 0, 0, 0, 0, 0];
@@ -111,6 +145,8 @@ function getQuantitat(caso, alertas) {
                 datos.value[mes] += 1;
             })
             break;
+        // default:
+        //     break;
     }
 
     return datos.value;
@@ -174,44 +210,39 @@ function choiseChart(type) {
 }
 
 onMounted(async () => {
-    await fetchAlerts();
-    await fetchRanking();
+    await getAlerts(time.value, quant.value);
+    rankingSectores.value = await getAllAlertes();
     datos.value = getQuantitat('total', alertas_recibidas.value);
     createChart(tipo.value, etiquetas.value, datos.value);
 });
 </script>
 
-
 <style scoped>
 #containAll {
-    box-sizing: border-box;
-    padding: 20px;
-    /* Márgenes laterales */
+  box-sizing: border-box;
+  padding: 20px; /* Márgenes laterales */
 }
 
 .button-group {
-    gap: 10px;
-    margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 #statsContain {
-    display: grid;
-    grid-template-areas:
-        "a a b b c"
-        "a a b b c"
-        "d d d d c"
-        "d d d d e"
-        "d d d d e";
-    grid-template-columns: repeat(4, 1fr) 1fr;
-    /* 4 columnas iguales y una más pequeña */
-    gap: 20px;
-    max-width: 1200px;
-    /* Máximo ancho para grandes pantallas */
-    margin: auto;
-    /* Centrado horizontal */
+  display: grid;
+  grid-template-areas:
+    "a a b b c"
+    "a a b b c"
+    "d d d d c"
+    "d d d d e"
+    "d d d d e";
+  grid-template-columns: repeat(4, 1fr) 1fr; /* 4 columnas iguales y una más pequeña */
+  gap: 20px;
+  max-width: 1200px; /* Máximo ancho para grandes pantallas */
+  margin: auto; /* Centrado horizontal */
 }
 
-.resultado {
+.resultado{
     font-weight: bolder;
     font-size: 40px
 }
@@ -263,49 +294,49 @@ button {
 }
 
 .ranking-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    max-width: 400px;
-    margin: 20px auto;
-    font-family: Arial, sans-serif;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
 }
 
 /* Estilo de cada ítem de la lista */
 .ranking-item {
-    background-color: #f4f4f4;
-    margin: 8px 0;
-    padding: 5px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
+  background-color: #f4f4f4;
+  margin: 8px 0;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
 }
 
-.ranking-item>p {
-    margin: 0;
-    font-size: 20px;
+.ranking-item>p{
+  margin: 0;
+  font-size: 20px;
 }
 
 @media (max-width: 768px) {
-    #statsContain {
-        grid-template-areas:
-            "a"
-            "b"
-            "c"
-            "d";
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-    }
+  #statsContain {
+    grid-template-areas:
+      "a"
+      "b"
+      "c"
+      "d";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
 
-    .button-group {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
+  .button-group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
-    button {
-        width: 100%;
-        margin-bottom: 10px;
-    }
+  button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
 }
 </style>
