@@ -10,6 +10,26 @@
     const router = useRouter();
     const alertes = ref([]);
 
+async function getAlertas() {
+    try {
+        const response = await fetch(`${BASE_URL}/api/alertes`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: usuari_id }),
+        });
+
+        if (!response.ok) {
+            throw new Error("Error en la solicitud");
+        }
+
+        alertes.value = await response.json();
+        
+    } catch (error) {
+        console.error(error);
+    }
+}
     async function loadAlertes() {
         try {
             alertes.value = await fetchAlertes(usuari_id);
@@ -23,11 +43,18 @@
         return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
     }
 
-    function formatText(text) {
-        text = text || '';
-        if (text.includes("-inf")) {
-            return text.toUpperCase();
-        }
+function formatText(text) {
+    text = text || "";
+
+    if (text.includes("-inf") || text.includes("pb") || text.includes("p1") || text.includes("p2") || text.includes("p3")) {
+        return text.toUpperCase();
+    }
+
+    // Verifica si el texto termina con una palabra y un número junto (ej. bosca0)
+    const match = text.match(/([a-zA-Z]+)(\d+)$/);
+    if (match) {
+        text = text.replace(/\d+$/, ""); // Elimina el número al final
+    }
 
         return text
             .split('-') // Divide el texto en palabras separadas por "-"

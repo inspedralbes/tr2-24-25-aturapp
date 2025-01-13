@@ -4,16 +4,16 @@
     import { useCounterStore } from '@/stores/counter';
     import { getAlertById, updateAlert } from '../services/communictationManager';
 
-    const alerta = ref('');
-    const route = useRoute();
-    const id = route.query.id;
-    const router = useRouter();
-    
-    const store = useCounterStore(); 
-    const data = store.userData;
-    const user_id = data.user.id;
-
-    const alertaDescripcio = ref('');
+const BASE_URL = "http://localhost:8000";
+const store = useCounterStore();
+const route = useRoute();
+const router = useRouter();
+const alerta = ref('');
+const id = route.query.id;
+const data = store.userData;
+const user_id = data.user.id
+const alertaDescripcio = ref('');
+const alertaEditada = ref(false);
 
     function navigateTo(nameIcon) {
         router.push(`/${nameIcon}`);
@@ -29,24 +29,40 @@
         }
     }
     async function editarAlerta() {
-        try {
-            const payload = {
+    try {
+        const response = await fetch(`${BASE_URL}/api/update`, {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
                 alerta_id: id,
                 alumne_id: user_id,
                 descripcio: alertaDescripcio.value,
-            };
-            console.log(payload);
-            const result = await updateAlert(id, payload); 
-            if (result.success) {
-                alert('Alerta editada amb èxit');
-            } else {
-                alert(`Ha ocorregut un error (${result.message || 'Error desconegut'})`);
-            }
-        } catch (error) {
-            console.error('Error al editar la alerta:', error);
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Error en la solicitud");
         }
+
+        const result = await response.json();
+
+        if (result.success) {
+            alertaEditada.value = !alertaEditada.value;
+        } else {
+            alert(`Ha ocorregut un error (${result.message || 'Error desconegut'})`)
+        }
+    } catch (error) {
+        console.error(error);
     }
 
+}
+
+function tornarInici() {
+    alertaEditada.value = !alertaEditada.value;
+    navigateTo('perfil/alertes');
+}
 
     function formatFecha(isoDate) {
         const date = new Date(isoDate);
@@ -58,16 +74,26 @@
         return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     }
 
-    function formatText(text) {
-        text = text || '';
-        if (text.includes('-inf')) {
-            return text.toUpperCase();
-        }
-        return text
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
+function formatText(text) {
+    text = text || "";
+
+    if (text.includes("-inf") || text.includes("pb") || text.includes("p1") || text.includes("p2") || text.includes("p3")) {
+        return text.toUpperCase();
     }
+
+    // Verifica si el texto termina con una palabra y un número junto (ej. bosca0)
+    const match = text.match(/([a-zA-Z]+)(\d+)$/);
+    if (match) {
+        text = text.replace(/\d+$/, ""); // Elimina el número al final
+    }
+
+    return text
+        .split('-') // Divide el texto en palabras separadas por "-"
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitaliza la primera letra de cada palabra
+        .join(' '); // Une las palabras con un espacio
+}
+
+
 
     onMounted(() => {
         getAlert();
@@ -97,29 +123,75 @@
             <input class="btn-cancel" type="button" value="Cancelar" @click="navigateTo('perfil/alertes')">
             <input class="btn-confirm" type="button" value="Guardar" @click="editarAlerta">
         </div>
-
+    </div>
+    <div v-if="alertaEditada" class="popup-overlay">
+        <div class="popup-content">
+            <h2>Gràcies per donar-nos major informació</h2>
+            <!-- <p>Estem de camí, mantén la calma.</p> -->
+            <button class="popup-button" @click="tornarInici">Acceptar</button>
+        </div>
     </div>
 </template>
 
 <style scoped>
-    #textDesc {
-        width: 300px;
-        height: 200px;
-        border: 1px solid #a83d3a;
-        border-radius: 10px;
-        font-family: sans-serif;
-        font-size: 18px;
-        box-sizing: border-box;
-        padding: 10px;
-    }
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+}
+
+.popup-button {
+    background: #ff4b45;
+    box-shadow: -5px -5px 9px rgba(255, 114, 114, 0.45), 5px 5px 9px rgba(255, 25, 25, 0.438);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pop .popup-button:hover {
+    background-color: #0056b3;
+}
+
+#textDesc {
+    width: 300px;
+    height: 200px;
+    border: 1px solid #a83d3a;
+    border-radius: 10px;
+    font-family: sans-serif;
+    font-size: 18px;
+    box-sizing: border-box;
+    padding: 10px;
+}
 
     textarea:focus {
         outline: none;
     }
 
-    #containAlerta{
-        margin-top: 70px;
-    }
+#containAlerta {
+    margin-top: 70px;
+}
 
     #containDesc p:first-child {
         font-size: 18px;
@@ -131,7 +203,7 @@
         margin-top: 15px;
     }
 
-    #containButtons{
-        margin-bottom: 15px;
-    }
+#containButtons {
+    margin-bottom: 15px;
+}
 </style>

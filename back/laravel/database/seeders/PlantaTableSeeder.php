@@ -13,6 +13,7 @@ class PlantaTableSeeder extends Seeder
      */
     public function run(): void
     {
+        Planta::updateOrCreate(['name' => 'Zona exterior']);
         Planta::updateOrCreate(['name' => 'Planta 0']);
         Planta::updateOrCreate(['name' => 'Planta 1']);
         Planta::updateOrCreate(['name' => 'Planta 2']);

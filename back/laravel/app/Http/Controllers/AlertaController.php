@@ -20,13 +20,17 @@ class AlertaController extends Controller {
                     'id' => $alerta->id,
                     'titulo' => 'Alerta en ' . $alerta->sector->sector,
                     'sector' => $alerta->sector->sector,
-                    'planta' => $alerta->sector->planta->name,
+                    'id_sector' => $sector_id,
+                    'nombre' => $sector->sector,
+                    'planta' => $sector->planta->name,
                     'descripcion' => $alerta->descripcion,
                     'estado' => $alerta->estado->name,
+                    'total' => $alertas->count(),
                     'created_at' => $alerta->created_at,
                 ];
-            });
-
+            })
+            ->sortByDesc('total')
+            ->values();
         return response()->json($alertas, 200);
     } catch (\Exception $e) {
         return response()->json(['error' => 'Error al obtener alertas', 'message' => $e->getMessage()], 500);
@@ -181,6 +185,7 @@ class AlertaController extends Controller {
         }
         $alerta->descripcion = $validated['descripcio'];
         $alerta->save();
+
         return response()->json(['success' => true, 'message' => 'Alerta editada amb èxit'], 200);
     }
 
