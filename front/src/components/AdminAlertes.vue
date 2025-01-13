@@ -46,8 +46,10 @@ const fetchAlertas = async (showNotification = false) => {
 
         const datos = await respuesta.json();
 
+        datos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
         if (showNotification && datos.length > alertas.value.length) {
-            const nuevasAlertas = datos.slice(alertas.value.length);
+            const nuevasAlertas = datos.slice(0, datos.length - alertas.value.length);
             nuevasAlertas.forEach(alerta => {
                 mostrarNotificacion('Nueva alerta', alerta.titulo || 'Sin título');
             });
@@ -55,12 +57,12 @@ const fetchAlertas = async (showNotification = false) => {
 
         alertas.value = datos;
     } catch (err) {
-        console.error('Error al cargar alertas:', err); 
+        console.error('Error al cargar alertas:', err);
+        error.value = `Error al cargar alertas: ${err.message}`;
     } finally {
         cargando.value = false;
     }
 };
-
 
 const bucleFetch = () => {
     pollingInterval.value = setInterval(() => fetchAlertas(true), 5000); 
