@@ -16,7 +16,9 @@
           <template v-else>
             {{ msg.texto }}
           </template>
-          <template v-if="msg.editado && !msg.editando"><div class="msjEditado">editado</div></template>
+          <template v-if="msg.editado && !msg.editando">
+            <div class="msjEditado">editado</div>
+          </template>
           <button class="botonEditar" @click="editarMensaje(msg)"><img :src="botonEditar" alt="editar"></button>
         </li>
         <li id="escribiendo" :style="{ display: escribiendo.value ? 'block' : 'none' }">
@@ -52,6 +54,7 @@ import { guardarMissatgeBBDD } from '@/services/communictationManager.js';
 import escribiendoSvg from '@/assets/svg/escribiendo.svg';
 import botonEditar from '@/assets/svg/botonEditar.svg';
 import { v4 as uuidv4 } from 'uuid';
+import Swal from 'sweetalert2';
 
 import socket from '@/services/socket.js';
 
@@ -65,6 +68,7 @@ let msjEditado = ref('');
 let pausaMensaje = ref(false);
 let escribiendo = reactive({ value: false, usuarioEscritor: '' });//para cuando escriba professor, falta pensarlo
 let chatEnEspera = ref(false);
+let chatConBot = ref(true);
 
 const agregarMensajeUsuario = (event) => {
   event.preventDefault();
@@ -74,9 +78,10 @@ const agregarMensajeUsuario = (event) => {
     if (msjAutomaticos.length > 1) {
       enviarMensajeAutomatico();
     } else if (msjAutomaticos.length === 1) {
-      alert('Chat en espera.');
       enviarMensajeAutomatico();
       chatEnEspera.value = true;
+      chatConBot.value = false;
+      busquedaContacto();
     }
     deslizarHastaAbajo();
   }
@@ -119,6 +124,10 @@ const cancelarEdicion = (msg) => {
   msg.editando = false;
 };
 
+const busquedaContacto = () => {
+  socket.emit('busquedaContacto', user);
+};
+
 function sendMessage() {
   if (input.value) {
     socket.emit('sendMessage', input.value);
@@ -133,6 +142,48 @@ onMounted(() => {
 
   socket.on('storeMessage', (msg) => {
     messages.push(msg);
+  });
+
+  socket.on('obtenerRol', () => {
+    console.log('servidor solicita rol del usuario' + user.id);
+    socket.emit('rol', { id: user.id, rol: user.rol });
+  });
+
+  socket.on('peticionChat', () => {
+    Swal.fire({
+      title: "Un alumno esta intentando iniciar un chat, quieres aceptarlo?",
+      width: 600,
+      showDenyButton: true,
+      confirmButtonText: "Aceptar",
+      denyButtonText: `Rechazar`
+    }).then((result) => {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+      });
+      if (result.isConfirmed) {
+        Toast.fire({
+          icon: "success",
+          title: "Chat aceptado"
+        });
+      } else if (result.isDenied) {
+        Toast.fire({
+          icon: "error",
+          title: "Chat rechazado"
+        });
+      }
+    });
+  });
+
+  socket.on('sinRespuesta', () => {
+
+  });
+
+  socket.on('chatAceptado', () => {
+
   });
 });
 
