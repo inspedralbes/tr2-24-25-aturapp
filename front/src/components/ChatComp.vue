@@ -5,7 +5,7 @@
     </div>
     <div id="contenedor-mensajes">
       <ul id="missatges" class="mostrar">
-        <li v-for="(msg, index) in messages" :key="msg.id" :id="msg.id" :class="{ propio: msg.emisor === user.id }">
+        <li v-for="(msg, index) in messages" :key="msg.id" :id="msg.id" :class="{ propio: msg.emisor === user.id, servidor: msg.emisor === -1 }">
           <template v-if="msg.editando">
             <input class="editorMsj" v-model="msjEditado" />
             <div class="operacionesMsj">
@@ -80,7 +80,6 @@ const agregarMensajeUsuario = (event) => {
     } else if (msjAutomaticos.length === 1) {
       enviarMensajeAutomatico();
       chatEnEspera.value = true;
-      chatConBot.value = false;
       busquedaContacto();
     }
     deslizarHastaAbajo();
@@ -137,6 +136,7 @@ function sendMessage() {
 };
 
 onMounted(() => {
+  messages.push({ id: uuidv4(), texto: "chat iniciado", emisor: -1 });
   agregarMensajeBot('¿Estás seguro de que deseas publicar una alerta? En caso de uso indebido, se podrá bloquear el acceso al sistema. Para continuar, contesta las siguientes preguntas: ');
   enviarMensajeAutomatico();
 
@@ -169,6 +169,7 @@ onMounted(() => {
           icon: "success",
           title: "Chat aceptado"
         });
+        socket.emit('chatAceptado', user.id);
       } else if (result.isDenied) {
         Toast.fire({
           icon: "error",
@@ -183,7 +184,9 @@ onMounted(() => {
   });
 
   socket.on('chatAceptado', () => {
-
+    chatEnEspera.value = false;
+    chatConBot.value = false;
+    messages.push({ id: uuidv4(), texto: "chat iniciado", emisor: -1 });
   });
 });
 
@@ -205,6 +208,22 @@ onUnmounted(() => {
   padding: 0 10px 0 0;
   display: flex;
   flex-direction: column;
+}
+
+/* quitar cosas que sobran */
+#missatges li.servidor {
+  background-color: #f0f0f0; /* Gris claro */
+  color: #333; /* Texto oscuro para contraste */
+  width: 100%; /* Ocupa todo el ancho disponible */
+  padding: 10px; /* Espaciado interior */
+  border-radius: 8px; /* Bordes redondeados */
+  margin: 5px 0; /* Margen entre los mensajes */
+  box-sizing: border-box; /* Asegura que el padding y el border no afecten al ancho */
+  text-align: center; /* Alinea el texto horizontalmente en el centro */
+  display: flex; /* Utiliza flexbox para alinear el contenido */
+  justify-content: center; /* Centra el contenido horizontalmente */
+  align-items: center; /* Centra el contenido verticalmente (si hay más de una línea de texto) */
+  align-self: center; /* Centra el mensaje en el contenedor */
 }
 
 #missatges .propio {
