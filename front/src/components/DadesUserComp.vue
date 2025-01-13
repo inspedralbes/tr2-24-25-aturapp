@@ -10,12 +10,13 @@
     </div>
     <div class="d-flex align-center f-column contentProfile" style="z-index: 20;">
         <div id="profileImage">
-            <img src="../../public/assets/svg/noimage.svg" alt="profile">
+            <img :src="fotoPerfil || '../../public/assets/svg/noimage.svg'" alt="photo">
             <div id="contain-edit-btn">
-                <button id="edit-btn" class="d-flex j-center align-center">
+                <button @click="abrirSelector" id="edit-btn" class="d-flex j-center align-center">
                     <img src="../../public/assets/svg/pencil.svg" alt="edit">
                 </button>
             </div>
+            <input type="file" ref="fileInput" accept="image/*" @change="procesarImagen" style="display: none;">
         </div>
         <div id="infoProfile" class="mt-20">
             <p class="no-margin">Nom: </p>
@@ -38,22 +39,83 @@ import { ref, onMounted } from 'vue';
 import { useCounterStore } from '../stores/counter';
 import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "http://localhost:8000/api";
 const router = useRouter();
 const store = useCounterStore();
 let user = store.userData.user;
+let token = store.userData.token;
 const nom = ref(user.nom);
 const cognom = ref(user.cognom);
 const telefon = ref(user.telefon);
 const dni = ref(user.dni);
+const fotoPerfil = ref(user.foto);
+const fileInput = ref(null);
 
 function navigateTo(nameRoute) {
     router.push(`/${nameRoute}`)
 };
 
+function abrirSelector() {
+    fileInput.value.click();
+}
+
+const procesarImagen = async (event) => {
+    const archivo = event.target.files[0];
+    if (!archivo) return;
+
+    const formData = new FormData();
+    formData.append('id', user.id);
+    formData.append('imagen', archivo);
+    
+    try {
+        const response = await fetch(`${BASE_URL}/updatePhoto`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+            body: formData,
+        });
+
+        const data = await response.json();
+        if (data.success){
+            fotoPerfil.value = data.path;
+        }else{
+            alert('Ha ocurrido un error al subir la imagen');
+        }
+    } catch (error) {
+        console.error('Error al subir la imagen: ', error);
+    }
+};
+
+const obtenerFotoPerfil = async () => {
+    try {
+        const response = await fetch(`${BASE_URL}/getPhoto/${user.id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+
+        if(!response.ok){
+            throw new Error(`Error al obtener la foto: ${response.statusText}`);
+        }
+        const data = await response.json();
+        
+        fotoPerfil.value = data.foto || '';
+    } catch (error) {
+        console.error('Error al obtener la foto de perfil:', error);
+    }
+};
+
+onMounted(() => {
+    if(!user.foto){
+        obtenerFotoPerfil();
+    }
+})
+
 async function editarPerfil() {
     try {
-        const response = await fetch(`${BASE_URL}/api/editaruser`, {
+        const response = await fetch(`${BASE_URL}/editaruser`, {
             method: "POST",
             headers: {
                 "Content-type": "application/json",
@@ -67,7 +129,7 @@ async function editarPerfil() {
             })
         });
 
-        if(!response.ok){
+        if (!response.ok) {
             throw new Error("Error en la solicitud");
         }
 
@@ -75,8 +137,12 @@ async function editarPerfil() {
 
         if (result.success) {
             alert('Usuari editat amb èxit');
+            store.userData.user.nom = result.user.nom?? store.userData.user.nom;
+            store.userData.user.cognom = result.user.cognom?? store.userData.user.cognom;
+            store.userData.user.dni = result.user.dni?? store.userData.user.dni;
+            store.userData.user.foto = `http://localhost:8000/photos/${result.user.foto}`;
+            console.log(result.user);
             user = JSON.stringify(result.user);
-            console.log(user);
         } else {
             alert(`Ha ocorregut un error (${result.message || 'Error desconegut'})`)
         }
@@ -88,6 +154,10 @@ async function editarPerfil() {
 </script>
 
 <style>
+button {
+    cursor: pointer;
+}
+
 #contain-edit-btn {
     position: absolute;
     bottom: 0px;
@@ -136,11 +206,11 @@ async function editarPerfil() {
     margin-top: 20px;
 }
 
-#infoProfile{
+#infoProfile {
     width: 300px;
 }
 
-#infoProfile p{
+#infoProfile p {
     font-weight: bold;
     margin-bottom: 5px;
 }

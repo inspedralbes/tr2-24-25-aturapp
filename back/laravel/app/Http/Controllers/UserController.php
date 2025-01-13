@@ -164,6 +164,42 @@
             ]);
         }
 
+        public function update(Request $request) {
+            try {
+                $validated = $request->validate([
+                    'alumne_id' => 'required|exists:users,id',
+                    'nom' => 'required|string|max:255',
+                    'cognom' => 'required|string|max:255',
+                    'dni' => 'nullable|string|max:20',
+                    'telefon' => 'nullable|integer',
+                ]);
+        
+                $user = User::findOrFail($validated['alumne_id']);
+        
+                $user->nom = $validated['nom'];
+                $user->cognoms = $validated['cognom'];
+                $user->dni = $validated['dni'];
+//              Actualitzar telefon si s'ha modificat, del contrari no es modificara
+                if (array_key_exists('telefon', $validated)) {
+                    $user->telefon = $validated['telefon'];
+                }
+                $user->save();
+        
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Usuario actualizado con éxito.',
+                    'user' => $user,
+                ], 200);
+        
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al actualizar el usuario.',
+                    'error' => $e->getMessage(),
+                ], 500);
+            }
+        }
+
         public function updateAlumne(Request $request, $id) {
             $validated = $request->validate([
                 'nom' => 'nullable|string|max:255',
@@ -179,10 +215,58 @@
             $alumne = User::findOrFail($id);
             $alumne->update($validated);
         
+            // if($request->hasFile('imagen')){
+            //     if ($user->foto != null){
+            //         Storage::disk('images')->delete($user->foto);
+            //         $user->foto->delete();
+            //     }
+            //     $user->foto = $request->imagen->store('users','images');
+            // }
+        
             return response()->json([
                 'success' => true,
                 'message' => 'Alumno actualizado correctamente.',
             ]);
+        }
+
+        public function updatePhoto(Request $request) {
+
+            try {
+                $validated = $request->validate([
+                    'id' => 'required|integer',
+                    'imagen' => 'required|file|mimes:jpeg,png,jpg|max:2048',
+                ]);
+    
+                $path = $request->file('imagen')->store('photos', 'custom');
+    
+                $user = User::findOrFail($request->id);
+                $user->foto = $path;
+                $user->save();
+    
+                return response()->json([
+                    'success' => true,
+                    'path' => asset('photos/' . $path), // Usamos la URL definida en el disco
+                ]);
+            }  catch (\Exception $e) {
+                // Manejo de errores y respuesta en JSON
+                \Log::error('Error al subir la imagen: ' . $e->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al procesar la solicitud.',
+                ], 500);
+            }
+        }
+
+        public function getPhoto($id) {
+            // Busca el usuario en la base de datos
+            $user = User::findOrFail($id);
+
+            if (!$user || !$user->foto) {
+                return response()->json(['foto' => null], 404);
+            }
+
+            // Devuelve la imagen en formato base64
+            return response()->json(['foto' => asset('photos/' . $user->foto)]);
         }
         
         public function getCompanysClase($id){

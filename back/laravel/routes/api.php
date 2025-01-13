@@ -37,6 +37,10 @@
     // ====== EDITAR USUARIO ========================
     Route::post('/editaruser', [UserController::class, 'update']);
 
+    Route::post('/updatePhoto', [UserController::class, 'updatePhoto']);
+
+    Route::get('/getPhoto/{id}', [UserController::class, 'getPhoto']);
+
     // ====== OBTENER ROL USUARIO =================
     Route::get('/getrol/{id}', [UserController::class, 'getRol']);
 
