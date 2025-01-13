@@ -81,6 +81,7 @@ const agregarMensajeUsuario = (event) => {
       enviarMensajeAutomatico();
       chatEnEspera.value = true;
       busquedaContacto();
+      guardarChatBD();//hay que hacer
     }
     deslizarHastaAbajo();
   }
@@ -129,7 +130,7 @@ const busquedaContacto = () => {
 
 function sendMessage() {
   if (input.value) {
-    socket.emit('sendMessage', input.value);
+    socket.emit('sendMessage', input.value);//falta, meter en un if si chatConBot.value
     // guardarMissatgeBBDD(input.value);
     input.value = '';
   }
@@ -141,7 +142,7 @@ onMounted(() => {
   enviarMensajeAutomatico();
 
   socket.on('storeMessage', (msg) => {
-    messages.push(msg);
+    messages.push(msg);//falta
   });
 
   socket.on('obtenerRol', () => {
@@ -180,13 +181,14 @@ onMounted(() => {
   });
 
   socket.on('sinRespuesta', () => {
-
+    //añadir proceso de guardar en la seccion de no respondidos de los admin con mis datos para que me puedan contactar
   });
 
   socket.on('chatAceptado', () => {
     chatEnEspera.value = false;
     chatConBot.value = false;
     messages.push({ id: uuidv4(), texto: "chat iniciado", emisor: -1 });
+    //enviar al profesor messages hago un profSocket.emit o socket.emit y que me coja al professor afiliado a mi
   });
 });
 

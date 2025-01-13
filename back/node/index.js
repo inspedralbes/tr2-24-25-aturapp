@@ -72,6 +72,7 @@ io.on('connection', (socket) => {
       }
     });
   });
+  
   socket.on('sendMessage', (msg) => {
     console.log('message: ' + msg);
     io.emit('storeMessage', msg);
