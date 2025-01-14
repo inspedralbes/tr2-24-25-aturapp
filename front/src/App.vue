@@ -5,7 +5,7 @@ import { useCounterStore } from "./stores/counter";
 import AlumnoNavbar from "./components/AlumnoNavbar.vue";
 import AdminNavbar from "./components/AdminNavbar.vue";
 import socket from '@/services/socket.js';
-import Swal from 'sweetalert2';
+// import Swal from 'sweetalert2';
 
 const store = useCounterStore();
 
@@ -19,35 +19,35 @@ onMounted(() => {
     socket.emit('connexion', { id: store.userData.user.id, rol: store.userData.user.rol });
   }
 
-  socket.on('peticionChat', () => {
-    Swal.fire({
-      title: "Un alumno esta intentando iniciar un chat, quieres aceptarlo?",
-      width: 600,
-      showDenyButton: true,
-      confirmButtonText: "Aceptar",
-      denyButtonText: `Rechazar`
-    }).then((result) => {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true
-      });
-      if (result.isConfirmed) {
-        Toast.fire({
-          icon: "success",
-          title: "Chat aceptado"
-        });
-        socket.emit('chatAceptado', user.id);
-      } else if (result.isDenied) {
-        Toast.fire({
-          icon: "error",
-          title: "Chat rechazado"
-        });
-      }
-    });
-  });
+  // socket.on('peticionChat', () => {
+  //   Swal.fire({
+  //     title: "Un alumno esta intentando iniciar un chat, quieres aceptarlo?",
+  //     width: 600,
+  //     showDenyButton: true,
+  //     confirmButtonText: "Aceptar",
+  //     denyButtonText: `Rechazar`
+  //   }).then((result) => {
+  //     const Toast = Swal.mixin({
+  //       toast: true,
+  //       position: "top-end",
+  //       showConfirmButton: false,
+  //       timer: 3000,
+  //       timerProgressBar: true
+  //     });
+  //     if (result.isConfirmed) {
+  //       Toast.fire({
+  //         icon: "success",
+  //         title: "Chat aceptado"
+  //       });
+  //       socket.emit('chatAceptado', user.id);
+  //     } else if (result.isDenied) {
+  //       Toast.fire({
+  //         icon: "error",
+  //         title: "Chat rechazado"
+  //       });
+  //     }
+  //   });
+  // });
 });
 
 </script>

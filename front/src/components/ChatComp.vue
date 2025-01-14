@@ -64,6 +64,7 @@ let user = store.userData.user;
 const msjAutomaticos = reactive(['Has visto o has sufrido el incidente?', '¿En que curso ha sucedido el incidente?', '¿Como definirias el incidente?', '¿Donde ha ocurrido el incidente?', '¿Cuando ha ocurrido el incidente?', 'Proporciona informacion sobre las personas involucradas(relaciones, cursos)', 'En el menor tiempo posible, un miembro del equipo se pondrá en contacto contigo para solucionar la situacion. Gracias por tu colaboración. Redacta la informacion que quieras añadir.']);
 const messages = reactive([]);
 const input = ref('');
+let chatId = ref('');
 let msjEditado = ref('');
 let pausaMensaje = ref(false);
 let escribiendo = reactive({ value: false});
@@ -157,7 +158,7 @@ onMounted(() => {
     //una seccio 
     //añadir proceso de guardar en la seccion de no respondidos de los admin con mis datos para que me puedan contactar
     alert('error');//esto va
-    console.log(res);
+    console.log(res.mensaje);
   });
 
   socket.on('connexionChats', () => {

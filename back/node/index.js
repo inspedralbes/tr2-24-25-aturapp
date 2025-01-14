@@ -13,7 +13,6 @@ const io = new Server(server, {
   }
 });
 
-const test = [];
 const alumnos = new Map();
 const profesores = new Map();
 const alumnosEsperando = [];
@@ -26,7 +25,6 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   // socket.emit('obtenerRol');
   socket.on('connexion', (data) => {
-    
     if (data.rol == 1 && !alumnos.has(socket)) {
       alumnos.set(socket, { data, profesorAsignado: null });
     } else if (data.rol == 2 && !profesores.has(socket)) {
@@ -57,7 +55,6 @@ io.on('connection', (socket) => {
     alumnosEsperando.push(socket);
     profesores.forEach((value, profSocket) => {
       if (value.alumnoAsignado === null) {
-        console.log("peticionChat::emit");
         profSocket.emit('peticionChat', data);
       }
     });
@@ -65,17 +62,20 @@ io.on('connection', (socket) => {
     const horaInicio = Date.now();
     const timer = setTimeout(() => {
       if (!chatAceptado) {
-        console.log("chatAceptado::emit");
-
         socket.emit('sinRespuesta', {
           mensaje: 'No se encontró un profesor disponible. Se te contactará los mas pronto posible mediante mail, puedes seguir añadiendo informacion en el chat.',
         });
       }
     }, 3 * 60 * 1000);
 
+    socket.on('test2', (data) => {
+      console.log('test2', data);
+    });
     // alumnosEsperando.set(socket, { timer, horaInicio });
 
-    socket.once('chatAceptado', (id) => {
+    socket.once('chatAceptado', () => {
+      console.log('chatAceptado::on');
+      console.log(socket);
       if (chatAceptado) return;
       chatAceptado = true;
       const profSocket = getProfesorSocketById(id);
@@ -92,8 +92,14 @@ io.on('connection', (socket) => {
         console.log('Error al buscar el socket del profesor mediante id');
       }
     });
+    
   });
-
+  
+  socket.on('test1', (data) => {
+    console.log('test1', data);
+    // socket.emit('test', {alumnos: Array.from(alumnos.values()), profesores: Array.from(profesores.values())});
+  });
+  
   socket.on('sendMessage', (msg) => {
     let socketAfiliado = null;
     if (alumnos.has(socket)) {
@@ -105,7 +111,6 @@ io.on('connection', (socket) => {
     console.log('message: ' + msg);
   });
 
-  socket.on('test')
 });
 
 function getProfesorSocketById(profesorId) {
