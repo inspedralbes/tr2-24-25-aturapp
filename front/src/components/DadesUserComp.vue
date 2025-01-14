@@ -10,12 +10,13 @@
     </div>
     <div class="d-flex align-center f-column contentProfile" style="z-index: 20;">
         <div id="profileImage">
-            <img src="../../public/assets/svg/noimage.svg" alt="profile">
+            <img :src="fotoPerfil || '../../public/assets/svg/noimage.svg'" alt="photo">
             <div id="contain-edit-btn">
-                <button id="edit-btn" class="d-flex j-center align-center">
+                <button @click="abrirSelector" id="edit-btn" class="d-flex j-center align-center">
                     <img src="../../public/assets/svg/pencil.svg" alt="edit">
                 </button>
             </div>
+            <input type="file" ref="fileInput" accept="image/*" @change="procesarImagen" style="display: none;">
         </div>
         <div id="infoProfile" class="mt-20">
             <p class="no-margin">Nom: </p>
@@ -34,125 +35,181 @@
 </template>
 
 <script setup>
-    import { ref } from 'vue';
-    import { useRouter } from 'vue-router';
-    import { useCounterStore } from '../stores/counter';
-    import { editarPerfilUser } from '../services/communictationManager';
+import { ref, onMounted } from 'vue';
+import { useCounterStore } from '../stores/counter';
+import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
 
-    const store = useCounterStore();
-    const user = store.userData.user;
-    const nom = ref(user.nom);
-    const cognom = ref(user.cognom);
-    const telefon = ref(user.telefon);
-    const dni = ref(user.dni);
-    const router = useRouter();
+const BASE_URL = "http://localhost:8000/api";
+const router = useRouter();
+const store = useCounterStore();
+let user = store.userData.user;
+let token = store.userData.token;
+const nom = ref(user.nom);
+const cognom = ref(user.cognom);
+const telefon = ref(user.telefon);
+const dni = ref(user.dni);
+const fotoPerfil = ref(user.foto);
+const fileInput = ref(null);
+import { updateFoto,editarPerfilUser,obtenerFotoPerfil } from '../services/communictationManager';
 
-    function navigateTo(nameRoute) {
-        router.push(`/${nameRoute}`);
+function navigateTo(nameRoute) {
+    router.push(`/${nameRoute}`)
+};
+
+function abrirSelector() {
+    fileInput.value.click();
+}
+
+const procesarImagen = async (event) => {
+    const archivo = event.target.files[0];
+    if (!archivo) return;
+
+    const formData = new FormData();
+    formData.append('id', user.id);
+    formData.append('imagen', archivo);
+    
+    try {
+        const response = await updateFoto();
+
+        const data = await response.json();
+        if (data.success){
+            fotoPerfil.value = data.path;
+        }else{
+            alert('Ha ocurrido un error al subir la imagen');
+        }
+    } catch (error) {
+        console.error('Error al subir la imagen: ', error);
     }
+};
 
-    async function editarPerfil() {
+async function getFotoPerfil() {
         try {
-            const payload = {
-                alumne_id: user.id,
-                nom: nom.value,
-                cognom: cognom.value,
-                telefon: telefon.value,
-                dni: dni.value,
-            };
-
-            const response = await editarPerfilUser(payload);
-            
-            if (response.success) {
-                alert('Usuari editat amb èxit');
-                Object.assign(user, response.user);
-            } else {
-                alert(`Ha ocorregut un error (${response.message || 'Error desconegut'})`);
-            }
+            fotoPerfil.value = await obtenerFotoPerfil(user.id, token);
+            console.log(fotoPerfil.value);
         } catch (error) {
-            console.error('Error en editarPerfil:', error);
+            console.error('Error al obtener la foto de perfil:', error);
         }
     }
+
+onMounted(() => {
+    if(!user.foto){
+        getFotoPerfil();
+    }
+})
+
+async function editarPerfil() {
+    try {
+        const payload = {
+            alumne_id: user.id,
+            nom: nom.value,
+            cognom: cognom.value,
+            telefon: telefon.value,
+            dni: dni.value
+        };
+
+        const result = await editarPerfilUser(payload);
+
+        if (result.success) {
+            alert('Usuari editat amb èxit');
+            store.userData.user.nom = result.user.nom ?? store.userData.user.nom;
+            store.userData.user.cognom = result.user.cognom ?? store.userData.user.cognom;
+            store.userData.user.dni = result.user.dni ?? store.userData.user.dni;
+            store.userData.user.telefon = result.user.telefon ?? store.userData.user.telefon;
+            store.userData.user.foto = `http://localhost:8000/photos/${result.user.foto}`;
+            console.log(result.user);
+            user = JSON.stringify(result.user);
+        } else {
+            alert(`Ha ocorregut un error (${result.message || 'Error desconegut'})`);
+        }
+
+    } catch (error) {
+        console.error('Error en la edición del perfil:', error);
+    }
+}
+
 </script>
 
-
-
 <style>
-    #contain-edit-btn {
-        bottom: 0px;
-        right: -10px;
-        position: absolute;
-    }
+button {
+    cursor: pointer;
+}
 
-    #edit-btn {
-        margin: 0;
-        padding: 0;
-        width: 40px;
-        height: 40px;
-        border-radius: 40px;
-        border: 1px solid grey;
-        background-color: white;
-    }
+#contain-edit-btn {
+    position: absolute;
+    bottom: 0px;
+    right: -10px;
+}
 
-    #edit-btn img {
-        margin: 0;
-        padding: 0;
-        width: 35px;
-        height: 35px;
-    }
+#edit-btn {
+    background-color: white;
+    height: 40px;
+    width: 40px;
+    padding: 0;
+    margin: 0;
+    border-radius: 40px;
+    border: 1px solid grey;
+}
 
-    .contentProfile {
-        margin-top: 60px;
-    }
+#edit-btn img {
+    padding: 0;
+    margin: 0;
+    height: 35px;
+    width: 35px;
+}
 
-    .contentProfile img {
-        width: 120px;
-        height: 120px;
-        object-fit: cover;
-        border-radius: 50%;
-    }
+.contentProfile {
+    margin-top: 60px;
+}
 
-    .contentProfile #profileImage {
-        position: relative;
-        width: 120px;
-        height: 120px;
-        background-color: white;
-        border: 1px solid grey;
-        border-radius: 90px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 20px;
-    }
+.contentProfile img {
+    height: 120px;
+    width: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+}
 
-    #infoProfile{
-        width: 300px;
-    }
+.contentProfile #profileImage {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    background-color: white;
+    border: 1px solid grey;
+    border-radius: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* overflow: hidden; */
+    margin-top: 20px;
+}
 
-    #infoProfile p{
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
+#infoProfile {
+    width: 300px;
+}
 
-    input {
-        width: 100%;
-        padding: 12px;
-        margin-bottom: 15px;
-        box-sizing: border-box;
-        font-size: 16px;
-        border: 1px solid #ddd;
-        background-color: #f9f9f9;
-        transition: all 0.3s ease;
-    }
+#infoProfile p {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
 
-    input[type="text"]:focus,
-    input[type="number"]:focus {
-        outline: none;
-        border-color: #ff4d4d;
-        background-color: #fff;
-    }
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+}
 
-    input::placeholder {
-        color: #aaa;
-    }
+input[type="text"]:focus,
+input[type="number"]:focus {
+    outline: none;
+    border-color: #ff4d4d;
+    background-color: #fff;
+}
+
+input::placeholder {
+    color: #aaa;
+}
 </style>

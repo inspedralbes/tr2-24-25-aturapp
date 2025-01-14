@@ -29,107 +29,92 @@
 
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+    import { ref, onMounted, onUnmounted } from 'vue';
+    import { AdminAlertes_getAllAlertsAdmin, AdminAlertes_updateAlert } from '../services/communictationManager';
 
-const alertas = ref([]);
-const cargando = ref(true);
-const error = ref(null);
-const pollingInterval = ref(null);
+    const alertas = ref([]);
+    const cargando = ref(true);
+    const error = ref(null);
+    const pollingInterval = ref(null);
 
-const fetchAlertas = async (showNotification = false) => {
-    try {
-        const respuesta = await fetch('http://localhost:8000/api/getAllAlertsAdmin');
+    const fetchAlertas = async (showNotification = false) => {
+        try {
+            const datos = await AdminAlertes_getAllAlertsAdmin();
 
-        if (!respuesta.ok) {
-            throw new Error(`Error en la respuesta del servidor: ${respuesta.status}`);
-        }
-
-        const datos = await respuesta.json();
-
-        if (showNotification && datos.length > alertas.value.length) {
-            const nuevasAlertas = datos.slice(alertas.value.length);
-            nuevasAlertas.forEach(alerta => {
-                mostrarNotificacion('Nueva alerta', alerta.titulo || 'Sin título');
-            });
-        }
-
-        alertas.value = datos;
-    } catch (err) {
-        console.error('Error al cargar alertas:', err); 
-    } finally {
-        cargando.value = false;
-    }
-};
-
-
-const bucleFetch = () => {
-    pollingInterval.value = setInterval(() => fetchAlertas(true), 5000); 
-};
-
-const detenerFetch = () => {
-    if (pollingInterval.value) {
-        clearInterval(pollingInterval.value);
-    }
-};
-
-const mostrarNotificacion = (titulo, mensaje) => {
-    if (Notification.permission === 'granted') {
-        new Notification(titulo, { body: mensaje });
-    } else if (Notification.permission !== 'denied') {
-        Notification.requestPermission().then(permission => {
-            if (permission === 'granted') {
-                new Notification(titulo, { body: mensaje });
+            if (showNotification && datos.length > alertas.value.length) {
+                const nuevasAlertas = datos.slice(alertas.value.length);
+                nuevasAlertas.forEach(alerta => {
+                    mostrarNotificacion('Nueva alerta', alerta.titulo || 'Sin título');
+                });
             }
-        });
-    }
-};
 
-const actualizarEstado = async (alerta) => {
-    try {
-        const respuesta = await fetch(`http://localhost:8000/api/updateAlert/${alerta.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ estado: alerta.estado }),
-        });
-
-        if (!respuesta.ok) {
-            throw new Error(`Error al actualizar la alerta: ${respuesta.status}`);
+            alertas.value = datos;
+        } catch (err) {
+            console.error('Error al cargar alertas:', err);
+            error.value = `Error al cargar alertas: ${err.message}`;
+        } finally {
+            cargando.value = false;
         }
-
-        mostrarNotificacion('Éxito', `El estado de la alerta "${alerta.titulo}" ha sido actualizado.`);
-    } catch (err) {
-        error.value = `Error al actualizar la alerta: ${err.message}`;
-        mostrarNotificacion('Error', `No se pudo actualizar la alerta "${alerta.titulo}".`);
-    }
-};
-
-const formatearFecha = (fechaISO) => {
-    if (!fechaISO) return 'Sin fecha';
-
-    const fecha = new Date(fechaISO);
-
-    const opciones = { 
-        timeZone: 'UTC', 
-        year: 'numeric', 
-        month: '2-digit', 
-        day: '2-digit', 
-        hour: '2-digit', 
-        minute: '2-digit' 
     };
 
-    return fecha.toLocaleDateString('es-ES', opciones);
-};
+    const bucleFetch = () => {
+        pollingInterval.value = setInterval(() => fetchAlertas(true), 5000); 
+    };
 
-onMounted(() => {
-    fetchAlertas();
-    bucleFetch();
-});
+    const detenerFetch = () => {
+        if (pollingInterval.value) {
+            clearInterval(pollingInterval.value);
+        }
+    };
 
-onUnmounted(() => {
-    detenerFetch(); 
-});
+    const mostrarNotificacion = (titulo, mensaje) => {
+        if (Notification.permission === 'granted') {
+            new Notification(titulo, { body: mensaje });
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    new Notification(titulo, { body: mensaje });
+                }
+            });
+        }
+    };
+
+    const actualizarEstado = async (alerta) => {
+        try {
+            await AdminAlertes_updateAlert(alerta.id, alerta.estado);
+            alert("Estat modificat correctament");
+            mostrarNotificacion('Éxito', `El estado de la alerta "${alerta.titulo}" ha sido actualizado.`);
+        } catch (err) {
+            error.value = `Error al actualizar la alerta: ${err.message}`;
+            mostrarNotificacion('Error', `No se pudo actualizar la alerta "${alerta.titulo}".`);
+        }
+    };
+
+    const formatearFecha = (fechaISO) => {
+        if (!fechaISO) return 'Sin fecha';
+
+        const fecha = new Date(fechaISO);
+
+        const opciones = { 
+            timeZone: 'UTC', 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        };
+
+        return fecha.toLocaleDateString('es-ES', opciones);
+    };
+
+    onMounted(() => {
+        fetchAlertas();
+        bucleFetch();
+    });
+
+    onUnmounted(() => {
+        detenerFetch(); 
+    });
 </script>
 
 <style scoped>

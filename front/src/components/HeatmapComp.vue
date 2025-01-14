@@ -206,19 +206,18 @@ const sectors = [
     }
 ];
 
-async function getAllAlertes() {
-    try {
-        const response = await fetch(`${BASE_URL}/api/getAllAlerts`);
+import { getAllAlerts } from '../services/communictationManager';
+try {
+    const response = await getAllAlerts();
 
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-
-        const result = await response.json();
-        return result;
-    } catch (error) {
-        console.error(error);
+    if (!response.ok) {
+        throw new Error("Error en la solicitud");
     }
+
+    const result = await response.json();
+    return result;
+} catch (error) {
+    console.error(error);
 }
 
 async function paintAlerts() {

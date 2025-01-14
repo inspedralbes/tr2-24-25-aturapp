@@ -1,9 +1,13 @@
 <script setup>
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useCounterStore } from '../stores/counter';
 import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
 
 const store = useCounterStore();
+const BASE_URL = "http://localhost:8000/api";
+const user = store.userData.user;
+const token = store.userData.token;
+const fotoPerfil = ref(user.foto);
 
 const router = useRouter();
 function navigateTo(nameRoute) {
@@ -17,12 +21,34 @@ const UserInfo = {
     'cognom': data.user.cognom,
     'email': data.user.email,
     'dni': data.user.dni,
+    'telefon': data.user.telefon,
 }
 
 function cerrarSesion() {
     store.clearUserData();
     location.href = "/login";
 }
+
+import { obtenerFotoPerfil } from '../services/communictationManager';
+
+const obtenerFotoPerfilAsync = async () => {
+    try {
+        const response = await obtenerFotoPerfil(user.id, token);
+        
+        const data = await response;
+        
+        fotoPerfil.value = data.foto || '';
+    } catch (error) {
+        console.error('Error al obtener la foto de perfil:', error);
+    }
+};
+
+
+onMounted (() => {
+    if(!user.foto){
+        obtenerFotoPerfilAsync();
+    }
+})
 </script>
 
 <template>
@@ -31,7 +57,7 @@ function cerrarSesion() {
             <div id="contentHeaderProfile" class="d-flex align-center f-column" style="z-index: 20">
                 <p class="no-margin">Perfil</p>
                 <div id="profileImage">
-                    <img src="../../public/assets/svg/noimage.svg" alt="profile">
+                    <img :src="fotoPerfil || '../../public/assets/svg/noimage.svg'" alt="photo">
                 </div>
                 <p>{{ UserInfo.nom }} {{ UserInfo.cognom }}</p>
             </div>
@@ -86,6 +112,11 @@ function cerrarSesion() {
     align-items: center;
     overflow: hidden;
     margin-top: 20px;
+}
+
+#profileImage img{
+    width: 100%;
+    height: 100%;
 }
 
 .containHeader{

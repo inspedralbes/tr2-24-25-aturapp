@@ -107,7 +107,7 @@
         </div>
         <div id="containButtons" class="d-flex align-center j-around">
             <input class="btn-cancel" type="button" value="Cancelar" @click="sosAlert">
-            <input class="btn-confirm" type="button" value="Confirmar" @click="enviarAlerta">
+            <input class="btn-confirm" type="button" value="Confirmar" @click="enviar">
         </div>
         <div v-if="alertaEnviada" class="popup-overlay">
             <div class="popup-content">
@@ -433,51 +433,30 @@ function toggleSectorColor(index, sectores) {
     });
 }
 
-async function enviarAlerta() {
-    try {
-        const response = await fetch(`${BASE_URL}/api/alert`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                alumno_id: alumno_id,
-                sectorName: sectorInput.value,
-                descripcion: alertaDescripcio.value
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error("Error al crear la alerta");
-        }
-
-        alerta.value = await response.json();
-        alertaEnviada.value = !alertaEnviada.value;
-
-    } catch (error) {
-        console.log("Error: ", error);
+import { enviarAlerta, updateAlert } from '../services/communictationManager';
+async function enviar() {
+    const cuerpo = {
+        alumno_id: alumno_id,
+        sectorName: sectorInput.value,
+        descripcion: alertaDescripcio.value,
     }
+    const response = await enviarAlerta(cuerpo);
+
+    alerta.value = await response;
+    console.log(alerta.value.id);
+    alertaEnviada.value = !alertaEnviada.value;
 }
 
 async function editarAlerta() {
     try {
-        const response = await fetch(`${BASE_URL}/api/update`, {
-            method: 'POST',
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                alerta_id: alerta.value.id,
-                alumne_id: alumno_id,
-                descripcio: alertaDescripcio.value,
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
+        const cuerpo = {
+            alerta_id: alerta.value.id,
+            alumne_id: alumno_id,
+            descripcio: alertaDescripcio.value,
         }
+        const response = await updateAlert(cuerpo);
 
-        const result = await response.json();
+        const result = await response;
         if (result.success) {
             alertaEnviada.value = !alertaEnviada.value;
             alertaEditada.value = true;

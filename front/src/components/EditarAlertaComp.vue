@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useCounterStore } from '@/stores/counter';
-
+import { getAlertById, updateAlert } from '../services/communictationManager';
 const BASE_URL = "http://localhost:8000";
 const store = useCounterStore();
 const route = useRoute();
@@ -20,12 +20,7 @@ function navigateTo(nameIcon) {
 
 async function getAlert() {
     try {
-        const response = await fetch(`${BASE_URL}/api/show/${id}`);
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-        const result = await response.json();
+        const result = await getAlertById(id);
         alerta.value = result;
         alertaDescripcio.value = alerta.value.descripcion;
     } catch (error) {
@@ -35,33 +30,23 @@ async function getAlert() {
 
 async function editarAlerta() {
     try {
-        const response = await fetch(`${BASE_URL}/api/update`, {
-            method: 'POST',
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                alerta_id: id,
-                alumne_id: user_id,
-                descripcio: alertaDescripcio.value,
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
+        const cuerpo = {
+            alerta_id: id,
+            alumne_id: user_id,
+            descripcio: alertaDescripcio.value,
         }
-
-        const result = await response.json();
+        const result = await updateAlert(cuerpo); 
 
         if (result.success) {
             alertaEditada.value = !alertaEditada.value;
         } else {
-            alert(`Ha ocorregut un error (${result.message || 'Error desconegut'})`)
+            alert(`Ha ocorregut un error (${result.message || 'Error desconegut'})`);
         }
     } catch (error) {
         console.error(error);
     }
 }
+
 
 function tornarInici() {
     alertaEditada.value = !alertaEditada.value;

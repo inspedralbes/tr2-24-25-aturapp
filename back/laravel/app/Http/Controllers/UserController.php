@@ -185,6 +185,41 @@
             ]);
         }
         
+        public function updatePhoto(Request $request) {
+
+            try {
+                $validated = $request->validate([
+                    'id' => 'required|integer',
+                    'imagen' => 'required|file|mimes:jpeg,png,jpg|max:2048',
+                ]);
+    
+                $path = $request->file('imagen')->store('photos', 'custom');
+    
+                $user = User::findOrFail($request->id);
+                $user->foto = $path;
+                $user->save();
+    
+                return response()->json([
+                    'success' => true,
+                    'path' => asset('photos/' . $path), // Usamos la URL definida en el disco
+                ]);
+            }  catch (error) {
+                console.error("Error efectuado: ", $error);
+            }
+        }
+
+        public function getPhoto($id) {
+            // Busca el usuario en la base de datos
+            $user = User::findOrFail($id);
+
+            if (!$user || !$user->foto) {
+                return response()->json(['foto' => null], 404);
+            }
+
+            // Devuelve la imagen en formato base64
+            return response()->json(['foto' => asset('photos/' . $user->foto)]);
+        }
+
         public function getCompanysClase($id){
             $companys = User::where('curs', $id)
                     -> select('id','nom','cognoms')

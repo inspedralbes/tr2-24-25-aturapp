@@ -37,6 +37,10 @@
     // ====== EDITAR USUARIO ========================
     Route::post('/editaruser', [UserController::class, 'update']);
 
+    Route::post('/updatePhoto', [UserController::class, 'updatePhoto']);
+
+    Route::get('/getPhoto/{id}', [UserController::class, 'getPhoto']);
+
     // ====== OBTENER ROL USUARIO =================
     Route::get('/getrol/{id}', [UserController::class, 'getRol']);
 
@@ -48,6 +52,9 @@
     Route::get('/getAllAlertsAdmin', [AlertaController::class, 'getAdminAlerts']);
 
     Route::post('/getAlertsSector', [AlertaController::class, 'getAlertsSector']);
+
+    Route::put('/updateAlert/{id}', [AlertaController::class, 'update_admin']);
+
 
     //====== VER PREGUNTAS ========================
     Route::get('/preguntas', [PreguntaController::class, 'index']);

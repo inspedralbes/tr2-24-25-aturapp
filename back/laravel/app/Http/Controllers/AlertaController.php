@@ -243,6 +243,24 @@ class AlertaController extends Controller {
     
         return response()->json($alertas, 200);
     }
+
+    public function update_admin(Request $request, $id)
+    {
+    $validated = $request->validate([
+        'estado' => 'required|string'
+    ]);
+
+    $alerta = Alerta::find($id);
+
+    if (!$alerta) {
+        return response()->json(['success' => false, 'message' => 'Alerta no encontrada'], 404);
+    }
+
+    $alerta->estado_id = $this->getEstadoId($validated['estado']); 
+    $alerta->save();
+
+    return response()->json(['success' => true, 'message' => 'Alerta actualizada correctamente'], 200);
+    }
     
 
     public function destroy(Alerta $alerta) {

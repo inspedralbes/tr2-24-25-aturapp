@@ -38,8 +38,8 @@
 
 <script setup>
 import { Chart, registerables } from "chart.js";
+import { getAlertsFilter, getAllAlerts } from '../services/communictationManager';
 import { ref, onMounted } from 'vue';
-const BASE_URL = 'http://localhost:8000';
 const time = ref('total');
 const quant = ref('0');
 const alertas_recibidas = ref();
@@ -57,23 +57,7 @@ async function getAlerts(tiempo, cantidad) {
     time.value = tiempo;
     quant.value = cantidad;
     try {
-        const response = await fetch(`${BASE_URL}/api/getAlertsFilter`, {
-            method: 'POST',
-            headers: {
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                time: time.value,
-                quant: quant.value
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-
-        const result = await response.json();
-        alertas_recibidas.value = result;
+        alertas_recibidas.value = await getAlertsFilter(tiempo, cantidad);
     } catch (error) {
         console.error(error);
     }
@@ -81,15 +65,7 @@ async function getAlerts(tiempo, cantidad) {
 
 async function getAllAlertes() {
     try {
-        const response = await fetch(`${BASE_URL}/api/getAllAlerts`);
-
-        if (!response.ok) {
-            throw new Error("Error en la solicitud");
-        }
-
-        const result = await response.json();
-        console.log(result);
-        return result;
+        rankingSectores.value = await getAllAlerts();
     } catch (error) {
         console.error(error);
     }

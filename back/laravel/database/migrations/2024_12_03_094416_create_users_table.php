@@ -20,6 +20,7 @@ return new class extends Migration
 //            $table->timestamps('questionari_fet')->nullable();
             $table->string('email')->unique();
             $table->integer('telefon')->nullable();
+            $table->longText('foto')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('verification_token')->nullable();

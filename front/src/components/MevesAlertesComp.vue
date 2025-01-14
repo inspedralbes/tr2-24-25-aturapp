@@ -12,13 +12,7 @@
 
 async function getAlertas() {
     try {
-        const response = await fetch(`${BASE_URL}/api/alertes`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ id: usuari_id }),
-        });
+        const response = await fetchAlertes();
 
         if (!response.ok) {
             throw new Error("Error en la solicitud");

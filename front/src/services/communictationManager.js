@@ -255,6 +255,7 @@ export const editarPerfilUser = async (payload) => {
 };
 
 
+
 // === EditarAlertaComp.vue ===============
 // === OBTENER ALERTA POR ID ===============
 export const getAlertById = async (id) => {
@@ -273,7 +274,7 @@ export const getAlertById = async (id) => {
 };
 
 // === ACTUALIZAR ALERTA ====================
-export const updateAlert = async (id,data) => {
+export const updateAlert = async (data) => {
     const URL = `${laravel.URL}/update`;
     try {
         const response = await fetch(URL, {
@@ -493,15 +494,15 @@ export const loginUser = async (loginData) => {
 
 
 // === ENVIAR ALERTA ===========
-export async function EnviarAlerta(metodo, cuerpo) {
+export async function enviarAlerta(data) {
     const url = `${laravel.URL}/alert`;
     try {
         const response = await fetch(url, {
-            method: metodo,
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(cuerpo),
+            body: JSON.stringify(data),
         });
 
         if (!response.ok) {
@@ -515,6 +516,25 @@ export async function EnviarAlerta(metodo, cuerpo) {
     }
 }
 
+
+export async function obtenerFotoPerfil(user_id, token){
+    try {
+        const response = await fetch(`${laravel.URL}/getPhoto/${user_id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+
+        if(!response.ok){
+            throw new Error(`Error al obtener la foto: ${response.statusText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error al obtener la foto de perfil:', error);
+    }
+}
 
 
 
@@ -579,3 +599,48 @@ export const HeatmapGetAllAlert = async () => {
         throw error;
     }
 };
+
+
+export async function AdminAlertes_getAllAlertsAdmin() {
+    const response = await fetch(`${laravel.URL}/getAllAlertsAdmin`);
+    if (!response.ok) {
+        throw new Error(`Error fetching alerts: ${response.status}`);
+    }
+    return await response.json();
+}
+
+export async function AdminAlertes_updateAlert(id, estado) {
+    const response = await fetch(`${laravel.URL}/updateAlert/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ estado }),
+    });
+    if (!response.ok) {
+        throw new Error(`Error updating alert: ${response.status}`);
+    }
+    return await response.json();
+}
+
+
+export async function updateFoto(){
+    try {
+        const response = await fetch(`${laravel.URL}/updatePhoto`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+            body: formData,
+        });
+
+        const data = await response.json();
+        if (data.success){
+            fotoPerfil.value = data.path;
+        }else{
+            alert('Ha ocurrido un error al subir la imagen');
+        }
+    } catch (error) {
+        console.error('Error al subir la imagen: ', error);
+    }
+}
