@@ -26,7 +26,7 @@
         <div v-if="edificiActive">
             <div class="d-flex j-center align-center plantaSelector">
                 <select v-model="plantaInput" name="planta" id="planta" class="container-planta">
-                    <option value="planta0">Planta baja</option>
+                    <option value="planta0">Planta baixa</option>
                     <option value="planta1">Planta 1</option>
                     <option value="planta2">Planta 2</option>
                     <option value="planta3">Planta 3</option>

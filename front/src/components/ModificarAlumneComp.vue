@@ -2,7 +2,7 @@
     <div>
         <h1>Modificar Alumne</h1>
         <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-        <div v-else-if="!alumne">Cargando datos del alumno...</div>
+        <div v-else-if="!alumne">Carregant dades dels estudiants ...</div>
         <div v-else>
             <form @submit.prevent="guardarCambios">
                 <label for="nom">Nom:</label>

@@ -99,7 +99,7 @@ onMounted(() => {
     </div>
     <div id="containAlerta" class="d-flex j-center align-center f-column mt-60" v-if="alerta != ''">
         <p class="no-margin"> {{ formatText(alerta.sector) }} ({{ alerta.planta }})</p>
-        <p> {{ formatFecha(alerta.created_at) }} - {{ formatHora(alerta.created_at) }}h | Estado: {{ alerta.estado }}
+        <p> {{ formatFecha(alerta.created_at) }} - {{ formatHora(alerta.created_at) }}h | Estat: {{ alerta.estado }}
         </p>
         <div id="containDesc">
             <p class="no-margin">Descripció:</p>

@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <h1>Alertas Admin</h1>
-        <div v-if="cargando">Cargando alertas...</div>
+        <div v-if="cargando">Carregant alertas...</div>
         <div v-else-if="error" class="error">Error al cargar alertas: {{ error }}</div>
         <ul v-else>
             <li v-for="alerta in alertas" :key="alerta.id">

@@ -8,14 +8,14 @@
         </ul>
         <div id="statsContain">
             <div id="item-a" class="box">
-                <p class="no-margin">Alertas recibidas</p><span class="resultado">{{ count(alertas_recibidas) }}</span>
+                <p class="no-margin">Alertes rebudes</p><span class="resultado">{{ count(alertas_recibidas) }}</span>
             </div>
             <div id="item-b" class="box">
-                <p class="no-margin">Porcentaje de éxito (test)</p><span class="resultado">87%</span>
+                <p class="no-margin">Percentatge d'èxit (prova)</p><span class="resultado">87%</span>
                 <!-- {{ porcentajeExito() }} -->
             </div>
             <div id="item-c" class="box">
-                <p class="no-margin">Ranking sectores</p>
+                <p class="no-margin">Ranking sectors</p>
                 <ul>
                     <li v-for="index in 3" class="ranking-item">
                         <p class="ranking-text">{{ index }} - {{ formatText(rankingSectores[index - 1]?.nombre) }} ({{

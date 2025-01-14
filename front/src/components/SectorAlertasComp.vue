@@ -7,7 +7,7 @@
                     <div class="alert-card" v-for="alerta in alertes" @click="verAlerta(alerta.id)">
                         <h3 class="alert-title">Alerta #{{ alerta.id }}</h3>
                         <div class="alert-footer">
-                            <span class="alert-user">Reportado por: {{ alerta.alumne_name }}</span>
+                            <span class="alert-user">Informat per: {{ alerta.alumne_name }}</span>
                             <span class="alert-date">{{ alerta.fecha }}</span>
                         </div>
                     </div>

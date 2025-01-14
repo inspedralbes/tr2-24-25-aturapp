@@ -1,6 +1,6 @@
 <template>
     <div v-if="alumne">
-        <h1>Detalles del Alumno</h1>
+        <h1>Detalls de l'alumne</h1>
         <p>Nom: {{ alumne.nom }}</p>
         <p>Cognom: {{ alumne.cognoms }}</p>
         <p>Email: {{ alumne.email }}</p>
@@ -8,22 +8,22 @@
         <p>Torn: {{ alumne.torn?.torn }}</p>
         <p>Telefon: {{ alumne.telefon }}</p>
 
-        <h2>Alertas del Alumno</h2>
+        <h2>Alertas de l'alumne</h2>
         <div v-if="alertas.length > 0">
             <ul>
                 <li v-for="alerta in alertas" :key="alerta.id">
                     <strong>Sector:</strong> {{ alerta.sector }} <br>
                     <strong>Planta:</strong> {{ alerta.planta }} <br>
-                    <strong>Descripción:</strong> {{ alerta.descripcion }} <br>
-                    <strong>Estado:</strong> {{ alerta.estado }} <br>
-                    <strong>Fecha:</strong> {{ alerta.created_at }}
+                    <strong>Descripció:</strong> {{ alerta.descripcion }} <br>
+                    <strong>Estat:</strong> {{ alerta.estado }} <br>
+                    <strong>Data:</strong> {{ alerta.created_at }}
                 </li>
             </ul>
         </div>
         <p v-else>No hi han alertes registrades per aquest alumne</p>
     </div>
     <div v-else>
-        <p>Cargando datos...</p>
+        <p>Cargant dades...</p>
     </div>
 </template>
 

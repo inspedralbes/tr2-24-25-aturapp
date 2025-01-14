@@ -1,7 +1,7 @@
 <template>
     <div id="filtre">
         <select v-model="selectedCurs">
-            <option value="">Todos los cursos</option>
+            <option value="">Tots els cursos</option>
             <option v-for="curs in cursosUnicos" :key="curs" :value="curs">
                 {{ curs }}
             </option>
