@@ -87,6 +87,7 @@ const agregarMensajeUsuario = (event) => {
       }      
     }else{
       socket.emit('sendMessage', messages[messages.length - 1]);
+      //guardar en la base de datos cada mensaje enviado
     }
     deslizarHastaAbajo();
   }
@@ -139,6 +140,7 @@ onMounted(() => {
 
   socket.on('storeMessage', (msg) => {
     messages.push(msg);
+    //
   });
 
   socket.on('obtenerRol', () => {
