@@ -69,9 +69,8 @@ const procesarImagen = async (event) => {
     formData.append('imagen', archivo);
     
     try {
-        const response = await updateFoto();
+        const data = await updateFoto(formData, token);
 
-        const data = await response.json();
         if (data.success){
             fotoPerfil.value = data.path;
         }else{

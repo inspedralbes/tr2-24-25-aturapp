@@ -114,7 +114,6 @@ async function verAlerta(id) {
     alertVisible.value = true;
     infoAlerta.value = alertes.value.find((alerta) => alerta.id === id);
     infoAlumne.value = await getUser(); // Llamamos a la función getUser para obtener la información del usuario
-    console.log(infoAlumne.value.user);
 }
 
 onMounted(async () => {

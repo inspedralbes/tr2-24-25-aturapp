@@ -18,7 +18,8 @@
                 <p class="no-margin">Ranking sectores</p>
                 <ul>
                     <li v-for="index in 3" class="ranking-item">
-                        <p class="ranking-text">{{ index }} - {{ formatText(rankingSectores[index - 1]?.nombre) }} ({{ rankingSectores[index - 1]?.planta }})</p>
+                        <p class="ranking-text">{{ index }} - {{ formatText(rankingSectores[index - 1]?.nombre) }} ({{
+                            rankingSectores[index - 1]?.planta }})</p>
                     </li>
                 </ul>
             </div>
@@ -195,30 +196,34 @@ onMounted(async () => {
 
 <style scoped>
 #containAll {
-  box-sizing: border-box;
-  padding: 20px; /* Márgenes laterales */
+    box-sizing: border-box;
+    padding: 20px;
+    /* Márgenes laterales */
 }
 
 .button-group {
-  gap: 10px;
-  margin-bottom: 20px;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 #statsContain {
-  display: grid;
-  grid-template-areas:
-    "a a b b c"
-    "a a b b c"
-    "d d d d c"
-    "d d d d e"
-    "d d d d e";
-  grid-template-columns: repeat(4, 1fr) 1fr; /* 4 columnas iguales y una más pequeña */
-  gap: 20px;
-  max-width: 1200px; /* Máximo ancho para grandes pantallas */
-  margin: auto; /* Centrado horizontal */
+    display: grid;
+    grid-template-areas:
+        "a a b b c"
+        "a a b b c"
+        "d d d d c"
+        "d d d d e"
+        "d d d d e";
+    grid-template-columns: repeat(4, 1fr) 1fr;
+    /* 4 columnas iguales y una más pequeña */
+    gap: 20px;
+    max-width: 1200px;
+    /* Máximo ancho para grandes pantallas */
+    margin: auto;
+    /* Centrado horizontal */
 }
 
-.resultado{
+.resultado {
     font-weight: bolder;
     font-size: 40px
 }
@@ -270,49 +275,49 @@ button {
 }
 
 .ranking-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  max-width: 400px;
-  margin: 20px auto;
-  font-family: Arial, sans-serif;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 400px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
 }
 
 /* Estilo de cada ítem de la lista */
 .ranking-item {
-  background-color: #f4f4f4;
-  margin: 8px 0;
-  padding: 5px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
+    background-color: #f4f4f4;
+    margin: 8px 0;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
 }
 
-.ranking-item>p{
-  margin: 0;
-  font-size: 20px;
+.ranking-item>p {
+    margin: 0;
+    font-size: 20px;
 }
 
 @media (max-width: 768px) {
-  #statsContain {
-    grid-template-areas:
-      "a"
-      "b"
-      "c"
-      "d";
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-  }
+    #statsContain {
+        grid-template-areas:
+            "a"
+            "b"
+            "c"
+            "d";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
 
-  .button-group {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+    .button-group {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 
-  button {
-    width: 100%;
-    margin-bottom: 10px;
-  }
+    button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
 }
 </style>

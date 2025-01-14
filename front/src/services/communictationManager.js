@@ -624,7 +624,7 @@ export async function AdminAlertes_updateAlert(id, estado) {
 }
 
 
-export async function updateFoto(){
+export async function updateFoto( formData, token){
     try {
         const response = await fetch(`${laravel.URL}/updatePhoto`, {
             method: 'POST',
@@ -634,12 +634,7 @@ export async function updateFoto(){
             body: formData,
         });
 
-        const data = await response.json();
-        if (data.success){
-            fotoPerfil.value = data.path;
-        }else{
-            alert('Ha ocurrido un error al subir la imagen');
-        }
+        return await response.json();
     } catch (error) {
         console.error('Error al subir la imagen: ', error);
     }
