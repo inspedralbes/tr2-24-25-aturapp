@@ -2,16 +2,16 @@
     <div class="container">
         <h1>Alertas Admin</h1>
         <div v-if="cargando">Cargando alertas...</div>
-        <div v-else-if="error" class="error">Error al cargar alertas: {{ error }}</div>
+        <div v-else-if="error" class="error">Error per carregar alertes: {{ error }}</div>
         <ul v-else>
             <li v-for="alerta in alertas" :key="alerta.id">
                 <div class="alerta-header">
-                    <strong>{{ alerta.titulo || 'Sin título' }}</strong>
+                    <strong>{{ alerta.titulo || 'Sense titol' }}</strong>
                 </div>
                 <div class="alerta-content">
-                    Descripció: {{ alerta.descripcion || 'Sin descripción' }}<br />
-                    Sector: {{ alerta.sector || 'Sin sector' }}<br />
-                    Planta: {{ alerta.planta || 'Sin planta' }}<br />
+                    Descripció: {{ alerta.descripcion || 'Sense descripcio' }}<br />
+                    Sector: {{ alerta.sector || 'Sense sector' }}<br />
+                    Planta: {{ alerta.planta || 'Sense planta' }}<br />
                     Estat:
                     <select v-model="alerta.estado" @change="actualizarEstado(alerta)">
                         <option :value="alerta.estado" disabled>{{ alerta.estado }}</option>
@@ -41,24 +41,29 @@ const fetchAlertas = async (showNotification = false) => {
         const respuesta = await fetch('http://localhost:8000/api/getAllAlerts');
 
         if (!respuesta.ok) {
-            throw new Error(`Error en la respuesta del servidor: ${respuesta.status}`);
+            throw new Error(`Error en el servidor: ${respuesta.status}`);
         }
 
         const datos = await respuesta.json();
 
-        datos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        if (showNotification) {
+          
+            const idsExistentes = new Set(alertas.value.map(alerta => alerta.id));
+            const nuevasAlertas = datos.filter(alerta => !idsExistentes.has(alerta.id));
 
-        if (showNotification && datos.length > alertas.value.length) {
-            const nuevasAlertas = datos.slice(0, datos.length - alertas.value.length);
             nuevasAlertas.forEach(alerta => {
-                mostrarNotificacion('Nueva alerta', alerta.titulo || 'Sin título');
+                mostrarNotificacion('Nova alerta', alerta.titulo || 'Sense titol');
             });
-        }
 
-        alertas.value = datos;
+            if (nuevasAlertas.length > 0) {
+                alertas.value = [...nuevasAlertas, ...alertas.value];
+            }
+        } else {
+           
+            alertas.value = datos;
+        }
     } catch (err) {
-        console.error('Error al cargar alertas:', err);
-        error.value = `Error al cargar alertas: ${err.message}`;
+        error.value = `Error al carregar alertes: ${err.message}`;
     } finally {
         cargando.value = false;
     }
@@ -68,7 +73,7 @@ const bucleFetch = () => {
     pollingInterval.value = setInterval(() => fetchAlertas(true), 5000); 
 };
 
-const detenerFetch = () => {
+const aturaFetch = () => {
     if (pollingInterval.value) {
         clearInterval(pollingInterval.value);
     }
@@ -97,18 +102,18 @@ const actualizarEstado = async (alerta) => {
         });
 
         if (!respuesta.ok) {
-            throw new Error(`Error al actualizar la alerta: ${respuesta.status}`);
+            throw new Error(`Error per actualizar la alerta: ${respuesta.status}`);
         }
 
-        mostrarNotificacion('Éxito', `El estado de la alerta "${alerta.titulo}" ha sido actualizado.`);
+        mostrarNotificacion('Exit', `L'estat de l'alerta "${alerta.titulo}" ha sigut actualitzat.`);
     } catch (err) {
-        error.value = `Error al actualizar la alerta: ${err.message}`;
-        mostrarNotificacion('Error', `No se pudo actualizar la alerta "${alerta.titulo}".`);
+        error.value = `Error per actualizar la alerta: ${err.message}`;
+        mostrarNotificacion('Error', `No es pot actualitzat l'alerta "${alerta.titulo}".`);
     }
 };
 
 const formatearFecha = (fechaISO) => {
-    if (!fechaISO) return 'Sin fecha';
+    if (!fechaISO) return 'Sense data';
 
     const fecha = new Date(fechaISO);
 
@@ -130,7 +135,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    detenerFetch(); 
+    aturaFetch(); 
 });
 </script>
 
