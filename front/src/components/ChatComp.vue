@@ -71,8 +71,8 @@ let chatEnEspera = ref(false);
 let chatConBot = ref(true);
 
 const test = () => {
-  socket.emit('test');
-}
+  socket.emit('test'); //verificar alumnos y profesores
+};
 
 const agregarMensajeUsuario = (event) => {
   event.preventDefault();

@@ -26,9 +26,10 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   // socket.emit('obtenerRol');
   socket.on('connexion', (data) => {
-    if (data.rol == 1) {
+    
+    if (data.rol == 1 && !alumnos.has(socket)) {
       alumnos.set(socket, { data, profesorAsignado: null });
-    } else {
+    } else if (data.rol == 2 && !profesores.has(socket)) {
       profesores.set(socket, { data, alumnoAsignado: null });
       //si hay algun alumno esperando, salte noti
     }
@@ -46,9 +47,9 @@ io.on('connection', (socket) => {
     } else if (profesores.has(socket)) {
       profesores.delete(socket);
     }
-    console.log('user disconnected');
-    console.log('Alumnos:', Array.from(alumnos.values()));
-    console.log('Profesores:', Array.from(profesores.values()));
+    // console.log('user disconnected');
+    // console.log('Alumnos:', Array.from(alumnos.values()));
+    // console.log('Profesores:', Array.from(profesores.values()));
   });
   socket.on('busquedaContacto', (data) => {
     let chatAceptado = false;
@@ -104,9 +105,7 @@ io.on('connection', (socket) => {
     console.log('message: ' + msg);
   });
 
-  socket.on('test', () => {
-    console.log('Valores de test:', test);
-  });
+  socket.on('test')
 });
 
 function getProfesorSocketById(profesorId) {
