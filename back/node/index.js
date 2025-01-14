@@ -7,13 +7,12 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost',
-    // origin: 'http://localhost:5173',
+    // origin: 'http://localhost',
+    origin: 'http://localhost:5173',
     methods: ['GET', 'POST']
   }
 });
 
-const test = [];
 const alumnos = new Map();
 const profesores = new Map();
 const alumnosEsperando = [];
@@ -26,9 +25,10 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   // socket.emit('obtenerRol');
   socket.on('connexion', (data) => {
-    if (data.rol == 1) {
+    
+    if (data.rol == 1 && !alumnos.has(socket)) {
       alumnos.set(socket, { data, profesorAsignado: null });
-    } else {
+    } else if (data.rol == 2 && !profesores.has(socket)) {
       profesores.set(socket, { data, alumnoAsignado: null });
       //si hay algun alumno esperando, salte noti
     }
@@ -46,9 +46,9 @@ io.on('connection', (socket) => {
     } else if (profesores.has(socket)) {
       profesores.delete(socket);
     }
-    console.log('user disconnected');
-    console.log('Alumnos:', Array.from(alumnos.values()));
-    console.log('Profesores:', Array.from(profesores.values()));
+    // console.log('user disconnected');
+    // console.log('Alumnos:', Array.from(alumnos.values()));
+    // console.log('Profesores:', Array.from(profesores.values()));
   });
   socket.on('busquedaContacto', (data) => {
     let chatAceptado = false;
@@ -56,7 +56,6 @@ io.on('connection', (socket) => {
     alumnosEsperando.push(socket);
     profesores.forEach((value, profSocket) => {
       if (value.alumnoAsignado === null) {
-        console.log("peticionChat::emit");
         profSocket.emit('peticionChat', data);
       }
     });
@@ -64,8 +63,6 @@ io.on('connection', (socket) => {
     const horaInicio = Date.now();
     const timer = setTimeout(() => {
       if (!chatAceptado) {
-        console.log("chatAceptado::emit");
-  
         socket.emit('sinRespuesta', {
           mensaje: 'No se encontró un profesor disponible. Se te contactará los mas pronto posible mediante mail, puedes seguir añadiendo informacion en el chat.',
         });
@@ -74,7 +71,9 @@ io.on('connection', (socket) => {
 
     // alumnosEsperando.set(socket, { timer, horaInicio });
 
-    socket.once('chatAceptado', (id) => {
+    socket.once('chatAceptado', () => {
+      console.log('chatAceptado::on');
+      console.log(socket);
       if (chatAceptado) return;
       chatAceptado = true;
       const profSocket = getProfesorSocketById(id);
@@ -105,7 +104,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('test', () => {
-    console.log('Valores de test:', test);
+    socket.emit('test', {alumnos: Array.from(alumnos.values()), profesores: Array.from(profesores.values())});
   });
 });
 

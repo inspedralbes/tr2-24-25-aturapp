@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue';
+import { ref, reactive, onMounted, onUnmounted, nextTick, computed } from 'vue';
 import { useCounterStore } from '../stores/counter';
 import { guardarChatBBDD, guardarMissatgeBBDD, crearChatBBDD, editarMessageBBDD } from '@/services/communictationManager.js';
 import escribiendoSvg from '@/assets/svg/escribiendo.svg';
@@ -75,7 +75,9 @@ const test = () => {
   socket.emit('test');
 }
 
-const agregarMensajeUsuario = (event) => {
+const messageCount = computed(() => messages.length);
+
+const agregarMensajeUsuario = async (event) => {
   event.preventDefault();
   if (input.value.trim().length > 0 && !pausaMensaje.value) {
     let msg = {
@@ -87,7 +89,12 @@ const agregarMensajeUsuario = (event) => {
       editando: 0,
     }
     messages.push(msg);
-    guardarMissatgeBBDD(msg);
+    alert(messageCount.value);
+    if (messageCount.value == 3) {
+      chatID.value = await crearChatBBDD(user.id);
+      chatID.value = chatID.value.id;
+    }
+    if (messageCount.value > 2) await guardarMissatgeBBDD(msg);
     input.value = '';
     
     if (chatConBot.value) {
@@ -97,11 +104,9 @@ const agregarMensajeUsuario = (event) => {
         enviarMensajeAutomatico();
         chatEnEspera.value = true;
         busquedaContacto();
-        // guardarChatBBDD(); //hay que hacer
       }  
     }else{
       socket.emit('sendMessage', messages[messages.length - 1]);
-      //guardar en la base de datos cada mensaje enviado
     }
     deslizarHastaAbajo();
   }
@@ -124,7 +129,7 @@ const agregarMensajeBot = (texto) => {
       editando: null,
     }
   messages.push(msg);
-  if(chatID.value) guardarMissatgeBBDD(msg);
+  if(chatID.value && messageCount.value>2) guardarMissatgeBBDD(msg);
 };
 
 const enviarMensajeAutomatico = () => {
@@ -159,11 +164,9 @@ const busquedaContacto = () => {
   socket.emit('busquedaContacto', user);
 };
 
-onMounted(async () => {
+onMounted(() => {
   agregarMensajeBot('¿Estás seguro de que deseas publicar una alerta? En caso de uso indebido, se podrá bloquear el acceso al sistema. Para continuar, contesta las siguientes preguntas: ');
   enviarMensajeAutomatico();
-  chatID.value = await crearChatBBDD(user.id);
-  chatID.value = chatID.value.id;
   console.log(chatID.value);
   socket.on('storeMessage', (msg) => {
     messages.push(msg);

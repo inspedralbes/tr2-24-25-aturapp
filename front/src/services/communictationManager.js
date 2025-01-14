@@ -22,7 +22,7 @@ export async function guardarMissatgeBBDD(msg) {
         const response = await fetch(URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ emisor: msg.emisor, texto: msg.texto, chat_id: msg.chat_id, id_message: msg.id_message, editado: msg.editado}),
         });

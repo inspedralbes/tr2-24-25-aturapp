@@ -1,8 +1,8 @@
-import { io } from 'socket.io-client';
+import { io } from 'socket.io-client';  
 import Swal from 'sweetalert2';
 
-const socket = io('http://localhost:8001', {
-// const socket = io('http://localhost:3000', {
+// const socket = io('http://localhost:8001', {
+const socket = io('http://localhost:3000', {
     reconnection: true,
     reconnectionAttempts: 10,
     reconnectionDelay: 1000,
@@ -10,7 +10,7 @@ const socket = io('http://localhost:8001', {
     randomizationFactor: 0.5
 });
 
-socket.on('peticionChat', () => {
+socket.on('peticionChat', (data) => {
     Swal.fire({
         title: "Un alumno esta intentando iniciar un chat, quieres aceptarlo?",
         width: 600,
@@ -30,7 +30,7 @@ socket.on('peticionChat', () => {
                 icon: "success",
                 title: "Chat aceptado"
             });
-            socket.emit('chatAceptado', user.id);
+            socket.emit('chatAceptado');
         } else if (result.isDenied) {
             Toast.fire({
                 icon: "error",
@@ -38,6 +38,10 @@ socket.on('peticionChat', () => {
             });
         }
     });
+});
+
+socket.on('test', (data) => {
+    console.log(data);
 });
 
 export default socket;
