@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { RouterView } from 'vue-router';
 import { useCounterStore } from "./stores/counter";
 import AlumnoNavbar from "./components/AlumnoNavbar.vue";
@@ -11,6 +11,16 @@ const store = useCounterStore();
 const isLogged = computed(() => store.Iniciado);
 const isAlumne = computed(() => store.userData?.user?.rol === 1);
 const isAdmin = computed(() => store.userData?.user?.rol === 2);
+
+onMounted(() => {
+  console.log('testeando');
+  socket.on('test', () => {
+    console.log('test');
+  });
+  if (store.Iniciado) {
+    socket.emit('connexion', { id: store.userData.user.id, rol: store.userData.user.rol });
+  }
+});
 
 </script>
 

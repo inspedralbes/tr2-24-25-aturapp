@@ -1,7 +1,7 @@
 <template>
   <div id="chat-container">
     <div id="encabezado">
-      <h2>Jo no soc complice</h2>
+      <h2>Jo no soc complice</h2><button @click="test()">test</button>
     </div>
     <div id="contenedor-mensajes">
       <ul id="missatges" class="mostrar">
@@ -69,6 +69,10 @@ let pausaMensaje = ref(false);
 let escribiendo = reactive({ value: false});
 let chatEnEspera = ref(false);
 let chatConBot = ref(true);
+
+const test = () => {
+  socket.emit('test');
+}
 
 const agregarMensajeUsuario = (event) => {
   event.preventDefault();
@@ -144,11 +148,13 @@ onMounted(() => {
   });
 
   socket.on('obtenerRol', () => {
-    console.log('servidor solicita rol del usuario' + user.id);
+    console.log('servidor solicita rol del usuario ' + user.id);
     socket.emit('rol', { id: user.id, rol: user.rol });
   });
 
   socket.on('sinRespuesta', (res) => {
+    //Aqui trabajas agus
+    //una seccio 
     //añadir proceso de guardar en la seccion de no respondidos de los admin con mis datos para que me puedan contactar
     alert('error');//esto va
     console.log(res);

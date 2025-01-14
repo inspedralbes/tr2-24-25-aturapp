@@ -27,6 +27,7 @@
 import { ref, computed, nextTick } from 'vue';
 import { useCounterStore } from '../stores/counter';
 import { useRouter } from 'vue-router';
+import socket from '@/services/socket.js';
 
 const email = ref('');
 const password = ref('');
@@ -66,6 +67,7 @@ async function handleSubmit() {
     if (response.ok) {
       const data = await response.json();
       counterStore.setUserData(data);
+      socket.emit('connexion', { id: data.id, rol: data.rol });
 
       await nextTick();
 

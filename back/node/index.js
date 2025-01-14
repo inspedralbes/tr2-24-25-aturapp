@@ -13,7 +13,7 @@ const io = new Server(server, {
   }
 });
 
-
+const test = [];
 const alumnos = new Map();
 const profesores = new Map();
 const alumnosEsperando = [];
@@ -24,15 +24,21 @@ app.get('/', (req, res) => {
 
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.emit('obtenerRol');
-  socket.on('rol', (data) => {
+  // socket.emit('obtenerRol');
+  socket.on('connexion', (data) => {
     if (data.rol == 1) {
       alumnos.set(socket, { data, profesorAsignado: null });
     } else {
       profesores.set(socket, { data, alumnoAsignado: null });
       //si hay algun alumno esperando, salte noti
     }
+    // if (alumnos.has(socket)) {
+    //   console.log(`user-alumno: ${alumnos.get(socket).data.id} connectat`);
+    // } else if (profesores.has(socket)) {
+    //   console.log(`user-profesor: ${profesores.get(socket).data.id} connectat`);
+    // }
+    console.log('Alumnos:', Array.from(alumnos.values()));
+    console.log('Profesores:', Array.from(profesores.values()));
   });
   socket.on('disconnect', () => {
     if (alumnos.has(socket)) {
@@ -41,13 +47,16 @@ io.on('connection', (socket) => {
       profesores.delete(socket);
     }
     console.log('user disconnected');
+    console.log('Alumnos:', Array.from(alumnos.values()));
+    console.log('Profesores:', Array.from(profesores.values()));
   });
   socket.on('busquedaContacto', (data) => {
     let chatAceptado = false;
-    
+
     alumnosEsperando.push(socket);
     profesores.forEach((value, profSocket) => {
       if (value.alumnoAsignado === null) {
+        console.log("peticionChat::emit");
         profSocket.emit('peticionChat', data);
       }
     });
@@ -55,14 +64,16 @@ io.on('connection', (socket) => {
     const horaInicio = Date.now();
     const timer = setTimeout(() => {
       if (!chatAceptado) {
+        console.log("chatAceptado::emit");
+
         socket.emit('sinRespuesta', {
           mensaje: 'No se encontró un profesor disponible. Se te contactará los mas pronto posible mediante mail, puedes seguir añadiendo informacion en el chat.',
         });
       }
     }, 3 * 60 * 1000);
 
-    usuariosEnEspera.set(socket, { timer, horaInicio });
-      
+    // alumnosEsperando.set(socket, { timer, horaInicio });
+
     socket.once('chatAceptado', (id) => {
       if (chatAceptado) return;
       chatAceptado = true;
@@ -86,11 +97,15 @@ io.on('connection', (socket) => {
     let socketAfiliado = null;
     if (alumnos.has(socket)) {
       socketAfiliado = alumnos.get(socket).profesorAsignado;
-    }else if (profesores.has(socket)) {
+    } else if (profesores.has(socket)) {
       socketAfiliado = profesores.get(socket).alumnoAsignado;
     }
     socketAfiliado.emit('storeMessage', msg);
     console.log('message: ' + msg);
+  });
+
+  socket.on('test', () => {
+    console.log('Valores de test:', test);
   });
 });
 
