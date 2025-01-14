@@ -5,7 +5,7 @@
     </div>
     <div id="contenedor-mensajes">
       <ul id="missatges" class="mostrar">
-        <li v-for="(msg, index) in messages" :key="msg.id" :id="msg.id" :class="{ propio: msg.emisor === user.id, servidor: msg.emisor === -1 }">
+        <li v-for="(msg, index) in messages" :key="msg.id" :id="msg.id" :class="{ propio: msg.emisor === user.id || (msg.emisor === 0 && user.rol ===2), servidor: msg.emisor === -1 }">
           <template v-if="msg.editando">
             <input class="editorMsj" v-model="msjEditado" />
             <div class="operacionesMsj">
@@ -50,7 +50,7 @@
 <script setup>
 import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue';
 import { useCounterStore } from '../stores/counter';
-import { guardarMissatgeBBDD } from '@/services/communictationManager.js';
+import { guardarChatBBDD, guardarMissatgeBBDD } from '@/services/communictationManager.js';
 import escribiendoSvg from '@/assets/svg/escribiendo.svg';
 import botonEditar from '@/assets/svg/botonEditar.svg';
 import { v4 as uuidv4 } from 'uuid';
@@ -66,7 +66,7 @@ const messages = reactive([]);
 const input = ref('');
 let msjEditado = ref('');
 let pausaMensaje = ref(false);
-let escribiendo = reactive({ value: false, usuarioEscritor: '' });//para cuando escriba professor, falta pensarlo
+let escribiendo = reactive({ value: false});
 let chatEnEspera = ref(false);
 let chatConBot = ref(true);
 
@@ -75,13 +75,18 @@ const agregarMensajeUsuario = (event) => {
   if (input.value.trim().length > 0 && !pausaMensaje.value) {
     messages.push({ id: uuidv4(), texto: input.value, emisor: user.id, editando: false, editado: false });
     input.value = '';
-    if (msjAutomaticos.length > 1) {
-      enviarMensajeAutomatico();
-    } else if (msjAutomaticos.length === 1) {
-      enviarMensajeAutomatico();
-      chatEnEspera.value = true;
-      busquedaContacto();
-      guardarChatBD();//hay que hacer
+    
+    if (chatConBot.value) {
+      if (msjAutomaticos.length > 1) {
+        enviarMensajeAutomatico();
+      } else if (msjAutomaticos.length === 1) {
+        enviarMensajeAutomatico();
+        chatEnEspera.value = true;
+        busquedaContacto();
+        // guardarChatBBDD();//hay que hacer
+      }      
+    }else{
+      socket.emit('sendMessage', messages[messages.length - 1]);
     }
     deslizarHastaAbajo();
   }
@@ -95,7 +100,7 @@ const deslizarHastaAbajo = () => {
 };
 
 const agregarMensajeBot = (texto) => {
-  messages.push({ id: uuidv4(), texto, emisor: 0 });
+  messages.push({ id: uuidv4(), texto, emisor: 0, editando: null, editado: null });
 };
 
 const enviarMensajeAutomatico = () => {
@@ -128,21 +133,12 @@ const busquedaContacto = () => {
   socket.emit('busquedaContacto', user);
 };
 
-function sendMessage() {
-  if (input.value) {
-    socket.emit('sendMessage', input.value);//falta, meter en un if si chatConBot.value
-    // guardarMissatgeBBDD(input.value);
-    input.value = '';
-  }
-};
-
 onMounted(() => {
-  messages.push({ id: uuidv4(), texto: "chat iniciado", emisor: -1 });
   agregarMensajeBot('¿Estás seguro de que deseas publicar una alerta? En caso de uso indebido, se podrá bloquear el acceso al sistema. Para continuar, contesta las siguientes preguntas: ');
   enviarMensajeAutomatico();
 
   socket.on('storeMessage', (msg) => {
-    messages.push(msg);//falta
+    messages.push(msg);
   });
 
   socket.on('obtenerRol', () => {
@@ -180,15 +176,23 @@ onMounted(() => {
     });
   });
 
-  socket.on('sinRespuesta', () => {
+  socket.on('sinRespuesta', (res) => {
     //añadir proceso de guardar en la seccion de no respondidos de los admin con mis datos para que me puedan contactar
+    alert('error');//esto va
+    console.log(res);
   });
 
-  socket.on('chatAceptado', () => {
+  socket.on('connexionChats', () => {
     chatEnEspera.value = false;
     chatConBot.value = false;
-    messages.push({ id: uuidv4(), texto: "chat iniciado", emisor: -1 });
-    //enviar al profesor messages hago un profSocket.emit o socket.emit y que me coja al professor afiliado a mi
+    messages.push({ id: uuidv4(), texto: "chat iniciado", emisor: -1, editando: null, editado: null });
+    socket.emit('compartirChat', messages); 
+  });
+
+  socket.on('cargarChat', (mensajes) => {
+    chatEnEspera.value = false;
+    chatConBot.value = false;
+    messages.splice(0, messages.length, ...mensajes);
   });
 });
 

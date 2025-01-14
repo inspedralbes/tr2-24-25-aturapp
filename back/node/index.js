@@ -64,16 +64,29 @@ io.on('connection', (socket) => {
       if (profSocket) {
         profesores.get(profSocket).alumnoAsignado = socket;
         alumnos.get(socket).profesorAsignado = profSocket;
-        socket.emit('chatAceptado', id);
-        profSocket.emit('chatAceptado', socket.id);
+        socket.emit('connexionChats');
+        socket.on('compartirChat', (mensajes) => {
+          profSocket.emit('cargarChat', mensajes);
+        });
         clearTimeout(timer);
       } else {
         console.log('Error al buscar el socket del profesor mediante id');
       }
     });
   });
-  
+
   socket.on('sendMessage', (msg) => {
+    if (alumnos.has(socket)) {
+      const profesorSocket = alumnos.get(socket).profesorAsignado;
+      if (profesorSocket) {
+        profesorSocket.emit('storeMessage', msg);
+      }
+    }else if (profesores.has(socket)) {
+      const alumnoSocket = profesores.get(socket).alumnoAsignado;
+      if (alumnoSocket) {
+        alumnoSocket.emit('storeMessage', msg);
+      }
+    }
     console.log('message: ' + msg);
     io.emit('storeMessage', msg);
   });
