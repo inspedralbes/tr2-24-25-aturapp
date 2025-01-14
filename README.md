@@ -30,9 +30,9 @@
 
 ## 🔗 Annexos
 
-- **Taiga**(https://tree.taiga.io/project/arnaubarrerosorribas-aturapp/timeline)
-- **Penpot**(https://design.penpot.app/#/view/a0a8e792-b2d2-818e-8005-5cd55650721d?page-id=a0a8e792-b2d2-818e-8005-5cd55650721e&section=interactions&index=0&share-id=a0a8e792-b2d2-818e-8005-5d01c5325112)
-- **Pàgina web**(http://aturapp.daw.inspedralbes.cat)
+- [**Taiga**](https://tree.taiga.io/project/arnaubarrerosorribas-aturapp/timeline)
+- [**Penpot**](https://design.penpot.app/#/view/a0a8e792-b2d2-818e-8005-5cd55650721d?page-id=a0a8e792-b2d2-818e-8005-5cd55650721e&section=interactions&index=0&share-id=a0a8e792-b2d2-818e-8005-5d01c5325112)
+- [**Pàgina web**](http://aturapp.daw.inspedralbes.cat)
 
 
 **Estat**: En procès 🕧
