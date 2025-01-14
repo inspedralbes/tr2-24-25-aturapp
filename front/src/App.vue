@@ -4,6 +4,7 @@ import { RouterView } from 'vue-router';
 import { useCounterStore } from "./stores/counter";
 import AlumnoNavbar from "./components/AlumnoNavbar.vue";
 import AdminNavbar from "./components/AdminNavbar.vue";
+import socket from '@/services/socket.js';
 
 const store = useCounterStore();
 

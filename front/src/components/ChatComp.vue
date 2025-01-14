@@ -124,6 +124,7 @@ const actualizarMensaje = (msg) => {
   msg.texto = msjEditado.value;
   msg.editado = true;
   msg.editando = false;
+  //actualizar en la bbdd
 };
 
 const cancelarEdicion = (msg) => {
@@ -140,42 +141,11 @@ onMounted(() => {
 
   socket.on('storeMessage', (msg) => {
     messages.push(msg);
-    //
   });
 
   socket.on('obtenerRol', () => {
     console.log('servidor solicita rol del usuario' + user.id);
     socket.emit('rol', { id: user.id, rol: user.rol });
-  });
-
-  socket.on('peticionChat', () => {
-    Swal.fire({
-      title: "Un alumno esta intentando iniciar un chat, quieres aceptarlo?",
-      width: 600,
-      showDenyButton: true,
-      confirmButtonText: "Aceptar",
-      denyButtonText: `Rechazar`
-    }).then((result) => {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true
-      });
-      if (result.isConfirmed) {
-        Toast.fire({
-          icon: "success",
-          title: "Chat aceptado"
-        });
-        socket.emit('chatAceptado', user.id);
-      } else if (result.isDenied) {
-        Toast.fire({
-          icon: "error",
-          title: "Chat rechazado"
-        });
-      }
-    });
   });
 
   socket.on('sinRespuesta', (res) => {
