@@ -67,3 +67,7 @@ Edita el fitxer .env per personalitzar la configuració segons sigui necessari (
 ```bash
 docker compose up --build
 ```
+
+### 5️⃣  Accedeix al projecte
+El backend estarà accessible a: http://localhost:8000
+El frontend (si està configurat) estarà accessible a: http://localhost
