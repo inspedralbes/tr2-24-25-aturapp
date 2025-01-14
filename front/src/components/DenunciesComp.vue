@@ -4,7 +4,7 @@
             <div id="chats-container">
                 <h2>Denuncies fetes</h2>
                 <div id="alert-list">
-                    <div class="alert-card" v-for="chat in chats" @click="verChat(chat.id, chat.alumne_id)">
+                    <div class="alert-card" v-for="chat in chats" @click="verChat(chat)">
                         <h3 class="alert-title">Denuncia #{{ chat.id }}</h3>
                         <div class="alert-footer">
                             <span class="alert-user">Reportado por: {{ chat.alumne_nom }} {{ chat.alumne_cognom
@@ -36,6 +36,11 @@
                             </li>
                         </ul>
                     </div>
+                    <a :href="'mailto:' + chatInfo.alumne_email">
+                        <button class="btn-email">
+                            Enviar correo
+                        </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -62,6 +67,7 @@ const router = useRouter();
 const route = useRoute();
 const chatAbierto = ref(false);
 const chats = ref();
+const chatInfo = ref();
 const chatMessages = ref();
 const chatAlumneID = ref();
 
@@ -74,35 +80,13 @@ function formatFecha(isoDate) {
     return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
 }
 
-// async function getUser(){
-//     try {
-//         const response = await fetch(`${BASE_URL}/api/getUser`, {
-//             method: 'POST',
-//             headers: {
-//                 "Content-type": "application/json",
-//             },
-//             body: JSON.stringify({
-//                 alumne_id: infoAlerta.value.alumne_id,
-//             })
-//         });
-
-//         if (!response.ok) {
-//             throw new Error("Error en la solicitud");
-//         }
-
-//         const result = await response.json();
-//         console.log(result)
-//         return result;
-//     } catch (error) {
-//         console.error(error);
-//     }
-// }
-
-async function verChat(chatID, alumneID) {
+async function verChat(chat) {
+    chatInfo.value = chat;
     chatAbierto.value = true;
-    chatAlumneID.value = alumneID;
+    chatAlumneID.value = chatInfo.value.alumne_id;
     console.log(user)
-    chatMessages.value = await getChatMessagesBBDD(chatID, user.rol);
+    console.log(chatInfo.value);
+    chatMessages.value = await getChatMessagesBBDD(chatInfo.value.id, user.rol);
     console.log(chatMessages.value)
 }
 
@@ -116,6 +100,22 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+
+.btn-email{
+    background-color: rgb(255, 199, 199);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: rgb(0, 0, 70);
+    font-size: 20px;
+    position: absolute;
+    bottom: 0;
+    left: 30px;
+    right: 30px;
+    margin: auto;
+    cursor: pointer;
+}
 
 /* CHAT Y MENSAJES */
 #contenedor-mensajes {
@@ -344,6 +344,7 @@ onMounted(async () => {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     height: 80vh;
     border-radius: 8px;
+    position: relative;
 }
 
 .show-container>div:first-child {
