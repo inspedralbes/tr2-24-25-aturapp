@@ -134,6 +134,12 @@ const router = createRouter({
       meta: { requiresAuth: true, rol: 2 },
     },
     {
+      path: '/admin/denuncies',
+      name: 'denuncies',
+      component: () => import('../components/DenunciesComp.vue'),
+      meta: { requiresAuth: true, rol: 2 },
+    },
+    {
       path: '/password/solicitar',
       name: 'Solicitar reset password',
       component: () => import('../components/SolicitarResetComp.vue'),

@@ -1,4 +1,5 @@
 <?php
+    use App\Http\Controllers\ChatController;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Route;
     use App\Http\Controllers\RolController;
@@ -84,7 +85,19 @@
 
     //====== VER PREGUNTAS ========================
     Route::get('/preguntas', [PreguntaController::class, 'index']);
-    
+
+
+    //====== CHATS/MENSAJES ========================
+    Route::post('/guardarMensaje', [MessageController::class, 'store']);
+
+    Route::post('/crearChat', [ChatController::class, 'create']);
+
+    Route::get('/getChats', [ChatController::class,'index']);
+
+    Route::post('/getChatMessages', [MessageController::class,'show']);
+
+    Route::post('/editMessage', [MessageController::class,'update']);
+
     //====== CAMBIAR PASSWORD =====================
     Route::post('/password/reset/email', [PasswordResetController::class, 'sendEmail']);
 

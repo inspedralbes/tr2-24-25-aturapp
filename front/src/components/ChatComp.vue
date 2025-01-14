@@ -50,7 +50,7 @@
 <script setup>
 import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue';
 import { useCounterStore } from '../stores/counter';
-import { guardarChatBBDD, guardarMissatgeBBDD } from '@/services/communictationManager.js';
+import { guardarChatBBDD, guardarMissatgeBBDD, crearChatBBDD, editarMessageBBDD } from '@/services/communictationManager.js';
 import escribiendoSvg from '@/assets/svg/escribiendo.svg';
 import botonEditar from '@/assets/svg/botonEditar.svg';
 import { v4 as uuidv4 } from 'uuid';
@@ -64,6 +64,7 @@ let user = store.userData.user;
 const msjAutomaticos = reactive(['Has visto o has sufrido el incidente?', '¿En que curso ha sucedido el incidente?', '¿Como definirias el incidente?', '¿Donde ha ocurrido el incidente?', '¿Cuando ha ocurrido el incidente?', 'Proporciona informacion sobre las personas involucradas(relaciones, cursos)', 'En el menor tiempo posible, un miembro del equipo se pondrá en contacto contigo para solucionar la situacion. Gracias por tu colaboración. Redacta la informacion que quieras añadir.']);
 const messages = reactive([]);
 const input = ref('');
+let chatID = ref();
 let msjEditado = ref('');
 let pausaMensaje = ref(false);
 let escribiendo = reactive({ value: false});
@@ -77,7 +78,16 @@ const test = () => {
 const agregarMensajeUsuario = (event) => {
   event.preventDefault();
   if (input.value.trim().length > 0 && !pausaMensaje.value) {
-    messages.push({ id: uuidv4(), texto: input.value, emisor: user.id, editando: false, editado: false });
+    let msg = {
+      emisor: user.id,
+      texto: input.value,
+      chat_id: chatID.value,
+      id_message: uuidv4(),
+      editado: 0,
+      editando: 0,
+    }
+    messages.push(msg);
+    guardarMissatgeBBDD(msg);
     input.value = '';
     
     if (chatConBot.value) {
@@ -87,8 +97,8 @@ const agregarMensajeUsuario = (event) => {
         enviarMensajeAutomatico();
         chatEnEspera.value = true;
         busquedaContacto();
-        // guardarChatBBDD();//hay que hacer
-      }      
+        // guardarChatBBDD(); //hay que hacer
+      }  
     }else{
       socket.emit('sendMessage', messages[messages.length - 1]);
       //guardar en la base de datos cada mensaje enviado
@@ -105,7 +115,16 @@ const deslizarHastaAbajo = () => {
 };
 
 const agregarMensajeBot = (texto) => {
-  messages.push({ id: uuidv4(), texto, emisor: 0, editando: null, editado: null });
+  let msg = {
+      emisor: null,
+      texto: texto,
+      chat_id: chatID.value,
+      id_message: uuidv4(),
+      editado: null,
+      editando: null,
+    }
+  messages.push(msg);
+  if(chatID.value) guardarMissatgeBBDD(msg);
 };
 
 const enviarMensajeAutomatico = () => {
@@ -124,11 +143,12 @@ const editarMensaje = (msg) => {
   msjEditado.value = msg.texto;
 };
 
-const actualizarMensaje = (msg) => {
+const actualizarMensaje = async (msg) => {
   msg.texto = msjEditado.value;
   msg.editado = true;
   msg.editando = false;
-  //actualizar en la bbdd
+  console.log(user.id);
+  await editarMessageBBDD(msg.id_message, user.id, msg.texto)
 };
 
 const cancelarEdicion = (msg) => {
@@ -139,10 +159,12 @@ const busquedaContacto = () => {
   socket.emit('busquedaContacto', user);
 };
 
-onMounted(() => {
+onMounted(async () => {
   agregarMensajeBot('¿Estás seguro de que deseas publicar una alerta? En caso de uso indebido, se podrá bloquear el acceso al sistema. Para continuar, contesta las siguientes preguntas: ');
   enviarMensajeAutomatico();
-
+  chatID.value = await crearChatBBDD(user.id);
+  chatID.value = chatID.value.id;
+  console.log(chatID.value);
   socket.on('storeMessage', (msg) => {
     messages.push(msg);
   });
@@ -153,7 +175,7 @@ onMounted(() => {
   });
 
   socket.on('sinRespuesta', (res) => {
-    //Aqui trabajas agus
+    console.log(messages);
     //una seccio 
     //añadir proceso de guardar en la seccion de no respondidos de los admin con mis datos para que me puedan contactar
     alert('error');//esto va
@@ -178,6 +200,7 @@ onUnmounted(() => {
   socket.off();
 });
 </script>
+
 <style scoped>
 #encabezado {
   background-color: #c24513;

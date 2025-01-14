@@ -7,8 +7,8 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    // origin: 'http://localhost',
-    origin: 'http://localhost:5173',
+    origin: 'http://localhost',
+    // origin: 'http://localhost:5173',
     methods: ['GET', 'POST']
   }
 });
@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
     const timer = setTimeout(() => {
       if (!chatAceptado) {
         console.log("chatAceptado::emit");
-
+  
         socket.emit('sinRespuesta', {
           mensaje: 'No se encontró un profesor disponible. Se te contactará los mas pronto posible mediante mail, puedes seguir añadiendo informacion en el chat.',
         });

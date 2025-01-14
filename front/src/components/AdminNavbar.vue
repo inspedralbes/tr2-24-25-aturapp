@@ -7,7 +7,7 @@
             <li style="cursor: pointer;" @click="navigateTo('/alumnes')">ALUMNES</li>
             <li style="cursor: pointer;" @click="navigateTo('/estadisticas')">ESTADISTICAS</li>
             <li style="cursor: pointer;" @click="navigateTo('/sociograma')">SOCIOGRAMA</li>
-            <li style="cursor: pointer;" @click="navigateTo('/incidencia')">INCIDENCIA</li>
+            <li style="cursor: pointer;" @click="navigateTo('/denuncies')">DENUNCIES</li>
         </ul>
     </div>
 </template>
