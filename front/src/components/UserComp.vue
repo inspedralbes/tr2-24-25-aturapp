@@ -4,10 +4,11 @@ import { useCounterStore } from '../stores/counter';
 import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
 
 const store = useCounterStore();
-const BASE_URL = "http://localhost:8000/api";
 const user = store.userData.user;
-const token = store.userData.token;
 const fotoPerfil = ref(user.foto);
+const token = store.userData.token;
+let id_user = store.userData.user.id;
+const mostrarBotonEncuesta = ref(true);
 
 const router = useRouter();
 function navigateTo(nameRoute) {
@@ -29,7 +30,7 @@ function cerrarSesion() {
     location.href = "/login";
 }
 
-import { obtenerFotoPerfil } from '../services/communictationManager';
+import { obtenerFotoPerfil, verificar_usuario_enquesta } from '../services/communictationManager';
 
 const obtenerFotoPerfilAsync = async () => {
     try {
@@ -43,13 +44,33 @@ const obtenerFotoPerfilAsync = async () => {
     }
 };
 
+const verificarUsuarioEnquestaAsync = async (id_user) => {
+    try {
+        const respuesta = await verificar_usuario_enquesta(id_user);
 
-onMounted (() => {
-    if(!user.foto){
+        if (respuesta.Enquesta_resposta) {
+            mostrarBotonEncuesta.value = false;
+        } else {
+            mostrarBotonEncuesta.value = true; 
+        }
+    } catch (error) {
+        console.error("Error al verificar el usuario para la encuesta:", error);
+    }
+};
+
+
+
+onMounted(() => {
+    if (!user.foto) {
         obtenerFotoPerfilAsync();
     }
-})
+
+    verificarUsuarioEnquestaAsync(id_user);
+});
+
 </script>
+
+
 
 <template>
     <div class="containHeader">
@@ -70,14 +91,17 @@ onMounted (() => {
         <button @click="navigateTo('perfil/alertes')">
             <p>Les meves alertes</p>
         </button>
-        <button @click="navigateTo('soport')">
-            <p>Soport de l'aplicació</p>
+        
+        <button v-if="mostrarBotonEncuesta" @click="navigateTo('enquesta')">
+            <p>Respondre enquesta</p>
         </button>
+
         <button @click="cerrarSesion">
             <p>Tancar sessió</p>
         </button>
     </div>
 </template>
+
 
 <style scoped>
 .bg-red {

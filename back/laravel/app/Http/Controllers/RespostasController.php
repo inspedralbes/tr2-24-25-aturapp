@@ -89,4 +89,13 @@
         public function update(Request $request, Respostas $respostas) {}
 
         public function destroy(Respostas $respostas) {}
+
+        public function verificarAlumno($id)
+        {
+            $exists = Respostas::where('id_alumno_emisor', $id)->exists();
+    
+            return response()->json([
+                'Enquesta_resposta' => $exists,
+            ]);
+        }
     }

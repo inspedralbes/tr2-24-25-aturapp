@@ -10,13 +10,8 @@
     use App\Http\Controllers\PreguntaController;
     use App\Http\Controllers\RespostasController;
 
-
-
-
     use App\Http\Controllers\EmailController;
     use App\Http\Controllers\PasswordResetController;
-
-
 
 
     Route::get('/user', function (Request $request) {
@@ -101,3 +96,5 @@
 
     //====== VER ANALISIS =========================
     Route::get('/analisis', [RespostasController::class, 'get']);
+
+    Route::get('/verificar-alumno/{id}', [RespostasController::class, 'verificarAlumno']);

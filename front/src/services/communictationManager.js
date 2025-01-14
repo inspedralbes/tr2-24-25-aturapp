@@ -639,3 +639,24 @@ export async function updateFoto( formData, token){
         console.error('Error al subir la imagen: ', error);
     }
 }
+
+export async function verificar_usuario_enquesta(id) {
+    try {
+        const response = await fetch(`${laravel.URL}/verificar-alumno/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error en la solicitud: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error al verificar el usuario:', error);
+        throw error;
+    }
+}
