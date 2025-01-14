@@ -61,7 +61,8 @@ import socket from '@/services/socket.js';
 const store = useCounterStore();
 let user = store.userData.user;
 
-const msjAutomaticos = reactive(['Has visto o has sufrido el incidente?', '¿En que curso ha sucedido el incidente?', '¿Como definirias el incidente?', '¿Donde ha ocurrido el incidente?', '¿Cuando ha ocurrido el incidente?', 'Proporciona informacion sobre las personas involucradas(relaciones, cursos)', 'En el menor tiempo posible, un miembro del equipo se pondrá en contacto contigo para solucionar la situacion. Gracias por tu colaboración. Redacta la informacion que quieras añadir.']);
+// const msjAutomaticos = reactive(['Has visto o has sufrido el incidente?', '¿En que curso ha sucedido el incidente?', '¿Como definirias el incidente?', '¿Donde ha ocurrido el incidente?', '¿Cuando ha ocurrido el incidente?', 'Proporciona informacion sobre las personas involucradas(relaciones, cursos)', 'En el menor tiempo posible, un miembro del equipo se pondrá en contacto contigo para solucionar la situacion. Gracias por tu colaboración. Redacta la informacion que quieras añadir.']);
+const msjAutomaticos = reactive(['Proporciona informacion sobre las personas involucradas(relaciones, cursos)', 'En el menor tiempo posible, un miembro del equipo se pondrá en contacto contigo para solucionar la situacion. Gracias por tu colaboración. Redacta la informacion que quieras añadir.']);
 const messages = reactive([]);
 const input = ref('');
 let chatID = ref();
@@ -87,14 +88,17 @@ const agregarMensajeUsuario = async (event) => {
       id_message: uuidv4(),
       editado: 0,
       editando: 0,
-    }
+    };
     messages.push(msg);
-    alert(messageCount.value);
-    if (messageCount.value == 3) {
+    if (messageCount.value === 3) {
       chatID.value = await crearChatBBDD(user.id);
       chatID.value = chatID.value.id;
+      msg.chat_id = chatID.value;
     }
-    if (messageCount.value > 2) await guardarMissatgeBBDD(msg);
+    if (chatID.value){
+      console.log(msg)
+      await guardarMissatgeBBDD(msg);
+    }
     input.value = '';
     
     if (chatConBot.value) {

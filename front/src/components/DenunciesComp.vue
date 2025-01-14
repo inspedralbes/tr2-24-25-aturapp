@@ -55,6 +55,7 @@ import { useCounterStore } from '../stores/counter';
 import { getChatsBBDD, getChatMessagesBBDD } from '@/services/communictationManager.js';
 import escribiendoSvg from '@/assets/svg/escribiendo.svg';
 import botonEditar from '@/assets/svg/botonEditar.svg';
+import socket from '@/services/socket.js';
 
 const BASE_URL = 'http://localhost:8000';
 const store = useCounterStore();
