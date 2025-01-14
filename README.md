@@ -35,6 +35,35 @@
 - [**Pàgina web**](http://aturapp.daw.inspedralbes.cat)
 
 
-
-
 **Estat**: En procès 🕧
+
+
+## 🚀 Pas a pas per integrar-se al projecte  
+
+Si ets un nou membre de l'equip, segueix aquests passos per configurar l'entorn de desenvolupament amb Docker i començar a treballar en el projecte.  
+
+### 1️⃣ Clona el repositori  
+Primer, clona aquest repositori al teu ordinador:  
+
+```bash
+git clone https://github.com/inspedralbes/tr2-24-25-aturapp.git aturapp
+cd aturapp
+```
+
+### 2️⃣ Instal·la Docker  
+Assegura't de tenir Docker i Docker Compose instal·lats al teu ordinador. Si no els tens instal·lats, pots fer-ho des dels següents enllaços:  
+- [Descarrega Docker](https://www.docker.com/products/docker-desktop)  
+- [Guia per instal·lar Docker Compose](https://docs.docker.com/compose/install/)
+
+### 3️⃣ Crea el fitxer `.env`  
+Copia el fitxer d'exemple `.env.example` i crea el fitxer `.env`:  
+
+```bash
+cp .env.example .env
+```
+Edita el fitxer .env per personalitzar la configuració segons sigui necessari (per exemple, credencials de la base de dades).
+
+### 4️⃣ Inicia els contenidors
+```bash
+docker compose up --build
+```
