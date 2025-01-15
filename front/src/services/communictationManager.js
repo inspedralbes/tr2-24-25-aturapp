@@ -604,9 +604,6 @@ export async function obtenerFotoPerfil(user_id, token){
 }
 
 
-
-
-
 export async function GetUserSectorAlertas(alumne_id) {
     try {
         const response = await fetch(`${laravel.URL}/getUser`, {

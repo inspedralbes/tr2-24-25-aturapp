@@ -39,6 +39,7 @@ const obtenerFotoPerfilAsync = async () => {
         const data = await response;
         
         fotoPerfil.value = data.foto || '';
+        console.log(fotoPerfil.value);
     } catch (error) {
         console.error('Error al obtener la foto de perfil:', error);
     }
@@ -61,9 +62,9 @@ const verificarUsuarioEnquestaAsync = async (id_user) => {
 
 
 onMounted(() => {
-    if (!user.foto) {
+    //if (!user.foto) {
         obtenerFotoPerfilAsync();
-    }
+    //}
 
     verificarUsuarioEnquestaAsync(id_user);
 });

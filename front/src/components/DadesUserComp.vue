@@ -10,7 +10,7 @@
     </div>
     <div class="d-flex align-center f-column contentProfile" style="z-index: 20;">
         <div id="profileImage">
-            <img :src="fotoPerfil || '../../public/assets/svg/noimage.svg'" alt="photo">
+            <img :src="fotoPerfil.foto || '../../public/assets/svg/noimage.svg'" alt="photo">
             <div id="contain-edit-btn">
                 <button @click="abrirSelector" id="edit-btn" class="d-flex j-center align-center">
                     <img src="../../public/assets/svg/pencil.svg" alt="edit">
@@ -39,7 +39,6 @@ import { ref, onMounted } from 'vue';
 import { useCounterStore } from '../stores/counter';
 import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
 
-const BASE_URL = "http://localhost:8000/api";
 const router = useRouter();
 const store = useCounterStore();
 let user = store.userData.user;
@@ -72,7 +71,7 @@ const procesarImagen = async (event) => {
         const data = await updateFoto(formData, token);
 
         if (data.success){
-            fotoPerfil.value = data.path;
+            fotoPerfil.value = await obtenerFotoPerfil(user.id, token);
         }else{
             alert('Ha ocurrido un error al subir la imagen');
         }
@@ -91,9 +90,9 @@ async function getFotoPerfil() {
     }
 
 onMounted(() => {
-    if(!user.foto){
+    //if(!user.foto){
         getFotoPerfil();
-    }
+    //}
 })
 
 async function editarPerfil() {
@@ -103,7 +102,8 @@ async function editarPerfil() {
             nom: nom.value,
             cognom: cognom.value,
             telefon: telefon.value,
-            dni: dni.value
+            dni: dni.value,
+            foto: fotoPerfil.value
         };
 
         const result = await editarPerfilUser(payload);
@@ -114,7 +114,7 @@ async function editarPerfil() {
             store.userData.user.cognom = result.user.cognom ?? store.userData.user.cognom;
             store.userData.user.dni = result.user.dni ?? store.userData.user.dni;
             store.userData.user.telefon = result.user.telefon ?? store.userData.user.telefon;
-            store.userData.user.foto = `http://localhost:8000/photos/${result.user.foto}`;
+            store.userData.user.foto = result.user.foto;
             console.log(result.user);
             user = JSON.stringify(result.user);
         } else {

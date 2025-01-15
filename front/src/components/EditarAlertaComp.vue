@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useCounterStore } from '@/stores/counter';
 import { getAlertById, updateAlert } from '../services/communictationManager';
-const BASE_URL = "http://localhost:8000";
+
 const store = useCounterStore();
 const route = useRoute();
 const router = useRouter();

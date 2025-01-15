@@ -57,7 +57,6 @@ import escribiendoSvg from '@/assets/svg/escribiendo.svg';
 import botonEditar from '@/assets/svg/botonEditar.svg';
 import socket from '@/services/socket.js';
 
-const BASE_URL = 'http://localhost:8000';
 const store = useCounterStore();
 let user = store.userData.user;
 let msjEditado = ref('');
