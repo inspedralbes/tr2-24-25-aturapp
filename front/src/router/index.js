@@ -38,7 +38,8 @@ const router = createRouter({
       path: '/chat',
       name: 'chat',
       component: () => import('../components/ChatComp.vue'),
-      meta: { requiresAuth: true, rol: 1 },
+      meta: {},
+      // meta: { requiresAuth: true, rol: 1 },
     },
     {
       path: '/mapa',
@@ -131,6 +132,12 @@ const router = createRouter({
       path: '/admin/estadisticas',
       name: 'estadisticas',
       component: () => import('../components/EstadisticasComp.vue'),
+      meta: { requiresAuth: true, rol: 2 },
+    },
+    {
+      path: '/admin/denuncies',
+      name: 'denuncies',
+      component: () => import('../components/DenunciesComp.vue'),
       meta: { requiresAuth: true, rol: 2 },
     },
     {

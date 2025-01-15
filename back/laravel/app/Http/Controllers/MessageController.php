@@ -29,20 +29,45 @@ class MessageController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nom' => 'required|string|unique:categorias',
+            'emisor' => 'sometimes|nullable|integer',
+            'texto' => 'required|string',
+            'chat_id' => 'required|integer',
+            'id_message' => 'required|string',
+            'editado' => 'sometimes|nullable|boolean'
         ]);
 
-        Message::create([
-            'nom'=> $request['nom'],
-        ]);
+        try {
+            $message = Message::create([
+                'emisor' => $request->emisor,
+                'texto' => $request->texto,
+                'chat_id' => $request->chat_id,
+                'id_message' => $request->id_message,
+                'editado' => $request->editado,
+            ]);
+
+            return response()->json(['message' => 'Mensaje creado exitosamente', 'data' => $message], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al crear el mensaje', 'details' => $e->getMessage()], 500);
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Message $message)
+    public function show(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'chat_id' => 'required|integer',
+            'rol_id' => 'required|integer'
+        ]);
+
+        if ($validated['rol_id'] === 2) {
+            $messages = Message::where('chat_id', $validated['chat_id'])->get();
+
+            return response()->json($messages);
+        }
+
+        return response()->json(['error' => 'Unauthorized'], 403);
     }
 
     /**
@@ -56,9 +81,28 @@ class MessageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Message $message)
+    public function update(Request $request)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'id_message' => 'required|string',
+                'alumno_id' => 'required|integer',
+                'textEdit' => 'required|string',
+            ]);
+    
+            $message = Message::where('id_message',$validated['id_message'])->first();
+    
+            if ($validated['alumno_id'] === $message->emisor) {
+                $message->texto = $validated['textEdit'];
+                $message->update();
+    
+                return response()->json(['message' => 'Mensaje editado exitosamente', 'data' => $message], 201);
+            }
+            return response()->json(['error' => 'Unauthorized'], 403);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Ocurrió un error al editar el mensaje', 'details' => $e->getMessage()], 500);
+        }
+
     }
 
     /**

@@ -1,14 +1,81 @@
 const laravel = { URL: "http://localhost:8000/api" }
 
-// === GUARDAR MISATGES ===================================
-export async function guardarMissatgeBBDD(msg) {
-    const URL = `${laravel.URL}/missatge`;
+// === GUARDAR CHAT    ====================================
+export async function guardarChatBBDD() {
+    const URL = `${laravel.URL}/guardarChat`;
     const response = await fetch(URL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ id_emisor: 'process', missatge: msg }),
+    });
+    const data = await response.json();
+    return data;
+}
+
+// === GUARDAR MISATGES ===================================
+export async function guardarMissatgeBBDD(msg) {
+    console.log(msg);
+    try {
+        const URL = `${laravel.URL}/guardarMensaje`;
+        const response = await fetch(URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ emisor: msg.emisor, texto: msg.texto, chat_id: msg.chat_id, id_message: msg.id_message, editado: msg.editado}),
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("error: ", error);
+    }
+}
+
+export async function crearChatBBDD(idAlumne) {
+    const URL = `${laravel.URL}/crearChat`;
+    const response = await fetch(URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ alumno_id: idAlumne })
+    });
+    const data = await response.json();
+    return data;
+}
+
+export async function getChatsBBDD() {
+    const URL = `${laravel.URL}/getChats`;
+    const response = await fetch(URL, {
+        method: 'GET',
+    });
+    const data = await response.json();
+    return data;
+}
+
+export async function getChatMessagesBBDD(chat_id, rol_id) {
+    const URL = `${laravel.URL}/getChatMessages`;
+    const response = await fetch(URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ chat_id: chat_id, rol_id: rol_id })
+    });
+    const data = await response.json();
+    return data;
+}
+
+export async function editarMessageBBDD(id_message, id_usuari, textoEditado) {
+    const URL = `${laravel.URL}/editMessage`;
+    const response = await fetch(URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id_message: id_message, alumno_id: id_usuari, textEdit: textoEditado })
     });
     const data = await response.json();
     return data;
