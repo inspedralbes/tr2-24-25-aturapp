@@ -7,15 +7,15 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost',
-    // origin: 'http://localhost:5173',
+    // origin: 'http://localhost',
+    origin: 'http://localhost:5173',
     methods: ['GET', 'POST']
   }
 });
 
 const alumnos = new Map();
 const profesores = new Map();
-const alumnosEsperando = [];
+const alumnosEsperando = new Map();
 
 app.get('/', (req, res) => {
   res.send('Todo OK');
@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   // socket.emit('obtenerRol');
   socket.on('connexion', (data) => {
-    
+
     if (data.rol == 1 && !alumnos.has(socket)) {
       alumnos.set(socket, { data, profesorAsignado: null });
     } else if (data.rol == 2 && !profesores.has(socket)) {
@@ -53,43 +53,39 @@ io.on('connection', (socket) => {
   socket.on('busquedaContacto', (data) => {
     let chatAceptado = false;
 
-    alumnosEsperando.push(socket);
+    alumnosEsperando.set(data, { socket, horaInicio: null, timer: null });
     profesores.forEach((value, profSocket) => {
       if (value.alumnoAsignado === null) {
         profSocket.emit('peticionChat', data);
       }
     });
 
-    const horaInicio = Date.now();
-    const timer = setTimeout(() => {
-      if (!chatAceptado) {
-        socket.emit('sinRespuesta', {
-          mensaje: 'No se encontró un profesor disponible. Se te contactará los mas pronto posible mediante mail, puedes seguir añadiendo informacion en el chat.',
-        });
-      }
-    }, 3 * 60 * 1000);
+    alumnosEsperando.get(data).horaInicio = new Date();
+    alumnosEsperando.get(data).timer =
+      setTimeout(() => {
+        if (!chatAceptado) {
+          socket.emit('sinRespuesta', {
+            mensaje: 'No se encontró un profesor disponible. Se te contactará los mas pronto posible mediante mail, puedes seguir añadiendo informacion en el chat.',
+          });
+        }
+      }, 1000);
+      // }, 3 * 60 * 1000);
+  });
 
-    // alumnosEsperando.set(socket, { timer, horaInicio });
+  socket.on('chatAceptado', (data) => {
+    // chatAceptado = true;
+    // clearTimeout(alumnosEsperando.get(data).timer);
+    // console.log(alumnosEsperando.get(data));
+    // alumnosEsperando.delete(data);
+    // console.log(profesores.get(socket));
+    const alumneSocket = getAlumneSocketById(data.user.id);
+    profesores.get(socket).alumnoAsignado = alumneSocket;
+    alumnos.get(alumneSocket).profesorAsignado = socket;
+    socket.emit('connexionChats');
+  });
 
-    socket.once('chatAceptado', () => {
-      console.log('chatAceptado::on');
-      console.log(socket);
-      if (chatAceptado) return;
-      chatAceptado = true;
-      const profSocket = getProfesorSocketById(id);
-      if (profSocket) {
-        profesores.get(profSocket).alumnoAsignado = socket;
-        alumnos.get(socket).profesorAsignado = profSocket;
-        socket.emit('connexionChats');
-        socket.once('compartirChat', (mensajes) => {
-          profSocket.emit('cargarChat', mensajes);
-        });
-        clearTimeout(timer);
-        usuariosEnEspera.has();
-      } else {
-        console.log('Error al buscar el socket del profesor mediante id');
-      }
-    });
+  socket.on('compartirChat', (data) => {
+    alumnos.get(socket).profesorAsignado.emit('cargarChat', data);
   });
 
   socket.on('sendMessage', (msg) => {
@@ -104,13 +100,13 @@ io.on('connection', (socket) => {
   });
 
   socket.on('test', () => {
-    socket.emit('test', {alumnos: Array.from(alumnos.values()), profesores: Array.from(profesores.values())});
+    socket.emit('test', { alumnos: Array.from(alumnos.values()), profesores: Array.from(profesores.values()) });
   });
 });
 
-function getProfesorSocketById(profesorId) {
-  for (const [socket, info] of profesores.entries()) {
-    if (info.data.id === profesorId) {
+function getAlumneSocketById(alumneId) {
+  for (const [socket, info] of alumnos.entries()) {
+    if (info.data.id === alumneId) {
       return socket;
     }
   }

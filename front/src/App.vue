@@ -1,22 +1,64 @@
 <script setup>
 import { computed, onMounted } from "vue";
-import { RouterView } from 'vue-router';
+import { RouterView, useRouter } from 'vue-router';
 import { useCounterStore } from "./stores/counter";
 import AlumnoNavbar from "./components/AlumnoNavbar.vue";
 import AdminNavbar from "./components/AdminNavbar.vue";
 import socket from '@/services/socket.js';
+import Swal from 'sweetalert2';
 
 const store = useCounterStore();
 
 const isLogged = computed(() => store.Iniciado);
 const isAlumne = computed(() => store.userData?.user?.rol === 1);
 const isAdmin = computed(() => store.userData?.user?.rol === 2);
+const router = useRouter();
 
 onMounted(() => {
   console.log('testeando');
   socket.on('test', () => {
     console.log('test');
   });
+
+  socket.on('peticionChat', (data) => {
+    Swal.fire({
+        title: "Un alumno esta intentando iniciar un chat, quieres aceptarlo?",
+        width: 600,
+        showDenyButton: true,
+        confirmButtonText: "Aceptar",
+        denyButtonText: `Rechazar`
+    }).then((result) => {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+        if (result.isConfirmed) {
+            Toast.fire({
+                icon: "success",
+                title: "Chat aceptado"
+            });
+            socket.emit('chatAceptado', data);
+            router.push('/chat');
+        } else if (result.isDenied) {
+            Toast.fire({
+                icon: "error",
+                title: "Chat rechazado"
+            });
+        }
+    });
+});
+
+  socket.on('cargarChat', (mensajes) => {
+    alert('cargarChat');
+    router.push('/chat');
+    chatEnEspera.value = false;
+    chatConBot.value = false;
+    messages.splice(0, messages.length, ...mensajes);
+  });
+
   if (store.Iniciado) {
     socket.emit('connexion', { id: store.userData.user.id, rol: store.userData.user.rol });
   }

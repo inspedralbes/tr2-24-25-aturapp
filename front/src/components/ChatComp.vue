@@ -1,7 +1,7 @@
 <template>
   <div id="chat-container">
     <div id="encabezado">
-      <h2>Jo no soc complice</h2><button @click="test()">test</button>
+      <h2>Jo no soc complice</h2>
     </div>
     <div id="contenedor-mensajes">
       <ul id="missatges" class="mostrar">
@@ -61,8 +61,8 @@ import socket from '@/services/socket.js';
 const store = useCounterStore();
 let user = store.userData.user;
 
-// const msjAutomaticos = reactive(['Has visto o has sufrido el incidente?', '¿En que curso ha sucedido el incidente?', '¿Como definirias el incidente?', '¿Donde ha ocurrido el incidente?', '¿Cuando ha ocurrido el incidente?', 'Proporciona informacion sobre las personas involucradas(relaciones, cursos)', 'En el menor tiempo posible, un miembro del equipo se pondrá en contacto contigo para solucionar la situacion. Gracias por tu colaboración. Redacta la informacion que quieras añadir.']);
-const msjAutomaticos = reactive(['Proporciona informacion sobre las personas involucradas(relaciones, cursos)', 'En el menor tiempo posible, un miembro del equipo se pondrá en contacto contigo para solucionar la situacion. Gracias por tu colaboración. Redacta la informacion que quieras añadir.']);
+const msjAutomaticos = reactive(['Has visto o has sufrido el incidente?', '¿En que curso ha sucedido el incidente?', '¿Como definirias el incidente?', '¿Donde ha ocurrido el incidente?', '¿Cuando ha ocurrido el incidente?', 'Proporciona informacion sobre las personas involucradas(relaciones, cursos)', 'En el menor tiempo posible, un miembro del equipo se pondrá en contacto contigo para solucionar la situacion. Gracias por tu colaboración. Redacta la informacion que quieras añadir.']);
+// const msjAutomaticos = reactive(['Proporciona informacion sobre las personas involucradas(relaciones, cursos)', 'En el menor tiempo posible, un miembro del equipo se pondrá en contacto contigo para solucionar la situacion. Gracias por tu colaboración. Redacta la informacion que quieras añadir.']);
 const messages = reactive([]);
 const input = ref('');
 let chatID = ref();
@@ -165,7 +165,7 @@ const cancelarEdicion = (msg) => {
 };
 
 const busquedaContacto = () => {
-  socket.emit('busquedaContacto', user);
+  socket.emit('busquedaContacto', {user, chatID: chatID.value});
 };
 
 onMounted(() => {
@@ -190,16 +190,11 @@ onMounted(() => {
   });
 
   socket.on('connexionChats', () => {
+    alert('connexionChats');
     chatEnEspera.value = false;
     chatConBot.value = false;
     messages.push({ id: uuidv4(), texto: "chat iniciado", emisor: -1, editando: null, editado: null });
     socket.emit('compartirChat', messages); 
-  });
-
-  socket.on('cargarChat', (mensajes) => {
-    chatEnEspera.value = false;
-    chatConBot.value = false;
-    messages.splice(0, messages.length, ...mensajes);
   });
 });
 
