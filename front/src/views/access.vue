@@ -14,8 +14,8 @@ function goToRegister() {
 
 <template>
   <div class="initial-page">
-    <h1>Bienvenido a ATURAPP</h1>
-    <p>¿Qué deseas hacer?</p>
+    <h1>Benvingut a ATURAPP</h1>
+    <p>Que desitges fer</p>
     <div class="link-container">
       <a @click.prevent="goToLogin" class="link">Iniciar Sesión</a>
       <a @click.prevent="goToRegister" class="link">Registrarse</a>

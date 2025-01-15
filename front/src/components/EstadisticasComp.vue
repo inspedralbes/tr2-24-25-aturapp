@@ -8,16 +8,18 @@
         </ul>
         <div id="statsContain">
             <div id="item-a" class="box">
-                <p class="no-margin">Alertas recibidas</p><span class="resultado">{{ count(alertas_recibidas) }}</span>
+                <p class="no-margin">Alertes rebudes</p><span class="resultado">{{ count(alertas_recibidas) }}</span>
             </div>
             <div id="item-b" class="box">
-                <p class="no-margin">Porcentaje de éxito (test)</p><span class="resultado">87%</span>
+                <p class="no-margin">Percentatge d'èxit (prova)</p><span class="resultado">87%</span>
+                <!-- {{ porcentajeExito() }} -->
             </div>
             <div id="item-c" class="box">
-                <p class="no-margin">Ranking sectores</p>
+                <p class="no-margin">Ranking sectors</p>
                 <ul>
                     <li v-for="index in 3" class="ranking-item">
-                        <p class="ranking-text">{{ index }} - {{ formatText(rankingSectores[index - 1]?.nombre) }}</p>
+                        <p class="ranking-text">{{ index }} - {{ formatText(rankingSectores[index - 1]?.nombre) }} ({{
+                            rankingSectores[index - 1]?.planta }})</p>
                     </li>
                 </ul>
             </div>
@@ -37,32 +39,41 @@
 
 <script setup>
 import { Chart, registerables } from "chart.js";
+import { getAlertsFilter, getAllAlerts } from '../services/communictationManager';
 import { ref, onMounted } from 'vue';
-import { getAlerts, getAllAlerts } from '../services/communictationManager';
-
 const time = ref('total');
 const quant = ref('0');
-const alertas_recibidas = ref([]);
+const alertas_recibidas = ref();
 const rankingSectores = ref([]);
 
 const tipo = ref('pie');
-const etiquetas = ref([]);
+const etiquetas = ref();
 const datos = ref([12, 19, 3, 5, 2]);
 
 const chartCanvas = ref();
 Chart.register(...registerables);
 let grafico = null;
 
-async function fetchAlerts() {
-    alertas_recibidas.value = await getAlerts(time.value, quant.value);
+async function getAlerts(tiempo, cantidad) {
+    time.value = tiempo;
+    quant.value = cantidad;
+    try {
+        alertas_recibidas.value = await getAlertsFilter(tiempo, cantidad);
+    } catch (error) {
+        console.error(error);
+    }
 }
 
-async function fetchRanking() {
-    rankingSectores.value = await getAllAlerts();
+async function getAllAlertes() {
+    try {
+        rankingSectores.value = await getAllAlerts();
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 function getQuantitat(caso, alertas) {
-    const datos = ref([]);
+    const datos = ref();
     switch (caso) {
         case 'horario':
             datos.value = [0, 0, 0, 0, 0, 0, 0, 0];
@@ -111,6 +122,8 @@ function getQuantitat(caso, alertas) {
                 datos.value[mes] += 1;
             })
             break;
+        // default:
+        //     break;
     }
 
     return datos.value;
@@ -124,8 +137,14 @@ function formatHora(isoDate) {
 function formatText(text) {
     text = text || "";
 
-    if (text.includes("-inf")) {
+    if (text.includes("-inf") || text.includes("pb") || text.includes("p1") || text.includes("p2") || text.includes("p3")) {
         return text.toUpperCase();
+    }
+
+    // Verifica si el texto termina con una palabra y un número junto (ej. bosca0)
+    const match = text.match(/([a-zA-Z]+)(\d+)$/);
+    if (match) {
+        text = text.replace(/\d+$/, ""); // Elimina el número al final
     }
 
     return text
@@ -168,13 +187,12 @@ function choiseChart(type) {
 }
 
 onMounted(async () => {
-    await fetchAlerts();
-    await fetchRanking();
+    await getAlerts(time.value, quant.value);
+    rankingSectores.value = await getAllAlertes();
     datos.value = getQuantitat('total', alertas_recibidas.value);
     createChart(tipo.value, etiquetas.value, datos.value);
 });
 </script>
-
 
 <style scoped>
 #containAll {

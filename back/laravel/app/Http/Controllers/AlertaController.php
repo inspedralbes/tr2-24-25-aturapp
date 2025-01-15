@@ -12,25 +12,43 @@ class AlertaController extends Controller {
 
     public function index()
     {
-    try {
-        $alertas = Alerta::with('sector.planta', 'estado')
+        $alertas = Alerta::with('sector', 'estado')
             ->get()
-            ->map(function ($alerta) {
+            ->groupBy('sector.id')
+            ->map(function ($alertas, $sector_id) {
+                $sector = $alertas->first()->sector;
                 return [
-                    'id' => $alerta->id,
-                    'titulo' => 'Alerta en ' . $alerta->sector->sector,
-                    'sector' => $alerta->sector->sector,
-                    'planta' => $alerta->sector->planta->name,
-                    'descripcion' => $alerta->descripcion,
-                    'estado' => $alerta->estado->name,
-                    'created_at' => $alerta->created_at,
+                    'id_sector' => $sector_id,
+                    'nombre' => $sector->sector,
+                    'planta' => $sector->planta->name,
+                    'total' => $alertas->count(),
                 ];
-            });
-
+            })
+            ->sortByDesc('total')
+            ->values();
         return response()->json($alertas, 200);
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'Error al obtener alertas', 'message' => $e->getMessage()], 500);
     }
+
+    public function getAdminAlerts(){
+        try {
+            $alertas = Alerta::with('sector.planta', 'estado')
+                ->get()
+                ->map(function ($alerta) {
+                    return [
+                        'id' => $alerta->id,
+                        'titulo' => 'Alerta en ' . $alerta->sector->sector,
+                        'sector' => $alerta->sector->sector,
+                        'planta' => $alerta->sector->planta->name,
+                        'descripcion' => $alerta->descripcion,
+                        'estado' => $alerta->estado->name,
+                        'created_at' => $alerta->created_at,
+                    ];
+                });
+    
+            return response()->json($alertas, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener alertas', 'message' => $e->getMessage()], 500);
+        }
     }
 
 
@@ -181,6 +199,7 @@ class AlertaController extends Controller {
         }
         $alerta->descripcion = $validated['descripcio'];
         $alerta->save();
+
         return response()->json(['success' => true, 'message' => 'Alerta editada amb èxit'], 200);
     }
 
@@ -223,6 +242,24 @@ class AlertaController extends Controller {
         }
     
         return response()->json($alertas, 200);
+    }
+
+    public function update_admin(Request $request, $id)
+    {
+    $validated = $request->validate([
+        'estado' => 'required|string'
+    ]);
+
+    $alerta = Alerta::find($id);
+
+    if (!$alerta) {
+        return response()->json(['success' => false, 'message' => 'Alerta no encontrada'], 404);
+    }
+
+    $alerta->estado_id = $this->getEstadoId($validated['estado']); 
+    $alerta->save();
+
+    return response()->json(['success' => true, 'message' => 'Alerta actualizada correctamente'], 200);
     }
     
 

@@ -1,9 +1,9 @@
 <template>
     <div class="container">
         <div class="d-flex f-column align-center j-center">
-            <h2 class="no-margin">Solicitar restablecimiento de contraseña</h2>
+            <h2 class="no-margin">Sol·liciteu restabliment de contrasenya</h2>
             <input v-model="email" type="email" placeholder="Introduce tu correo" />
-            <button @click="sendRequest">Enviar solicitud</button>
+            <button @click="sendRequest">Enviar sol·licitud</button>
             <p v-if="message">{{ message }}</p>
         </div>
     </div>

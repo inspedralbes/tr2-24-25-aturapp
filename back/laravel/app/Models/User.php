@@ -16,6 +16,7 @@
             'dni',
             'telefon',
             'email',
+            'foto',
             'password',
             'curs',
             'torn',

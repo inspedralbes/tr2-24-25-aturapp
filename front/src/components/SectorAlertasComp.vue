@@ -7,7 +7,7 @@
                     <div class="alert-card" v-for="alerta in alertes" @click="verAlerta(alerta.id)">
                         <h3 class="alert-title">Alerta #{{ alerta.id }}</h3>
                         <div class="alert-footer">
-                            <span class="alert-user">Reportado por: {{ alerta.alumne_name }}</span>
+                            <span class="alert-user">Informat per: {{ alerta.alumne_name }}</span>
                             <span class="alert-date">{{ alerta.fecha }}</span>
                         </div>
                     </div>
@@ -94,8 +94,14 @@ async function getAlertsSector() {
 function formatText(text) {
     text = text || "";
 
-    if (text.includes("-inf")) {
+    if (text.includes("-inf") || text.includes("pb") || text.includes("p1") || text.includes("p2") || text.includes("p3")) {
         return text.toUpperCase();
+    }
+
+    // Verifica si el texto termina con una palabra y un número junto (ej. bosca0)
+    const match = text.match(/([a-zA-Z]+)(\d+)$/);
+    if (match) {
+        text = text.replace(/\d+$/, ""); // Elimina el número al final
     }
 
     return text
@@ -108,12 +114,11 @@ async function verAlerta(id) {
     alertVisible.value = true;
     infoAlerta.value = alertes.value.find((alerta) => alerta.id === id);
     infoAlumne.value = await getUser(); // Llamamos a la función getUser para obtener la información del usuario
-    console.log(infoAlumne.value.user);
 }
 
 onMounted(async () => {
-    alertes.value = await getAlertsSector(); // Llamamos a la función getAlertsSector para obtener las alertas
-    sector.value = formatText(alertes.value[0].sector_name); // Formateamos el nombre del sector
+    alertes.value = await getAlertsSector();
+    // sector.value = formatText(alertes.value[0].sector_name);
 });
 </script>
 

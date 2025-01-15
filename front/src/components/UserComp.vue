@@ -1,9 +1,14 @@
 <script setup>
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useCounterStore } from '../stores/counter';
 import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router';
 
 const store = useCounterStore();
+const user = store.userData.user;
+const fotoPerfil = ref(user.foto);
+const token = store.userData.token;
+let id_user = store.userData.user.id;
+const mostrarBotonEncuesta = ref(true);
 
 const router = useRouter();
 function navigateTo(nameRoute) {
@@ -17,13 +22,55 @@ const UserInfo = {
     'cognom': data.user.cognom,
     'email': data.user.email,
     'dni': data.user.dni,
+    'telefon': data.user.telefon,
 }
 
 function cerrarSesion() {
     store.clearUserData();
     location.href = "/login";
 }
+
+import { obtenerFotoPerfil, verificar_usuario_enquesta } from '../services/communictationManager';
+
+const obtenerFotoPerfilAsync = async () => {
+    try {
+        const response = await obtenerFotoPerfil(user.id, token);
+        
+        const data = await response;
+        
+        fotoPerfil.value = data.foto || '';
+    } catch (error) {
+        console.error('Error al obtener la foto de perfil:', error);
+    }
+};
+
+const verificarUsuarioEnquestaAsync = async (id_user) => {
+    try {
+        const respuesta = await verificar_usuario_enquesta(id_user);
+
+        if (respuesta.Enquesta_resposta) {
+            mostrarBotonEncuesta.value = false;
+        } else {
+            mostrarBotonEncuesta.value = true; 
+        }
+    } catch (error) {
+        console.error("Error al verificar el usuario para la encuesta:", error);
+    }
+};
+
+
+
+onMounted(() => {
+    if (!user.foto) {
+        obtenerFotoPerfilAsync();
+    }
+
+    verificarUsuarioEnquestaAsync(id_user);
+});
+
 </script>
+
+
 
 <template>
     <div class="containHeader">
@@ -31,7 +78,7 @@ function cerrarSesion() {
             <div id="contentHeaderProfile" class="d-flex align-center f-column" style="z-index: 20">
                 <p class="no-margin">Perfil</p>
                 <div id="profileImage">
-                    <img src="../../public/assets/svg/noimage.svg" alt="profile">
+                    <img :src="fotoPerfil || '../../public/assets/svg/noimage.svg'" alt="photo">
                 </div>
                 <p>{{ UserInfo.nom }} {{ UserInfo.cognom }}</p>
             </div>
@@ -44,14 +91,17 @@ function cerrarSesion() {
         <button @click="navigateTo('perfil/alertes')">
             <p>Les meves alertes</p>
         </button>
-        <button @click="navigateTo('soport')">
-            <p>Soport de l'aplicació</p>
+        
+        <button v-if="mostrarBotonEncuesta" @click="navigateTo('enquesta')">
+            <p>Respondre enquesta</p>
         </button>
+
         <button @click="cerrarSesion">
             <p>Tancar sessió</p>
         </button>
     </div>
 </template>
+
 
 <style scoped>
 .bg-red {
@@ -86,6 +136,11 @@ function cerrarSesion() {
     align-items: center;
     overflow: hidden;
     margin-top: 20px;
+}
+
+#profileImage img{
+    width: 100%;
+    height: 100%;
 }
 
 .containHeader{

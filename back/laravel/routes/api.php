@@ -1,4 +1,5 @@
 <?php
+    use App\Http\Controllers\ChatController;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Route;
     use App\Http\Controllers\RolController;
@@ -10,13 +11,8 @@
     use App\Http\Controllers\PreguntaController;
     use App\Http\Controllers\RespostasController;
 
-
-
-
     use App\Http\Controllers\EmailController;
     use App\Http\Controllers\PasswordResetController;
-
-
 
 
     Route::get('/user', function (Request $request) {
@@ -37,6 +33,10 @@
     // ====== EDITAR USUARIO ========================
     Route::post('/editaruser', [UserController::class, 'update']);
 
+    Route::post('/updatePhoto', [UserController::class, 'updatePhoto']);
+
+    Route::get('/getPhoto/{id}', [UserController::class, 'getPhoto']);
+
     // ====== OBTENER ROL USUARIO =================
     Route::get('/getrol/{id}', [UserController::class, 'getRol']);
 
@@ -45,7 +45,12 @@
 
     Route::get('/getAllAlerts', [AlertaController::class, 'index']);
 
+    Route::get('/getAllAlertsAdmin', [AlertaController::class, 'getAdminAlerts']);
+
     Route::post('/getAlertsSector', [AlertaController::class, 'getAlertsSector']);
+
+    Route::put('/updateAlert/{id}', [AlertaController::class, 'update_admin']);
+
 
     //====== VER PREGUNTAS ========================
     Route::get('/preguntas', [PreguntaController::class, 'index']);
@@ -84,7 +89,19 @@
 
     //====== VER PREGUNTAS ========================
     Route::get('/preguntas', [PreguntaController::class, 'index']);
-    
+
+
+    //====== CHATS/MENSAJES ========================
+    Route::post('/guardarMensaje', [MessageController::class, 'store']);
+
+    Route::post('/crearChat', [ChatController::class, 'create']);
+
+    Route::get('/getChats', [ChatController::class,'index']);
+
+    Route::post('/getChatMessages', [MessageController::class,'show']);
+
+    Route::post('/editMessage', [MessageController::class,'update']);
+
     //====== CAMBIAR PASSWORD =====================
     Route::post('/password/reset/email', [PasswordResetController::class, 'sendEmail']);
 
@@ -92,3 +109,5 @@
 
     //====== VER ANALISIS =========================
     Route::get('/analisis', [RespostasController::class, 'get']);
+
+    Route::get('/verificar-alumno/{id}', [RespostasController::class, 'verificarAlumno']);

@@ -1,10 +1,10 @@
 <template>
     <div>
-        <h2>Restablecer Contraseña</h2>
+        <h2>Restablir la contrasenya</h2>
         <form @submit.prevent="resetPassword">
             <input v-model="password" type="password" placeholder="Nueva Contraseña" />
             <input v-model="password_confirmation" type="password" placeholder="Confirmar Contraseña" />
-            <button type="submit">Restablecer Contraseña</button>
+            <button type="submit">Restablir contrasenya</button>
             <p v-if="error">{{ error }}</p>
         </form>
     </div>
