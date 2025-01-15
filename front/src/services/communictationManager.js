@@ -1,4 +1,4 @@
-const laravel = { URL: "http://localhost:8000/api" }
+const laravel = { URL: "http://aturapp.daw.inspedralbes.cat/laravel/public/api" }
 
 // === GUARDAR MISATGES ===================================
 export async function guardarMissatgeBBDD(msg) {
@@ -209,7 +209,7 @@ export const resetPassword = async (token, password, password_confirmation) => {
 // === GET DADES SOCIOGRAMA ===============
 export const getAnalisisData = async () => {
     try {
-        const response = await fetch('http://localhost:8000/api/analisis');
+        const response = await fetch(`${laravel.URL}/analisis`);
         return await response.json();
     } catch (error) {
         console.error('Error al obtener los datos de análisis:', error);
@@ -220,7 +220,7 @@ export const getAnalisisData = async () => {
 // === ANALISIS SOCIOGRAMA ================
 export const getCompanysClaseSociograma = async (selectedClass) => {
     try {
-        const response = await fetch(`http://localhost:8000/api/companys-clase/${selectedClass}`);
+        const response = await fetch(`${laravel.URL}/companys-clase/${selectedClass}`);
         return await response.json();
     } catch (error) {
         console.error('Error al obtener las compañías de clase:', error);

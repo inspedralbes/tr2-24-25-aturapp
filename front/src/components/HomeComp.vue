@@ -116,7 +116,6 @@ import { useCounterStore } from '@/stores/counter';
 import { exterior, planta0h, planta0v, planta1h, planta1v, planta2h, planta2v, planta3v, planta3h } from '@/assets/planos/paths';
 
 const store = useCounterStore();
-const BASE_URL = 'http://localhost:8000';
 const edificiActive = ref(false);
 const sosActive = ref(false);
 const alertaEnviada = ref(true);

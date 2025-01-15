@@ -67,7 +67,6 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { planta0h, planta1h, planta2h, planta3h } from '@/assets/planos/paths';
 
-const BASE_URL = 'http://localhost:8000';
 const router = useRouter();
 
 // const plantaInput = ref('planta3');
@@ -190,7 +189,7 @@ const sectors3 = ref([
 
 async function getAllAlertes() {
     try {
-        const response = await fetch(`${BASE_URL}/api/getAllAlerts`);
+        const response = await fetch(`http://aturapp.daw.inspedralbes.cat/laravel/public/api/getAllAlerts`);
 
         if (!response.ok) {
             throw new Error("Error en la solicitud");

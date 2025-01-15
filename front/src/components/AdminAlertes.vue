@@ -38,7 +38,7 @@ const pollingInterval = ref(null);
 
 const fetchAlertas = async (showNotification = false) => {
     try {
-        const respuesta = await fetch('http://localhost:8000/api/getAllAlerts');
+        const respuesta = await fetch('http://aturapp.daw.inspedralbes.cat/laravel/public/api/getAllAlerts');
 
         if (!respuesta.ok) {
             throw new Error(`Error en la respuesta del servidor: ${respuesta.status}`);
@@ -86,7 +86,7 @@ const mostrarNotificacion = (titulo, mensaje) => {
 
 const actualizarEstado = async (alerta) => {
     try {
-        const respuesta = await fetch(`http://localhost:8000/api/updateAlert/${alerta.id}`, {
+        const respuesta = await fetch(`http://aturapp.daw.inspedralbes.cat/laravel/public/api/updateAlert/${alerta.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

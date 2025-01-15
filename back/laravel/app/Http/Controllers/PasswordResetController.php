@@ -23,7 +23,7 @@ class PasswordResetController extends Controller {
     
         Mail::raw(
             "Hola, haz clic en el siguiente enlace para restablecer tu contraseña: " .
-            "http://localhost/password/reset/{$token}",
+            "http://aturapp.daw.inspedralbes.cat/password/reset/{$token}",
             function ($message) use ($email) {
                 $message->to($email)
                         ->subject('Restablecer tu contraseña');
