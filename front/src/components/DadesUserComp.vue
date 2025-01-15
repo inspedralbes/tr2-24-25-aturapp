@@ -90,9 +90,9 @@ async function getFotoPerfil() {
     }
 
 onMounted(() => {
-    //if(!user.foto){
+    if(!user.foto){
         getFotoPerfil();
-    //}
+    }
 })
 
 async function editarPerfil() {
