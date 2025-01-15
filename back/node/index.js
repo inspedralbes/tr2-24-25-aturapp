@@ -8,10 +8,18 @@ const server = createServer(app);
 const io = new Server(server, {
   cors: {
     // origin: 'http://localhost',
-    origin: 'http://localhost:5173',
+    origin: 'http://aturapp.daw.inspedralbes.cat',
     methods: ['GET', 'POST']
   }
 });
+
+app.use(express.json());
+app.use(cors({
+  origin: "http://aturapp.daw.inspedralbes.cat",
+  methods: ["GET", "POST"],
+  credentials: true,
+}));
+
 
 const alumnos = new Map();
 const profesores = new Map();
@@ -113,6 +121,6 @@ function getAlumneSocketById(alumneId) {
   return null;
 }
 
-server.listen(3000, () => {
-  console.log('server running at http://localhost:3000');
+server.listen(27105, () => {
+  console.log('server running at http://localhost:27105');
 });
