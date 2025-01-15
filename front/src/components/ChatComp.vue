@@ -17,7 +17,7 @@
             {{ msg.texto }}
           </template>
           <template v-if="msg.editado && !msg.editando">
-            <div class="msjEditado">editado</div>
+            <div class="msjEditado">Editat</div>
           </template>
           <button class="botonEditar" @click="editarMensaje(msg)"><img :src="botonEditar" alt="editar"></button>
         </li>
@@ -61,7 +61,7 @@ import socket from '@/services/socket.js';
 const store = useCounterStore();
 let user = store.userData.user;
 
-const msjAutomaticos = reactive(['Has visto o has sufrido el incidente?', '¿En que curso ha sucedido el incidente?', '¿Como definirias el incidente?', '¿Donde ha ocurrido el incidente?', '¿Cuando ha ocurrido el incidente?', 'Proporciona informacion sobre las personas involucradas(relaciones, cursos)', 'En el menor tiempo posible, un miembro del equipo se pondrá en contacto contigo para solucionar la situacion. Gracias por tu colaboración. Redacta la informacion que quieras añadir.']);
+const msjAutomaticos = reactive(['Has vist o has sufrit algun incident?', 'En quin curs a pasat?', 'Com definiries l\'incident?', 'On ha pasat succeït?', 'Quan a passat l\'incident', 'Quan ha passat l\'incident(relacions, cursos)', 'En el menor temps possible, un membre de l\'equip es posarà en contacte amb tu per solucionar la situació. Gràcies per la teva col·laboració Redacta la informació que vulguis afegir.']);
 // const msjAutomaticos = reactive(['Proporciona informacion sobre las personas involucradas(relaciones, cursos)', 'En el menor tiempo posible, un miembro del equipo se pondrá en contacto contigo para solucionar la situacion. Gracias por tu colaboración. Redacta la informacion que quieras añadir.']);
 const messages = reactive([]);
 const input = ref('');
@@ -193,7 +193,7 @@ onMounted(() => {
     alert('connexionChats');
     chatEnEspera.value = false;
     chatConBot.value = false;
-    messages.push({ id: uuidv4(), texto: "chat iniciado", emisor: -1, editando: null, editado: null });
+    messages.push({ id: uuidv4(), texto: "chat iniciat", emisor: -1, editando: null, editado: null });
     socket.emit('compartirChat', messages); 
   });
 });
@@ -219,20 +219,19 @@ onUnmounted(() => {
   flex-direction: column;
 }
 
-/* quitar cosas que sobran */
 #missatges li.servidor {
-  background-color: #f0f0f0; /* Gris claro */
-  color: #333; /* Texto oscuro para contraste */
-  width: 100%; /* Ocupa todo el ancho disponible */
-  padding: 10px; /* Espaciado interior */
-  border-radius: 8px; /* Bordes redondeados */
-  margin: 5px 0; /* Margen entre los mensajes */
-  box-sizing: border-box; /* Asegura que el padding y el border no afecten al ancho */
-  text-align: center; /* Alinea el texto horizontalmente en el centro */
-  display: flex; /* Utiliza flexbox para alinear el contenido */
-  justify-content: center; /* Centra el contenido horizontalmente */
-  align-items: center; /* Centra el contenido verticalmente (si hay más de una línea de texto) */
-  align-self: center; /* Centra el mensaje en el contenedor */
+  background-color: #f0f0f0;
+  color: #333;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 5px 0;
+  box-sizing: border-box;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
 }
 
 #missatges .propio {
